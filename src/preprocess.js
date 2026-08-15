@@ -17,11 +17,12 @@ export const PREPROCESS = {
 
 /**
  * OffscreenCanvas resample used by the extension and chrome-path eval.
- * Chrome-path family 1: "medium" instead of "high" — hypothesis that
- * the remaining 23/23 errors sit on the canvas kernel, not sharp.
+ * Chrome-path family 1 run 2: nearest-neighbor (smoothing off).
+ * KEEP d8976dc used quality medium; this tests whether a harder
+ * kernel recovers more of the 22 remaining FPs.
  */
 export const CANVAS_RESAMPLE = {
-  imageSmoothingEnabled: true,
+  imageSmoothingEnabled: false,
   imageSmoothingQuality: "medium",
 };
 
