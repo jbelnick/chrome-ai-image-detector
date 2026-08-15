@@ -76,6 +76,48 @@ function bytesToAsciiHaystack(bytes) {
   return out.toLowerCase();
 }
 
+/**
+ * JPEG APP0–APP15 + COM only. Compressed entropy after SOS is not
+ * provenance — short tokens like "sdxl" collide there on real photos.
+ */
+function jpegMetadataBytes(bytes) {
+  if (bytes.length < 4 || bytes[0] !== 0xff || bytes[1] !== 0xd8) return null;
+  const chunks = [];
+  let i = 2;
+  while (i + 1 < bytes.length) {
+    if (bytes[i] !== 0xff) {
+      i += 1;
+      continue;
+    }
+    const marker = bytes[i + 1];
+    if (marker === 0xda || marker === 0xd9) break;
+    if (marker === 0x00 || marker === 0xff) {
+      i += 1;
+      continue;
+    }
+    if (marker >= 0xd0 && marker <= 0xd7) {
+      i += 2;
+      continue;
+    }
+    if (i + 4 > bytes.length) break;
+    const len = (bytes[i + 2] << 8) | bytes[i + 3];
+    const start = i + 4;
+    const end = Math.min(bytes.length, start + Math.max(0, len - 2));
+    if ((marker >= 0xe0 && marker <= 0xef) || marker === 0xfe) {
+      chunks.push(bytes.subarray(start, end));
+    }
+    i = start + Math.max(0, len - 2);
+  }
+  const total = chunks.reduce((n, c) => n + c.length, 0);
+  const out = new Uint8Array(total);
+  let o = 0;
+  for (const c of chunks) {
+    out.set(c, o);
+    o += c.length;
+  }
+  return out;
+}
+
 function hasPngTextChunk(bytes, needle) {
   // PNG: 8-byte signature, then chunks: len(4) type(4) data len crc(4)
   if (bytes.length < 16) return false;
@@ -112,7 +154,9 @@ function hasPngTextChunk(bytes, needle) {
 
 export function scanProvenance(buffer) {
   const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
-  const haystack = bytesToAsciiHaystack(bytes);
+  const jpegMeta = jpegMetadataBytes(bytes);
+  const scanBytes = jpegMeta || bytes;
+  const haystack = bytesToAsciiHaystack(scanBytes);
   const signals = [];
 
   for (const marker of AI_ASCII) {
@@ -122,8 +166,8 @@ export function scanProvenance(buffer) {
   }
 
   // C2PA / JUMBF box type often appears as binary "jumb" / "c2pa"
-  const c2paBinary = indexOfBytes(bytes, [0x63, 0x32, 0x70, 0x61]); // c2pa
-  const jumbBinary = indexOfBytes(bytes, [0x6a, 0x75, 0x6d, 0x62]); // jumb
+  const c2paBinary = indexOfBytes(scanBytes, [0x63, 0x32, 0x70, 0x61]); // c2pa
+  const jumbBinary = indexOfBytes(scanBytes, [0x6a, 0x75, 0x6d, 0x62]); // jumb
   if (c2paBinary >= 0) signals.push("c2pa-box");
   if (jumbBinary >= 0) signals.push("jumbf-box");
 

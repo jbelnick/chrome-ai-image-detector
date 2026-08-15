@@ -63,6 +63,30 @@ describe("provenance", () => {
     assert.equal(result.ai, true);
   });
 
+  it("does not treat sdxl in JPEG entropy as provenance", () => {
+    // SOI + empty COM + SOS + entropy containing the letters sdxl
+    const jpeg = Uint8Array.from([
+      0xff, 0xd8,
+      0xff, 0xfe, 0x00, 0x03, 0x00,
+      0xff, 0xda, 0x00, 0x08, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x11, 0x73, 0x64, 0x78, 0x6c, 0x22, // "sdxl" in entropy
+      0xff, 0xd9,
+    ]);
+    const result = scanProvenance(jpeg);
+    assert.equal(result.ai, false);
+  });
+
+  it("still flags sdxl inside a JPEG COM comment", () => {
+    const payload = new TextEncoder().encode("generated with SDXL");
+    const len = payload.length + 2;
+    const jpeg = new Uint8Array(4 + 2 + payload.length + 2);
+    jpeg.set([0xff, 0xd8, 0xff, 0xfe, (len >> 8) & 255, len & 255], 0);
+    jpeg.set(payload, 6);
+    jpeg.set([0xff, 0xd9], 6 + payload.length);
+    const result = scanProvenance(jpeg);
+    assert.equal(result.ai, true);
+  });
+
   it("requires EXIF-like context before treating a phone make as camera-native", () => {
     const without = scanProvenance(asciiBuffer("apple storefront photo"));
     assert.equal(without.camera, false);
