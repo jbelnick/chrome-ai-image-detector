@@ -28,6 +28,9 @@ export const FUSE_DEFAULTS = {
   mutedHighDrop: 0.2,
   mutedHighBandMin: 0.8,
   mutedHighBandMax: 0.88,
+  flatHighDrop: 0.2,
+  flatHighBandMin: 0.8,
+  flatHighBandMax: 0.83,
   bias: 0,
   temperature: 0.9,
   scorePower: 0.85,
@@ -127,6 +130,17 @@ export function fuseScores({
   ) {
     calibrated -= mutedHighDrop;
     reasons.push("muted-high");
+  }
+
+  const flatHighDrop = config.flatHighDrop ?? 0;
+  if (
+    flatHighDrop > 0 &&
+    graphic?.flatTone &&
+    calibrated >= (config.flatHighBandMin ?? 0.8) &&
+    calibrated < (config.flatHighBandMax ?? 0.83)
+  ) {
+    calibrated -= flatHighDrop;
+    reasons.push("flat-high");
   }
 
   return {
