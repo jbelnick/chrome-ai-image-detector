@@ -63,4 +63,19 @@ describe("graphic-gate", () => {
     assert.equal(analysis.flatTone, true);
     assert.ok(analysis.centerBorder > 0.92 && analysis.centerBorder < 1.08);
   });
+
+  it("flags a field with clipped highlights as specular", () => {
+    const w = 64;
+    const h = 64;
+    const data = new Uint8Array(w * h * 4);
+    data.fill(40);
+    for (let i = 3; i < data.length; i += 4) data[i] = 255;
+    for (let i = 0; i < 200; i += 1) {
+      data[i * 4] = 255;
+      data[i * 4 + 1] = 255;
+      data[i * 4 + 2] = 255;
+    }
+    const analysis = analyzePixels(data, w, h);
+    assert.equal(analysis.specular, true);
+  });
 });
