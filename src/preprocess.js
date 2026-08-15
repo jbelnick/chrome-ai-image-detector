@@ -31,11 +31,6 @@ export function applyCanvasResample(ctx) {
   ctx.imageSmoothingQuality = CANVAS_RESAMPLE.imageSmoothingQuality;
 }
 
-/** Skip browser color-management on createImageBitmap (family 1 run 4). */
-export const BITMAP_DECODE = {
-  colorSpaceConversion: "none",
-};
-
 export function scaledSize(width, height, shortEdge = PREPROCESS.resizeShortEdge) {
   if (width <= 0 || height <= 0) {
     throw new Error("image has no area");
