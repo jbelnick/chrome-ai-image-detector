@@ -148,6 +148,31 @@ describe("fuse", () => {
     assert.equal(toneOnly.reasons.includes("flat-high"), false);
   });
 
+  it("drops a vivid high-band visual without inventing a real verdict from colorfulness alone", () => {
+    const dropped = fuseScores({
+      visual: 0.84,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, vivid: true, flatTone: false },
+    });
+    assert.ok(dropped.score < 0.65);
+    assert.ok(dropped.reasons.includes("vivid-high"));
+
+    const vividFlat = fuseScores({
+      visual: 0.84,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, vivid: true, flatTone: true },
+    });
+    assert.equal(vividFlat.reasons.includes("vivid-high"), false);
+
+    const vividOnly = fuseScores({
+      visual: 0.2,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, vivid: true, flatTone: false },
+    });
+    assert.ok(Math.abs(vividOnly.fusedBeforeCalibration - 0.2) < 1e-9);
+    assert.equal(vividOnly.reasons.includes("vivid-high"), false);
+  });
+
   it("lifts a muted mid-range visual without inventing a verdict from low colorfulness alone", () => {
     const lifted = fuseScores({
       visual: 0.56,
