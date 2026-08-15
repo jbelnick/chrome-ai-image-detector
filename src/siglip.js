@@ -46,7 +46,7 @@ export function probeLogit(pooler) {
 }
 
 export function siglipProbability(pooler) {
-  return visualProbabilityFromLogit(probeLogit(pooler));
+  return visualProbabilityFromLogit(probeLogit(pooler), 0);
 }
 
 /** Soft-OR: independent heads both vote AI. */
