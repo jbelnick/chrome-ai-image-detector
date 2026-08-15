@@ -11,7 +11,8 @@
  */
 import { createServer } from "node:http";
 import { spawn } from "node:child_process";
-import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
+import { createReadStream } from "node:fs";
+import { mkdir, stat, writeFile } from "node:fs/promises";
 import { extname, join, normalize, relative, resolve } from "node:path";
 import { tmpdir } from "node:os";
 import { MODELS, EVAL_THRESHOLD } from "../../src/model-config.js";
@@ -139,12 +140,15 @@ async function startServer({ vendor, models, lib, data, official }) {
         return;
       }
       if (req.method === "GET" && url.pathname === "/manifest.json") {
-        res.writeHead(200, { "content-type": "application/json; charset=utf-8" });
-        res.end(
-          JSON.stringify(
-            official.map((row) => ({ name: row.name, label: row.label })),
-          ),
+        const json = JSON.stringify(
+          official.map((row) => ({ name: row.name, label: row.label })),
         );
+        res.writeHead(200, {
+          "content-type": "application/json; charset=utf-8",
+          "cache-control": "no-store",
+          "content-length": Buffer.byteLength(json),
+        });
+        res.end(json);
         return;
       }
 
@@ -168,18 +172,27 @@ async function startServer({ vendor, models, lib, data, official }) {
         res.end("not found");
         return;
       }
-      const buf = await readFile(file);
+      const info = await stat(file);
       res.writeHead(200, {
         "content-type": MIME[extname(file).toLowerCase()] || "application/octet-stream",
         "cache-control": "no-store",
+        "content-length": info.size,
       });
-      res.end(buf);
+      const stream = createReadStream(file);
+      stream.on("error", (err) => {
+        if (!res.writableEnded) res.destroy(err);
+      });
+      stream.pipe(res);
     } catch (err) {
       res.writeHead(500);
       res.end(String(err.message || err));
     }
   });
 
+  server.timeout = 0;
+  server.headersTimeout = 0;
+  server.requestTimeout = 0;
+  server.keepAliveTimeout = 60_000;
   await new Promise((resolveListen) => server.listen(0, "127.0.0.1", resolveListen));
   const { port } = server.address();
   return {
@@ -215,7 +228,7 @@ async function launchChrome(bin, pageUrl) {
     pageUrl,
   ];
   const child = spawn(bin, args, {
-    stdio: ["ignore", "pipe", "pipe"],
+    stdio: ["ignore", "ignore", "pipe"],
   });
   child.stderr.on("data", (chunk) => {
     const text = chunk.toString();

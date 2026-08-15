@@ -29,6 +29,21 @@ function log(line) {
   logEl.textContent += `${line}\n`;
 }
 
+async function fetchOk(url, tries = 4) {
+  let last;
+  for (let i = 0; i < tries; i += 1) {
+    try {
+      const res = await fetch(url, { cache: "no-store" });
+      if (res.ok) return res;
+      last = new Error(`${url} ${res.status}`);
+    } catch (err) {
+      last = err;
+    }
+    await new Promise((r) => setTimeout(r, 250 * (i + 1)));
+  }
+  throw last;
+}
+
 async function post(path, body) {
   const res = await fetch(path, {
     method: "POST",
@@ -40,10 +55,7 @@ async function post(path, body) {
 }
 
 async function readModelBuffer(spec) {
-  const response = await fetch(`/models/${spec.filename}`);
-  if (!response.ok) {
-    throw new Error(`model ${spec.id} missing (${response.status})`);
-  }
+  const response = await fetchOk(`/models/${spec.filename}`);
   const buffer = await response.arrayBuffer();
   const hash = await sha256Hex(buffer);
   assertSha256(hash, spec.sha256, spec.filename);
@@ -191,13 +203,14 @@ async function main() {
       : "initialized"
     : "UNVERIFIED";
   log(`sessions ready provider=${provider} webgpu=${webgpu}`);
+  await new Promise((r) => setTimeout(r, 250));
 
-  const manifest = await (await fetch("/manifest.json")).json();
+  const manifest = await (await fetchOk("/manifest.json")).json();
+  log(`manifest n=${manifest.length}`);
   const scored = [];
   const startedAt = Date.now();
   for (const [index, row] of manifest.entries()) {
-    const res = await fetch(`/eval-data/${row.name}`);
-    if (!res.ok) throw new Error(`fetch ${row.name} ${res.status}`);
+    const res = await fetchOk(`/eval-data/${row.name}`);
     const bytes = new Uint8Array(await res.arrayBuffer());
     const result = await inferBytes(
       cfCreated.session,
