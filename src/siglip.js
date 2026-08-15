@@ -49,9 +49,13 @@ export function siglipProbability(pooler) {
   return visualProbabilityFromLogit(probeLogit(pooler));
 }
 
-/** Soft-OR: independent heads both vote AI. */
+/**
+ * Soft-OR with SigLIP counted twice: 1-(1-s)^2*(1-c).
+ * Opposite of the discarded double-CF rule.
+ */
 export function blendVisual(siglip, commfor) {
   const a = Number.isFinite(siglip) ? siglip : 0;
   const b = Number.isFinite(commfor) ? commfor : 0;
-  return a + b - a * b;
+  const missS = 1 - a;
+  return 1 - missS * missS * (1 - b);
 }
