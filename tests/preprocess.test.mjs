@@ -7,6 +7,7 @@ import {
   imageDataToTensor,
   visualProbabilityFromLogit,
   PREPROCESS,
+  CF_LOGIT_TEMPERATURE,
 } from "../src/preprocess.js";
 
 describe("preprocess", () => {
@@ -50,5 +51,12 @@ describe("preprocess", () => {
     assert.ok(visualProbabilityFromLogit(0) === 0.5);
     assert.ok(visualProbabilityFromLogit(6.753) > 0.99);
     assert.ok(visualProbabilityFromLogit(-6.7) < 0.01);
+  });
+
+  it("sharpens Community Forensics logits relative to an identity sigmoid", () => {
+    const identity = visualProbabilityFromLogit(1, 1);
+    const sharpened = visualProbabilityFromLogit(1);
+    assert.ok(sharpened > identity);
+    assert.equal(CF_LOGIT_TEMPERATURE, 0.75);
   });
 });
