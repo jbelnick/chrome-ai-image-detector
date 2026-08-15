@@ -213,7 +213,27 @@ How this differs from the official 360:
 - Picsum easy-real padding (`picsum_*`) and Community Forensics metadata extras (`cf_*`) stay out of both scores.
 - SigLIP probe training still uses OpenFake **validation** only. The downloader does not read that split.
 
-Baseline chrome-path `bal_acc_065` on this mix has **not** been printed yet. It will be copied here from `npm run eval:chrome` — not invented.
+Baseline chrome-path on KEEP detector `9d7a712` (medium CF + nearest SigLIP, fuse bias 0). Command: `npm run eval:chrome`. Date: 2026-08-15. Backend: wasm (UNVERIFIED software adapter). Copied from the harness printout — not invented.
+
+```
+SCALAR broader-proxy (keep/revert)
+bal_acc_065: 0.832402
+tpr_065:     0.938547
+tnr_065:     0.726257
+tp/fn/tn/fp: 168 / 11 / 130 / 49
+n:           358
+
+SECONDARY official-360 (not the ratchet)
+bal_acc_065: 0.880556
+tpr_065:     0.894444
+tnr_065:     0.866667
+tp/fn/tn/fp: 161 / 19 / 156 / 24
+n:           360
+backend:     wasm
+webgpu:      UNVERIFIED
+```
+
+The broader mix is harder than the 360, almost entirely on TNR (49 FP vs 11 FN). That matches the hypothesis that remaining private-bench miss is distribution shift, not another canvas nip. This is still **not** Kenny's private bench.
 
 ## Rules checklist
 
