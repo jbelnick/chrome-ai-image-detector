@@ -19,9 +19,6 @@ export const FUSE_DEFAULTS = {
   flatToneLift: 0.05,
   flatToneBandMin: 0.5,
   flatToneBandMax: 0.68,
-  axisHeavyLift: 0.05,
-  axisHeavyBandMin: 0.5,
-  axisHeavyBandMax: 0.68,
   bias: 0,
   temperature: 0.9,
   scorePower: 0.85,
@@ -80,17 +77,6 @@ export function fuseScores({
   ) {
     score = Math.min(0.92, score + flatToneLift);
     reasons.push("flat-tone");
-  }
-
-  const axisHeavyLift = config.axisHeavyLift ?? 0;
-  if (
-    axisHeavyLift > 0 &&
-    graphic?.axisHeavy &&
-    score >= (config.axisHeavyBandMin ?? 0.5) &&
-    score < (config.axisHeavyBandMax ?? 0.68)
-  ) {
-    score = Math.min(0.92, score + axisHeavyLift);
-    reasons.push("axis-edge");
   }
 
   const calibrated = applyPower(
