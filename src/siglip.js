@@ -4,7 +4,9 @@ import { visualProbabilityFromLogit } from "./preprocess.js";
 export const SIGLIP = {
   size: 224,
   mean: [0.5, 0.5, 0.5],
-  std: [0.5, 0.5, 0.5],
+  // Experiment: mean-only, matching the CF KEEP. Official SigLIP
+  // recipe uses std 0.5; identity std drops that gain.
+  std: [1, 1, 1],
 };
 
 export function imageDataToSiglipTensor(
