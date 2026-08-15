@@ -196,7 +196,14 @@ Composition (public, held-out, no probe-training images):
 | `webai_*` | later `reddit/test` fakes | 30 AI | Extra social-style recompress (q=65, max side 720). |
 | `webreal_*` | Lorem Picsum IDs **not** in the easy-real padding set | 30 real | Extra web recompress (q=65, max side 720). |
 
-Target n = 180 AI + 180 real (balanced). Exact landed counts are whatever `npm run eval:download:broader` writes to `eval/data/manifest-broader.json` — do not invent them here before that download finishes.
+Landed on this machine (`eval/data/manifest-broader.json`): **n=358** (179 AI / 179 real).
+
+| prefix | landed |
+| --- | --- |
+| `ofreddit_*` | 90 AI + 90 real |
+| `ofhold_*` | 60 AI + 60 real |
+| `webai_*` | 29 AI (30th dropped to keep the mix balanced after one Picsum 404) |
+| `webreal_*` | 29 real (Picsum id 224 404'd) |
 
 How this differs from the official 360:
 
