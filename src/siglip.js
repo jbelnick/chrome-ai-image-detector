@@ -61,7 +61,7 @@ export function blendVisual(siglip, commfor) {
   const a = Number.isFinite(siglip) ? siglip : 0;
   const b = Number.isFinite(commfor) ? commfor : 0;
   const missS = 1 - a;
-  if (a < 0.3) {
+  if (a < 0.25) {
     return 1 - missS * missS;
   }
   return 1 - missS * missS * (1 - b);
