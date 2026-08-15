@@ -77,15 +77,15 @@ EXPLORATORY only — best raw cut on a 30% OpenFake subset: 0.27 (BA 84.58%). No
 
 Reported proxy score (baseline, `b3e1487` / `8b20ad4`): **81.67%** BA @ 0.65.
 
-Autoresearch running best `6067a8a` (soft-OR blend, graphic/camera scales 1, temperature 0.90, bias 0, scorePower 0.85):
+Autoresearch running best `a772186` (soft-OR, T=0.90, scorePower 0.85, Hasler-Süsstrunk vivid mid-band lift):
 
 ```
-bal_acc_065: 0.847222
-tpr_065:     0.761111
+bal_acc_065: 0.850000
+tpr_065:     0.766667
 tnr_065:     0.933333
 ```
 
-Harness print: **84.72%** balanced accuracy, TPR 76.11%, TNR 93.33%, n=360 (TP 137 / FN 43 / TN 168 / FP 12). Power 0.85 is beta calibration after T=0.90; a raw 0.33 still displays well below 0.65 (not a remapped cut). Previous best `21c9ee6` was 84.44%.
+Harness print: **85.00%** balanced accuracy, TPR 76.67%, TNR 93.33%, n=360. Colorfulness lifts only mid-range visuals already in [0.50, 0.68]; TNR held vs the prior `6067a8a` 84.72% KEEP. A raw 0.33 still displays well below 0.65.
 
 Withdrawn earlier figures: 84.96% (raw 0.33 remapped onto a displayed 0.65) and 68.85% Community-Forensics-only.
 
