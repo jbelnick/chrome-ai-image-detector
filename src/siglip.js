@@ -42,7 +42,7 @@ export function probeLogit(pooler) {
   }
   let z = probe.bias;
   for (let i = 0; i < x.length; i += 1) z += probe.weight[i] * x[i];
-  return z * 0.97;
+  return z;
 }
 
 export function siglipProbability(pooler) {
