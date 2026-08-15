@@ -29,9 +29,10 @@ export function scaledSize(width, height, shortEdge = PREPROCESS.resizeShortEdge
 
 export function centerCropBox(width, height, crop = PREPROCESS.crop) {
   const size = Math.min(crop, width, height);
+  const leftoverY = Math.max(0, height - size);
   return {
     x: Math.max(0, Math.floor((width - size) / 2)),
-    y: Math.max(0, Math.floor((height - size) / 2)),
+    y: Math.max(0, Math.floor(leftoverY * 0.62)),
     size,
   };
 }
