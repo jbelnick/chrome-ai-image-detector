@@ -58,18 +58,19 @@ The eval script uses the **same** preprocess, provenance scan, graphic gate, fus
 
 ```bash
 # Python deps for the downloader only: pip install datasets pillow
-npm run eval:download   # OpenFake core/test (official) + optional Picsum easy-reals
-npm run eval            # Node + onnxruntime-node + sharp (same 360)
-npm run eval:chrome     # Chrome ORT-web + createImageBitmap / OffscreenCanvas (same 360)
+npm run eval:download           # OpenFake core/test 360 prefix + optional Picsum easy-reals
+npm run eval:download:broader   # reddit/test + core/test holdout + web recompress (scalar)
+npm run eval                    # Node + onnxruntime-node + sharp (360 secondary)
+npm run eval:chrome             # Chrome ORT-web; broader proxy is the keep/revert scalar
 ```
 
-`npm run eval:chrome` launches headless Chrome against a local page that copies the extension offscreen path: SHA-check the packaged ONNX, try a WebGPU session, fall back to WASM, decode with `createImageBitmap` + `OffscreenCanvas`. It scores only the official OpenFake 180/class prefix (not Picsum). If this machine has no GPU adapter, the printed backend is `wasm` and WebGPU is labeled `UNVERIFIED`. Requires `npm run build` (vendored ORT) and a Chrome binary (`CHROME_PATH` overrides).
+`npm run eval:chrome` launches headless Chrome against a local page that copies the extension offscreen path: SHA-check the packaged ONNX, try a WebGPU session, fall back to WASM, decode with `createImageBitmap` + `OffscreenCanvas`. The **keep/revert scalar** is the broader public proxy (OpenFake `reddit/test` + a `core/test` holdout past the 360 prefix + extra web recompress). The official 360 is still printed every run as a secondary report. If this machine has no GPU adapter, the printed backend is `wasm` and WebGPU is labeled `UNVERIFIED`. Requires `npm run build` (vendored ORT) and a Chrome binary (`CHROME_PATH` overrides).
 
 Balanced accuracy = (TPR + TNR) / 2. An image is predicted AI when the **shipped** fused score `>= 0.65`. Fuse bias is `0` — the harness does not remap a lower raw cut onto 0.65.
 
 The number printed as **OFFICIAL OpenFake core/test** is the proxy score recorded in [CLAIM.md](CLAIM.md): Node+sharp **87.22%** BA @ 0.65 (TPR 90.00% / TNR 84.44%); Chrome ORT-web WASM **87.22%** BA @ 0.65 (TPR 87.22% / TNR 87.22%), same 360. Hardware WebGPU was UNVERIFIED on the measurement machine. Picsum photographs are easy-real padding and are labeled as such. Community Forensics DALL·E extras are excluded because they embed generator ASCII.
 
-This is a public **generator-holdout** proxy, **not** the private maintainer set and **not** OpenFake `reddit/test` (in-the-wild web JPEG). The downloader takes a streaming prefix of 180/class from `core/test` (not the full published protocol) and JPEG-saves at q=88. That is harder than CIFAKE/Picsum and still easier than a private multi-generation web-JPEG bench.
+Neither public mix is Kenny's private maintainer bench. The 360 prefix is a generator-holdout stand-in (JPEG q=88). The broader scalar adds in-the-wild Reddit JPEGs and a disjoint later `core/test` slice. Do not invent a private-bench score.
 
 ## Repository layout
 

@@ -14,21 +14,28 @@ Hard stop: Sunday 16 Aug 2026, 05:45 UTC. Freeze and ship. No on-chain claim, no
 
 ## Scalar metric (higher is better)
 
-**Chrome-path** `bal_acc_065` from `npm run eval:chrome`. Same OpenFake `core/test` 180/class prefix, AI iff `score >= 0.65`, BA = `(TPR+TNR)/2`.
+**Chrome-path** `bal_acc_065` on the **broader public proxy**, not the official OpenFake 360 prefix.
 
-On this cloud VM there is no real GPU. Chrome WASM printed the same 157/23/157/23 matrix as Mac Metal WebGPU. Treat VM `eval:chrome` as the chrome-path proxy. Label it chrome-path, never hardware WebGPU.
+The number that pays is ≥75% BA @ 0.65 on Kenny's **private** maintainer bench. We do not have those images. Do not invent a private-bench score.
 
-Print after every chrome-path eval:
+The keep/revert scalar is `eval/results/chrome.json` → `broaderProxy`:
+OpenFake `reddit/test` (in-the-wild web JPEG) + OpenFake `core/test` holdout **after** the 180/class prefix + extra web recompress samples. AI iff `score >= 0.65`, BA = `(TPR+TNR)/2`, fuse bias stays 0.
+
+Every eval still prints the official 360 as a **secondary** report (`officialOpenFake`). A KEEP that lifts the broader proxy and craters the 360 must be called out, not hidden.
+
+On this cloud VM there is no real GPU. Treat VM `eval:chrome` WASM as chrome-path, never hardware WebGPU.
+
+Print after every chrome-path eval (`node autoresearch/print-chrome-score.mjs`):
 
 ```
-bal_acc_065: 0.872222
-tpr_065:     0.872222
-tnr_065:     0.872222
-backend:     wasm
-webgpu:      UNVERIFIED
+SCALAR broader-proxy (keep/revert)
+bal_acc_065: 0.000000
+...
+SECONDARY official-360 (not the ratchet)
+bal_acc_065: 0.000000
 ```
 
-Source of truth: `eval/results/chrome.json` → `officialOpenFake`. `node autoresearch/print-chrome-score.mjs`. Do not invent. Do not use Node `latest.json`, Picsum, or the exploratory raw-cut search as the ratchet. Do not retune fuse bias. Do not remap a raw cut onto 0.65.
+Do not invent. Do not use Node `latest.json` or the 360 prefix as the ratchet. Do not retune fuse bias. Do not remap a raw cut onto 0.65. Do not train on the broader split (probe stays OpenFake validation only).
 
 Log every completed run to untracked `autoresearch/results.tsv`:
 

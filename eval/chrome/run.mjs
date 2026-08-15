@@ -1,10 +1,14 @@
 #!/usr/bin/env node
 /**
- * Score the official OpenFake 360 on Chrome's ORT-web path
- * (createImageBitmap + OffscreenCanvas + WebGPU-then-WASM).
+ * Chrome ORT-web path (createImageBitmap + OffscreenCanvas + WebGPU-then-WASM).
  *
- *   npm run build          # vendors ORT + copies src → extension/lib
- *   npm run eval:download  # same proxy set as npm run eval
+ * Keep/revert SCALAR is the broader public proxy (reddit/test + core/test
+ * holdout + web recompress). The official OpenFake 360 prefix is printed
+ * every run as a secondary report only.
+ *
+ *   npm run build
+ *   npm run eval:download
+ *   npm run eval:download:broader
  *   npm run eval:chrome
  *
  * Does not retune fusion. Does not invent scores.
@@ -19,7 +23,9 @@ import { MODELS, EVAL_THRESHOLD } from "../../src/model-config.js";
 import { FUSE_DEFAULTS } from "../../src/fuse.js";
 import { summarize } from "../../src/metrics.js";
 import {
+  assertBroaderSet,
   assertOfficialSet,
+  broaderOnly,
   dataDirFromRoot,
   listProxyImages,
   officialOnly,
@@ -106,7 +112,7 @@ function readBody(req) {
   });
 }
 
-async function startServer({ vendor, models, lib, data, official }) {
+async function startServer({ vendor, models, lib, data, scored }) {
   let doneResolve;
   let doneReject;
   const done = new Promise((resolveDone, rejectDone) => {
@@ -147,7 +153,7 @@ async function startServer({ vendor, models, lib, data, official }) {
       }
       if (req.method === "GET" && url.pathname === "/manifest.json") {
         const json = JSON.stringify(
-          official.map((row) => ({ name: row.name, label: row.label })),
+          scored.map((row) => ({ name: row.name, label: row.label })),
         );
         res.writeHead(200, {
           "content-type": "application/json; charset=utf-8",
@@ -245,23 +251,15 @@ async function launchChrome(bin, pageUrl) {
   return child;
 }
 
-function printReport(official, payload) {
-  const summary = summarize(
-    payload.rows.map((r) => ({ label: r.label, score: r.score })),
-    EVAL_THRESHOLD,
-  );
-  const pct = (x) => `${(x * 100).toFixed(2)}%`;
+function printBackend(payload) {
   const backend = payload.provider;
   const webgpu = payload.webgpu;
   const gpu = payload.gpu || {};
-  const delta = summary.balancedAccuracy - NODE_REF.bal_acc_065;
-
   console.log("");
   console.log("Grain Chrome eval — ORT-web + createImageBitmap / OffscreenCanvas");
   console.log(`Models: ${MODELS.siglip2.id} + ${MODELS.commfor.id}`);
   console.log(`Fuse bias=${FUSE_DEFAULTS.bias} temperature=${FUSE_DEFAULTS.temperature}`);
   console.log(`AI iff score >= ${EVAL_THRESHOLD}`);
-  console.log(`Images: official(OpenFake)=${official.length}  (Picsum/CF extras not scored)`);
   console.log(`Backend: ${backend}`);
   if (webgpu === "software-swiftshader") {
     console.log(
@@ -281,41 +279,74 @@ function printReport(official, payload) {
   if (gpu.adapterInfo) {
     console.log(`GPU adapter: ${JSON.stringify(gpu.adapterInfo)}`);
   }
+}
+
+function summarizeNamed(rows, threshold) {
+  return summarize(
+    rows.map((r) => ({ label: r.label, score: r.score })),
+    threshold,
+  );
+}
+
+function printSlice(title, summary, { scalar = false } = {}) {
+  const pct = (x) => `${(x * 100).toFixed(2)}%`;
   console.log("");
-  console.log(`OFFICIAL OpenFake core/test @ ${EVAL_THRESHOLD} (Chrome path):`);
+  console.log(`${title} @ ${EVAL_THRESHOLD}:`);
   console.log(`  balanced accuracy  ${pct(summary.balancedAccuracy)}`);
   console.log(`  TPR                ${pct(summary.tpr)}`);
   console.log(`  TNR                ${pct(summary.tnr)}`);
   console.log(`  n                  ${summary.n} (AI ${summary.nAi} / real ${summary.nReal})`);
   console.log(`  TP/FN/TN/FP        ${summary.tp} / ${summary.fn} / ${summary.tn} / ${summary.fp}`);
+  if (scalar) {
+    console.log("");
+    console.log(`bal_acc_065: ${summary.balancedAccuracy.toFixed(6)}`);
+    console.log(`tpr_065:     ${summary.tpr.toFixed(6)}`);
+    console.log(`tnr_065:     ${summary.tnr.toFixed(6)}`);
+  }
+}
+
+function printReport({ broader, official, payload }) {
+  printBackend(payload);
+  const byName = new Map(payload.rows.map((r) => [r.name, r]));
+  const broaderRows = broader.map((r) => byName.get(r.name)).filter(Boolean);
+  const officialRows = official.map((r) => byName.get(r.name)).filter(Boolean);
+  const broaderSummary = summarizeNamed(broaderRows, EVAL_THRESHOLD);
+  const officialSummary = summarizeNamed(officialRows, EVAL_THRESHOLD);
+  printSlice("SCALAR broader proxy (keep/revert)", broaderSummary, { scalar: true });
+  printSlice("SECONDARY official OpenFake core/test 360 (not the ratchet)", officialSummary);
   console.log("");
-  console.log(`NODE reference (KEEP ${NODE_REF.commit}, onnxruntime-node + sharp):`);
-  console.log(`  bal_acc_065: ${NODE_REF.bal_acc_065.toFixed(6)}`);
-  console.log(`  tpr_065:     ${NODE_REF.tpr_065.toFixed(6)}`);
-  console.log(`  tnr_065:     ${NODE_REF.tnr_065.toFixed(6)}`);
-  console.log(`  delta_ba:    ${delta >= 0 ? "+" : ""}${delta.toFixed(6)}`);
-  console.log("");
-  console.log(`bal_acc_065: ${summary.balancedAccuracy.toFixed(6)}`);
-  console.log(`tpr_065:     ${summary.tpr.toFixed(6)}`);
-  console.log(`tnr_065:     ${summary.tnr.toFixed(6)}`);
-  console.log(`backend:     ${backend}`);
-  console.log(`webgpu:      ${webgpu}`);
-  return summary;
+  console.log(`backend:     ${payload.provider}`);
+  console.log(`webgpu:      ${payload.webgpu}`);
+  if (officialSummary.balancedAccuracy < 0.85 && broaderSummary.balancedAccuracy > officialSummary.balancedAccuracy) {
+    console.log(
+      "NOTE: this KEEP-candidate lifts the broader proxy relative to a cratered 360. Call that out; do not hide it.",
+    );
+  }
+  return { broaderSummary, officialSummary };
 }
 
 async function main() {
   const roots = await resolveRoots();
   const all = await listProxyImages(roots.data);
   let official = officialOnly(all);
+  let broader = broaderOnly(all);
   const limit = Number(process.env.GRAIN_CHROME_EVAL_LIMIT || 0);
   if (limit > 0) {
-    const ai = official.filter((r) => r.label === 1).slice(0, Math.ceil(limit / 2));
-    const real = official.filter((r) => r.label === 0).slice(0, Math.floor(limit / 2));
-    official = [...ai, ...real];
-    console.error(`GRAIN_CHROME_EVAL_LIMIT=${limit} — scoring ${official.length} (not the official 360)`);
+    const take = (rows) => {
+      const ai = rows.filter((r) => r.label === 1).slice(0, Math.ceil(limit / 4));
+      const real = rows.filter((r) => r.label === 0).slice(0, Math.floor(limit / 4));
+      return [...ai, ...real];
+    };
+    official = take(official);
+    broader = take(broader);
+    console.error(
+      `GRAIN_CHROME_EVAL_LIMIT=${limit} — scoring official=${official.length} broader=${broader.length} (not a claim run)`,
+    );
   } else {
     assertOfficialSet(official);
+    assertBroaderSet(broader);
   }
+  const scored = [...official, ...broader];
 
   let chrome = null;
   for (const bin of chromeCandidates()) {
@@ -328,7 +359,7 @@ async function main() {
     throw new Error("Chrome not found. Set CHROME_PATH to a Chrome/Chromium binary.");
   }
 
-  const server = await startServer({ ...roots, official });
+  const server = await startServer({ ...roots, scored });
   console.error(`serving ${server.url}`);
   const child = await launchChrome(chrome, server.url);
   const timeoutMs = Number(process.env.GRAIN_CHROME_EVAL_TIMEOUT_MS || 3 * 60 * 60 * 1000);
@@ -353,10 +384,10 @@ async function main() {
     if (!payload?.ok || !Array.isArray(payload.rows)) {
       throw new Error("Chrome eval returned no rows");
     }
-    if (payload.rows.length !== official.length) {
-      throw new Error(`scored ${payload.rows.length}, expected ${official.length}`);
+    if (payload.rows.length !== scored.length) {
+      throw new Error(`scored ${payload.rows.length}, expected ${scored.length}`);
     }
-    const summary = printReport(official, payload);
+    const { broaderSummary, officialSummary } = printReport({ broader, official, payload });
     const report = {
       path: "chrome-ort-web",
       backend: payload.provider,
@@ -366,14 +397,19 @@ async function main() {
       threshold: EVAL_THRESHOLD,
       fuse: FUSE_DEFAULTS,
       nOfficial: official.length,
-      officialOpenFake: summary,
+      nBroader: broader.length,
+      officialOpenFake: officialSummary,
+      broaderProxy: broaderSummary,
+      scalar: "broaderProxy",
       nodeReference: NODE_REF,
       rows: payload.rows,
       note:
-        "OFFICIAL Chrome number uses the same OpenFake core/test 180/class prefix as npm run eval. " +
+        "SCALAR is broaderProxy (OpenFake reddit/test + core/test holdout past the 360 prefix + web recompress). " +
+        "officialOpenFake is the same 180/class prefix as before, printed as a secondary report only. " +
         "Decode is createImageBitmap + OffscreenCanvas (extension path). " +
         "Inference is onnxruntime-web, WebGPU session first, WASM if that throws. " +
-        "Picsum and CF extras are not scored. Fuse bias stays 0.",
+        "Picsum easy-real padding and CF extras are not scored. Fuse bias stays 0. " +
+        "This is not Kenny's private maintainer bench.",
     };
     await mkdir(join(root, "eval/results"), { recursive: true });
     await writeFile(

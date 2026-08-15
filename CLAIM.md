@@ -181,6 +181,33 @@ webgpu:      UNVERIFIED
 
 Versus nearest KEEP `404faa6` (0.877778, 161/19/155/25): TPR held, TNR +1. Mac Metal has not re-run this commit; VM WASM remains the chrome-path proxy.
 
+## Broader public proxy (new keep/revert scalar)
+
+The number that pays is ≥75% BA @ 0.65 on Kenny's **private** maintainer bench. Those images are not here. This section is **not** a private-bench score.
+
+Jason redirected the loop off the OpenFake 360 prefix (canvas nips can overfit it). The chrome-path keep/revert scalar is now this broader legal stand-in. The 360 is still scored every `npm run eval:chrome` as a secondary report.
+
+Composition (public, held-out, no probe-training images):
+
+| slice | source | n target | role vs the 360 |
+| --- | --- | --- | --- |
+| `ofreddit_*` | OpenFake `reddit/test` | 90 AI + 90 real | In-the-wild Reddit JPEGs with platform compression. Not `core/test`. |
+| `ofhold_*` | OpenFake `core/test` after skipping the first 180/class | 60 AI + 60 real | Same generator-holdout protocol as the 360, **disjoint files**, JPEG q=72 (harder than the 360's q=88). |
+| `webai_*` | later `reddit/test` fakes | 30 AI | Extra social-style recompress (q=65, max side 720). |
+| `webreal_*` | Lorem Picsum IDs **not** in the easy-real padding set | 30 real | Extra web recompress (q=65, max side 720). |
+
+Target n = 180 AI + 180 real (balanced). Exact landed counts are whatever `npm run eval:download:broader` writes to `eval/data/manifest-broader.json` — do not invent them here before that download finishes.
+
+How this differs from the official 360:
+
+- The 360 is a streaming **prefix** of OpenFake `core/test` saved at JPEG q=88.
+- This mix adds the dataset's own **web-realistic** `reddit/test` split and a **later** `core/test` holdout the canvas nips never saw.
+- Extra slices add a second JPEG generation at lower quality / typical web width.
+- Picsum easy-real padding (`picsum_*`) and Community Forensics metadata extras (`cf_*`) stay out of both scores.
+- SigLIP probe training still uses OpenFake **validation** only. The downloader does not read that split.
+
+Baseline chrome-path `bal_acc_065` on this mix has **not** been printed yet. It will be copied here from `npm run eval:chrome` — not invented.
+
 ## Rules checklist
 
 - [x] No cloud inference

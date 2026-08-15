@@ -2,7 +2,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { FUSE_DEFAULTS } from "../src/fuse.js";
 import { applyCalibration } from "../src/calibrate.js";
-import { isOfficialProxy, proxyKind } from "../src/eval-set.js";
+import { isBroaderProxy, isOfficialProxy, proxyKind } from "../src/eval-set.js";
 
 describe("shipped operating point", () => {
   it("keeps fuse bias at 0", () => {
@@ -24,5 +24,17 @@ describe("eval-set", () => {
   it("labels Picsum photographs as easy-real padding, not the official set", () => {
     assert.equal(proxyKind("real/picsum_237.jpg"), "easy-real");
     assert.equal(isOfficialProxy("real/picsum_237.jpg"), false);
+  });
+
+  it("keeps the broader scalar disjoint from the official 360 prefix", () => {
+    assert.equal(isOfficialProxy("ai/ofreddit_ai_0001.jpg"), false);
+    assert.equal(isOfficialProxy("ai/ofhold_ai_0001.jpg"), false);
+    assert.equal(isOfficialProxy("ai/webai_ai_0001.jpg"), false);
+    assert.equal(isBroaderProxy("ai/openfake_ai_0001.jpg"), false);
+    assert.equal(isBroaderProxy("ai/ofreddit_ai_0001.jpg"), true);
+    assert.equal(isBroaderProxy("real/ofhold_real_0001.jpg"), true);
+    assert.equal(isBroaderProxy("ai/webai_ai_0001.jpg"), true);
+    assert.equal(isBroaderProxy("real/webreal_0010.jpg"), true);
+    assert.equal(isBroaderProxy("real/picsum_237.jpg"), false);
   });
 });
