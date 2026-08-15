@@ -53,7 +53,7 @@ Official proxy: a 180/class streaming prefix of OpenFake `core/test` (generator 
 Command: `npm run eval`  
 Date: 2026-08-15  
 Machine: this Cloud Agent (CPU ONNX Runtime).  
-Commit scored: `dc82b01` (SigLIP probe logit ×0.95 on flat-tone + double-SigLIP). Fuse bias stays 0.
+Commit scored: `1e19a9f` (SigLIP probe logit ×0.97; equal BA to ×0.95, milder). Fuse bias stays 0.
 
 ```
 Grain eval — same ONNX + shipped fusion as the extension
@@ -81,7 +81,7 @@ tpr_065:     0.900000
 tnr_065:     0.844444
 ```
 
-Harness print: **87.22%** balanced accuracy, TPR 90.00%, TNR 84.44%, n=360 (TP 162 / FN 18 / TN 152 / FP 28). Probe logit ×0.95 keeps the 0.92 KEEP's TPR and recovers the TN that ×0.92 lost. A raw 0.33 still displays well below 0.65.
+Harness print: **87.22%** balanced accuracy, TPR 90.00%, TNR 84.44%, n=360 (TP 162 / FN 18 / TN 152 / FP 28). Probe logit ×0.97 matches ×0.95 and is closer to identity. A raw 0.33 still displays well below 0.65.
 
 Baseline `8b20ad4` was 81.67% BA @ 0.65. Withdrawn earlier figures: 84.96% (raw 0.33 remapped onto a displayed 0.65) and 68.85% Community-Forensics-only.
 
