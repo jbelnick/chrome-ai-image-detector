@@ -10,6 +10,9 @@ export const FUSE_DEFAULTS = {
   provenanceAiScore: 0.93,
   cameraRealScale: 1,
   graphicScaleWhenFlagged: 1,
+  textureSmoothLift: 0.08,
+  textureBandMin: 0.5,
+  textureBandMax: 0.68,
   bias: 0,
   temperature: 0.9,
 };
@@ -34,6 +37,19 @@ export function fuseScores({
   if (graphic?.isGraphic) {
     score *= config.graphicScaleWhenFlagged ?? graphicScale(graphic);
     reasons.push("graphic-gate");
+  }
+
+  // Weak AI cue: oversmoothed mid-range visuals. Does not invent a
+  // verdict from texture alone — only lifts an already-suspicious band.
+  const lift = config.textureSmoothLift ?? 0;
+  if (
+    lift > 0 &&
+    graphic?.oversmooth &&
+    score >= (config.textureBandMin ?? 0.5) &&
+    score < (config.textureBandMax ?? 0.68)
+  ) {
+    score = Math.min(0.92, score + lift);
+    reasons.push("texture-smooth");
   }
 
   const calibrated = applyCalibration(score, {

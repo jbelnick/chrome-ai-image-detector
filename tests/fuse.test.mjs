@@ -41,4 +41,22 @@ describe("fuse", () => {
     assert.ok(result.fusedBeforeCalibration < 0.8 * FUSE_DEFAULTS.graphicScaleWhenFlagged + 1e-6);
     assert.ok(result.reasons.includes("graphic-gate"));
   });
+
+  it("lifts an oversmoothed mid-range visual without inventing a verdict from texture alone", () => {
+    const lifted = fuseScores({
+      visual: 0.58,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, oversmooth: true },
+    });
+    assert.ok(lifted.fusedBeforeCalibration > 0.58);
+    assert.ok(lifted.reasons.includes("texture-smooth"));
+
+    const textureOnly = fuseScores({
+      visual: 0.2,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, oversmooth: true },
+    });
+    assert.ok(Math.abs(textureOnly.fusedBeforeCalibration - 0.2) < 1e-9);
+    assert.ok(!textureOnly.reasons.includes("texture-smooth"));
+  });
 });
