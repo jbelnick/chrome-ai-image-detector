@@ -1,8 +1,8 @@
 /**
  * Community Forensics test-time preprocessing:
  * resize shorter edge to 440, center-crop 384, mean-center, NCHW.
- * Experiment: ImageNet mean only — std is identity so channel gain
- * is not forced to the ImageNet training recipe.
+ * Experiment: feed BT.601 YCbCr (mean-centered) instead of RGB so
+ * chroma forensics are a first-class plane for the ViT.
  */
 
 export const PREPROCESS = {
@@ -13,6 +13,7 @@ export const PREPROCESS = {
   // centering, drops the per-channel gain that can hide generator
   // color-grade differences.
   std: [1, 1, 1],
+  ycbcr: true,
 };
 
 export function scaledSize(width, height, shortEdge = PREPROCESS.resizeShortEdge) {
@@ -48,7 +49,7 @@ export function imageDataToTensor(
   data,
   width,
   height,
-  { mean = PREPROCESS.mean, std = PREPROCESS.std } = {},
+  { mean = PREPROCESS.mean, std = PREPROCESS.std, ycbcr = PREPROCESS.ycbcr } = {},
 ) {
   if (width !== PREPROCESS.crop || height !== PREPROCESS.crop) {
     throw new Error(`expected ${PREPROCESS.crop}x${PREPROCESS.crop} crop, got ${width}x${height}`);
@@ -59,9 +60,18 @@ export function imageDataToTensor(
     const r = data[i * 4] / 255;
     const g = data[i * 4 + 1] / 255;
     const b = data[i * 4 + 2] / 255;
-    tensor[i] = (r - mean[0]) / std[0];
-    tensor[plane + i] = (g - mean[1]) / std[1];
-    tensor[2 * plane + i] = (b - mean[2]) / std[2];
+    if (ycbcr) {
+      const y = 0.299 * r + 0.587 * g + 0.114 * b;
+      const cb = 0.5 + 0.564 * (b - y);
+      const cr = 0.5 + 0.713 * (r - y);
+      tensor[i] = y - 0.45;
+      tensor[plane + i] = cb - 0.5;
+      tensor[2 * plane + i] = cr - 0.5;
+    } else {
+      tensor[i] = (r - mean[0]) / std[0];
+      tensor[plane + i] = (g - mean[1]) / std[1];
+      tensor[2 * plane + i] = (b - mean[2]) / std[2];
+    }
   }
   return tensor;
 }
