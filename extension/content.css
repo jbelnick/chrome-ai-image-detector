@@ -1,0 +1,26 @@
+.grain-badge {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  z-index: 2147483646;
+  padding: 3px 7px;
+  border-radius: 999px;
+  font: 600 11px/1.2 ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: 0.02em;
+  color: #f4efe6;
+  background: rgba(27, 24, 20, 0.88);
+  border: 1px solid rgba(244, 239, 230, 0.18);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+  pointer-events: none;
+  user-select: none;
+}
+
+.grain-badge-ai {
+  background: rgba(120, 53, 15, 0.92);
+  border-color: #f59e0b;
+}
+
+.grain-badge-real {
+  background: rgba(27, 24, 20, 0.88);
+  border-color: rgba(244, 239, 230, 0.28);
+}

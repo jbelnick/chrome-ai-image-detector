@@ -1,0 +1,16 @@
+node_modules/
+models/*.bin
+eval/data/
+eval/results/
+eval/.cache/
+extension/vendor/
+extension/lib/
+extension/models/
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+*.log
+extension/vendor/
+extension/models/*.onnx
+.cache/
