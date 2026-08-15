@@ -19,9 +19,6 @@ export const FUSE_DEFAULTS = {
   flatToneLift: 0.05,
   flatToneBandMin: 0.5,
   flatToneBandMax: 0.68,
-  specularDrop: 0.05,
-  specularBandMin: 0.58,
-  specularBandMax: 0.8,
   bias: 0,
   temperature: 0.9,
   scorePower: 0.85,
@@ -80,17 +77,6 @@ export function fuseScores({
   ) {
     score = Math.min(0.92, score + flatToneLift);
     reasons.push("flat-tone");
-  }
-
-  const specularDrop = config.specularDrop ?? 0;
-  if (
-    specularDrop > 0 &&
-    graphic?.specular &&
-    score >= (config.specularBandMin ?? 0.58) &&
-    score < (config.specularBandMax ?? 0.8)
-  ) {
-    score = Math.max(0.08, score - specularDrop);
-    reasons.push("specular");
   }
 
   const calibrated = applyPower(

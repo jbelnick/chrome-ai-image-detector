@@ -76,23 +76,6 @@ describe("fuse", () => {
     assert.ok(Math.abs(toneOnly.fusedBeforeCalibration - 0.2) < 1e-9);
   });
 
-  it("drops a specular mid-high visual without inventing a real verdict from clips alone", () => {
-    const dropped = fuseScores({
-      visual: 0.7,
-      provenance: { ai: false, camera: false },
-      graphic: { isGraphic: false, specular: true },
-    });
-    assert.ok(dropped.fusedBeforeCalibration < 0.7);
-    assert.ok(dropped.reasons.includes("specular"));
-
-    const clipOnly = fuseScores({
-      visual: 0.2,
-      provenance: { ai: false, camera: false },
-      graphic: { isGraphic: false, specular: true },
-    });
-    assert.ok(Math.abs(clipOnly.fusedBeforeCalibration - 0.2) < 1e-9);
-  });
-
   it("lifts a muted mid-range visual without inventing a verdict from low colorfulness alone", () => {
     const lifted = fuseScores({
       visual: 0.56,
