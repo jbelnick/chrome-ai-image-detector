@@ -14,7 +14,6 @@ export const TEXTURE = {
   mutedColorfulness: 28,
   flatToneLo: 0.92,
   flatToneHi: 1.08,
-  weakChromaR: 0.18,
 };
 
 export function analyzePixels(data, width, height) {
@@ -30,11 +29,6 @@ export function analyzePixels(data, width, height) {
   let centerN = 0;
   let borderLum = 0;
   let borderN = 0;
-  let ySum = 0;
-  let cSum = 0;
-  let ycSum = 0;
-  let ySq = 0;
-  let cSq = 0;
   const stride = Math.max(1, Math.floor(Math.min(width, height) / 96));
   const x0 = width * 0.25;
   const x1 = width * 0.75;
@@ -71,12 +65,6 @@ export function analyzePixels(data, width, height) {
         borderLum += lum;
         borderN += 1;
       }
-      const chroma = Math.hypot(r - lum, b - lum);
-      ySum += lum;
-      cSum += chroma;
-      ycSum += lum * chroma;
-      ySq += lum * lum;
-      cSq += chroma * chroma;
       samples += 1;
     }
   }
@@ -101,13 +89,6 @@ export function analyzePixels(data, width, height) {
   const centerBorder = centerMean / (borderMean + 1e-3);
   const flatTone =
     centerBorder >= TEXTURE.flatToneLo && centerBorder <= TEXTURE.flatToneHi;
-  const yMean = ySum / n;
-  const cMean = cSum / n;
-  const cov = ycSum / n - yMean * cMean;
-  const yVar = Math.max(0, ySq / n - yMean * yMean);
-  const cVar = Math.max(0, cSq / n - cMean * cMean);
-  const chromaLumaR = cov / (Math.sqrt(yVar) * Math.sqrt(cVar) + 1e-6);
-  const weakChroma = Math.abs(chromaLumaR) < TEXTURE.weakChromaR;
   return {
     uniqueRatio,
     edgeRatio,
@@ -119,8 +100,6 @@ export function analyzePixels(data, width, height) {
     muted,
     centerBorder,
     flatTone,
-    chromaLumaR,
-    weakChroma,
   };
 }
 
