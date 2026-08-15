@@ -13,13 +13,13 @@ describe("fuse", () => {
     assert.ok(result.reasons.includes("provenance-ai"));
   });
 
-  it("down-weights camera-native photos that the visual model is unsure about", () => {
+  it("records camera EXIF without changing the visual score when scale is 1", () => {
     const result = fuseScores({
       visual: 0.4,
       provenance: { ai: false, camera: true },
       graphic: { isGraphic: false },
     });
-    assert.ok(result.fusedBeforeCalibration < 0.4);
+    assert.ok(Math.abs(result.fusedBeforeCalibration - 0.4) < 1e-9);
     assert.ok(result.reasons.includes("camera-exif"));
   });
 
