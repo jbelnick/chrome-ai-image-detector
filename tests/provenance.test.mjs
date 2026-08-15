@@ -63,6 +63,12 @@ describe("provenance", () => {
     assert.equal(result.ai, true);
   });
 
+  it("flags a longer modern generator token such as stabilityai", () => {
+    const buf = asciiBuffer("Software: StabilityAI SD3.5");
+    const result = scanProvenance(buf);
+    assert.equal(result.ai, true);
+  });
+
   it("requires EXIF-like context before treating a phone make as camera-native", () => {
     const without = scanProvenance(asciiBuffer("apple storefront photo"));
     assert.equal(without.camera, false);
