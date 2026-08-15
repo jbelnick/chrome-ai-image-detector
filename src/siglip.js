@@ -49,14 +49,9 @@ export function siglipProbability(pooler) {
   return visualProbabilityFromLogit(probeLogit(pooler));
 }
 
-/**
- * Soft-OR with Community Forensics counted twice: 1-(1-s)(1-c)^2.
- * Mean-only CF is the stronger forensic head; this lets a high CF
- * vote drown a miss more than a single soft-OR.
- */
+/** Soft-OR: independent heads both vote AI. */
 export function blendVisual(siglip, commfor) {
   const a = Number.isFinite(siglip) ? siglip : 0;
   const b = Number.isFinite(commfor) ? commfor : 0;
-  const missC = 1 - b;
-  return 1 - (1 - a) * missC * missC;
+  return a + b - a * b;
 }
