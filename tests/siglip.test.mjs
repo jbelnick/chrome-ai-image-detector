@@ -14,14 +14,9 @@ describe("siglip probe", () => {
     assert.equal(Number.isFinite(z), true);
   });
 
-  it("soft-ORs with SigLIP counted twice when heads agree", () => {
-    assert.ok(Math.abs(blendVisual(0.8, 0.55) - (1 - 0.2 * 0.2 * 0.45)) < 1e-9);
-    assert.ok(blendVisual(0.8, 0.55) > 0.8 + 0.55 - 0.8 * 0.55);
-  });
-
-  it("counts SigLIP once when heads disagree by 0.35+", () => {
-    assert.ok(Math.abs(blendVisual(0.8, 0.1) - (1 - 0.2 * 0.9)) < 1e-9);
-    assert.ok(blendVisual(0.8, 0.1) < 1 - 0.2 * 0.2 * 0.9);
+  it("soft-ORs with SigLIP counted twice", () => {
+    assert.ok(Math.abs(blendVisual(0.8, 0.1) - (1 - 0.2 * 0.2 * 0.9)) < 1e-9);
+    assert.ok(blendVisual(0.8, 0.4) > 0.8 + 0.4 - 0.8 * 0.4);
   });
 
   it("builds a 1x3x224x224 SigLIP tensor", () => {

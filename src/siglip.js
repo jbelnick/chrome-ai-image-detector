@@ -51,18 +51,11 @@ export function siglipProbability(pooler) {
 
 /**
  * Soft-OR with SigLIP counted twice: 1-(1-s)^2*(1-c).
- * When the heads disagree by >= 0.35, count SigLIP once (single-OR).
- * Hypothesis: remaining FPs are high-SigLIP / low-CommFor conflicts;
- * high-agreement AI stays on the double-OR path (log-odds mean
- * collapsed TPR by averaging every pair).
+ * Opposite of the discarded double-CF rule.
  */
 export function blendVisual(siglip, commfor) {
   const a = Number.isFinite(siglip) ? siglip : 0;
   const b = Number.isFinite(commfor) ? commfor : 0;
   const missS = 1 - a;
-  const missC = 1 - b;
-  if (Math.abs(a - b) >= 0.35) {
-    return 1 - missS * missC;
-  }
-  return 1 - missS * missS * missC;
+  return 1 - missS * missS * (1 - b);
 }
