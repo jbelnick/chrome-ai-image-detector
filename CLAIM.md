@@ -155,29 +155,30 @@ Compare:
 | Cloud Chrome WASM | ort-web wasm (SwiftShader only) | 0.872222 | 0.872222 | 0.872222 | 157/23/157/23 |
 | Mac Chrome WebGPU | ort-web webgpu (Apple Metal-3) | 0.872222 | 0.872222 | 0.872222 | 157/23/157/23 |
 | Cloud chrome-path KEEP `d8976dc` | ort-web wasm, canvas quality medium | 0.875000 | 0.872222 | 0.877778 | 157/23/158/22 |
+| Cloud chrome-path KEEP `404faa6` | ort-web wasm, canvas smoothing off | 0.877778 | 0.894444 | 0.861111 | 161/19/155/25 |
 
-## Current chrome-path best (`d8976dc`)
+## Current chrome-path best (`404faa6`)
 
 Command: `npm run eval:chrome`  
 Date: 2026-08-15  
-Commit: `d8976dc` — OffscreenCanvas `imageSmoothingQuality: "medium"` (was `high`). Fuse bias stays 0.
+Commit: `404faa6` — OffscreenCanvas `imageSmoothingEnabled: false` (nearest-neighbor). Fuse bias stays 0.
 
 ```
 OFFICIAL OpenFake core/test @ 0.65 (Chrome path):
-  balanced accuracy  87.50%
-  TPR                87.22%
-  TNR                87.78%
+  balanced accuracy  87.78%
+  TPR                89.44%
+  TNR                86.11%
   n                  360 (AI 180 / real 180)
-  TP/FN/TN/FP        157 / 23 / 158 / 22
+  TP/FN/TN/FP        161 / 19 / 155 / 25
 
-bal_acc_065: 0.875000
-tpr_065:     0.872222
-tnr_065:     0.877778
+bal_acc_065: 0.877778
+tpr_065:     0.894444
+tnr_065:     0.861111
 backend:     wasm
 webgpu:      UNVERIFIED
 ```
 
-TPR held vs the high-quality canvas baseline; one extra true negative. This is the chrome-path ratchet best. Mac Metal has not re-run this commit yet; VM WASM remains the proxy.
+Versus medium KEEP `d8976dc` (0.875000, 157/23/158/22): TPR +4, TNR −3, net +1. Mac Metal has not re-run this commit; VM WASM remains the chrome-path proxy.
 
 ## Rules checklist
 
