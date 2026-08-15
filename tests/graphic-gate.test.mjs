@@ -53,6 +53,42 @@ describe("graphic-gate", () => {
     assert.ok(analysis.colorfulness >= 72);
   });
 
+  it("flags luma structure with flat opponent color as dead-chroma", () => {
+    const w = 64;
+    const h = 64;
+    const data = new Uint8Array(w * h * 4);
+    for (let y = 0; y < h; y += 1) {
+      const v = y % 8 < 4 ? 20 : 240;
+      for (let x = 0; x < w; x += 1) {
+        const i = (y * w + x) * 4;
+        data[i] = v;
+        data[i + 1] = v;
+        data[i + 2] = v;
+        data[i + 3] = 255;
+      }
+    }
+    const analysis = analyzePixels(data, w, h);
+    assert.equal(analysis.deadChroma, true);
+    assert.ok(analysis.edgeRatio >= 0.16);
+    assert.ok(analysis.chromaEdgeRatio <= 0.5 * analysis.edgeRatio);
+  });
+
+  it("does not flag colorful photographic noise as dead-chroma", () => {
+    const w = 128;
+    const h = 128;
+    const data = new Uint8Array(w * h * 4);
+    let seed = 1;
+    for (let i = 0; i < w * h; i += 1) {
+      seed = (seed * 1664525 + 1013904223) >>> 0;
+      data[i * 4] = seed & 255;
+      data[i * 4 + 1] = (seed >>> 8) & 255;
+      data[i * 4 + 2] = (seed >>> 16) & 255;
+      data[i * 4 + 3] = 255;
+    }
+    const analysis = analyzePixels(data, w, h);
+    assert.equal(analysis.deadChroma, false);
+  });
+
   it("flags a uniform field as flat-tone", () => {
     const w = 64;
     const h = 64;
