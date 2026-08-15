@@ -1,12 +1,12 @@
 /**
  * Community Forensics test-time preprocessing:
- * resize shorter edge to 460, center-crop 384, mean-center, NCHW.
+ * resize shorter edge to 440, center-crop 384, mean-center, NCHW.
  * Experiment: ImageNet mean only — std is identity so channel gain
  * is not forced to the ImageNet training recipe.
  */
 
 export const PREPROCESS = {
-  resizeShortEdge: 460,
+  resizeShortEdge: 440,
   crop: 384,
   mean: [0.485, 0.456, 0.406],
   // Experiment: mean-only (skip ImageNet std). Keeps the trained
