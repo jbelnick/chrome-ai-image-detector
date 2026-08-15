@@ -10,7 +10,8 @@
     "fetch-models": "node scripts/fetch-models.mjs",
     "test": "node --test tests/*.test.mjs",
     "eval": "node eval/run.mjs",
-    "eval:download": "node eval/download-proxy.mjs"
+    "eval:download": "node eval/download-proxy.mjs",
+    "eval:chrome": "node eval/chrome/run.mjs"
   },
   "engines": {
     "node": ">=20"

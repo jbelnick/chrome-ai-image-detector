@@ -59,8 +59,11 @@ The eval script uses the **same** preprocess, provenance scan, graphic gate, fus
 ```bash
 # Python deps for the downloader only: pip install datasets pillow
 npm run eval:download   # OpenFake core/test (official) + optional Picsum easy-reals
-npm run eval            # prints official BA / TPR / TNR at threshold 0.65
+npm run eval            # Node + onnxruntime-node + sharp (same 360)
+npm run eval:chrome     # Chrome ORT-web + createImageBitmap / OffscreenCanvas (same 360)
 ```
+
+`npm run eval:chrome` launches headless Chrome against a local page that copies the extension offscreen path: SHA-check the packaged ONNX, try a WebGPU session, fall back to WASM, decode with `createImageBitmap` + `OffscreenCanvas`. It scores only the official OpenFake 180/class prefix (not Picsum). If this machine has no GPU adapter, the printed backend is `wasm` and WebGPU is labeled `UNVERIFIED`. Requires `npm run build` (vendored ORT) and a Chrome binary (`CHROME_PATH` overrides).
 
 Balanced accuracy = (TPR + TNR) / 2. An image is predicted AI when the **shipped** fused score `>= 0.65`. Fuse bias is `0` — the harness does not remap a lower raw cut onto 0.65.
 
