@@ -11,7 +11,7 @@ export const FUSE_DEFAULTS = {
   cameraRealScale: 1,
   graphicScaleWhenFlagged: 1,
   bias: 0,
-  temperature: 0.8,
+  temperature: 0.9,
 };
 
 export function fuseScores({
