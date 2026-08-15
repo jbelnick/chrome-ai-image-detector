@@ -19,6 +19,14 @@ describe("siglip probe", () => {
     assert.ok(blendVisual(0.8, 0.4) > 0.8 + 0.4 - 0.8 * 0.4);
   });
 
+  it("ignores Community Forensics when SigLIP is sure-real", () => {
+    const sureReal = blendVisual(0.10, 0.90);
+    assert.ok(Math.abs(sureReal - (1 - 0.9 * 0.9)) < 1e-9);
+    assert.ok(sureReal < 0.25);
+    const mid = blendVisual(0.40, 0.90);
+    assert.ok(mid > 0.40);
+  });
+
   it("builds a 1x3x224x224 SigLIP tensor", () => {
     const n = 224 * 224;
     const rgba = new Uint8Array(n * 4);

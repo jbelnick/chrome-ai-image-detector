@@ -52,10 +52,17 @@ export function siglipProbability(pooler) {
 /**
  * Soft-OR with SigLIP counted twice: 1-(1-s)^2*(1-c).
  * Opposite of the discarded double-CF rule.
+ *
+ * Broader-proxy family 1: when SigLIP is sure-real, ignore CF.
+ * Web-JPEG reals often get a high CF score and a low SigLIP score;
+ * letting CF dominate those disagreements is the 49-FP pattern.
  */
 export function blendVisual(siglip, commfor) {
   const a = Number.isFinite(siglip) ? siglip : 0;
   const b = Number.isFinite(commfor) ? commfor : 0;
   const missS = 1 - a;
+  if (a < 0.25) {
+    return 1 - missS * missS;
+  }
   return 1 - missS * missS * (1 - b);
 }
