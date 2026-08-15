@@ -1,11 +1,11 @@
 /**
- * Community Forensics test-time preprocessing:
- * resize shorter edge to 384, center-crop 384, ImageNet normalize, NCHW.
- * Experiment: skip the 440 short-edge zoom so the crop sees a wider FOV.
+ * Official Community Forensics test-time preprocessing:
+ * resize shorter edge to 440, center-crop 384, ImageNet normalize, NCHW.
+ * Mirrors torchvision Resize(440) + CenterCrop(384) + Normalize.
  */
 
 export const PREPROCESS = {
-  resizeShortEdge: 384,
+  resizeShortEdge: 440,
   crop: 384,
   mean: [0.485, 0.456, 0.406],
   std: [0.229, 0.224, 0.225],
