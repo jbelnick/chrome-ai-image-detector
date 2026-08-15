@@ -23,6 +23,22 @@ describe("fuse", () => {
     assert.ok(result.reasons.includes("camera-exif"));
   });
 
+  it("softens high-side temperature without remapping a raw 0.33 onto 0.65", () => {
+    const high = fuseScores({
+      visual: 0.7,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false },
+      config: { ...FUSE_DEFAULTS, highTemperature: 1.2, highTemperatureFrom: 0.62 },
+    });
+    const sharp = fuseScores({
+      visual: 0.7,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false },
+      config: { ...FUSE_DEFAULTS, highTemperature: 0.9, highTemperatureFrom: 0.62 },
+    });
+    assert.ok(high.score < sharp.score);
+  });
+
   it("does not remap a raw 0.33 onto the 0.65 badge cut", () => {
     const result = fuseScores({
       visual: 0.33,
