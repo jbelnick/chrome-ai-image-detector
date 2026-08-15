@@ -50,9 +50,11 @@ describe("preprocess", () => {
 
   it("applies the shared canvas resample settings", () => {
     const ctx = { imageSmoothingEnabled: false, imageSmoothingQuality: "low" };
-    applyCanvasResample(ctx);
-    assert.equal(ctx.imageSmoothingEnabled, CANVAS_RESAMPLE.imageSmoothingEnabled);
-    assert.equal(ctx.imageSmoothingQuality, CANVAS_RESAMPLE.imageSmoothingQuality);
+    applyCanvasResample(ctx, "commfor");
+    assert.equal(ctx.imageSmoothingEnabled, CANVAS_RESAMPLE.commfor.imageSmoothingEnabled);
+    assert.equal(ctx.imageSmoothingQuality, CANVAS_RESAMPLE.commfor.imageSmoothingQuality);
+    applyCanvasResample(ctx, "siglip");
+    assert.equal(ctx.imageSmoothingEnabled, CANVAS_RESAMPLE.siglip.imageSmoothingEnabled);
   });
 
   it("converts a logit to a probability with sigmoid", () => {

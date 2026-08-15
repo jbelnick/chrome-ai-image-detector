@@ -17,18 +17,18 @@ export const PREPROCESS = {
 
 /**
  * OffscreenCanvas resample used by the extension and chrome-path eval.
- * Chrome-path family 1 run 2: nearest-neighbor (smoothing off).
- * KEEP d8976dc used quality medium; this tests whether a harder
- * kernel recovers more of the 22 remaining FPs.
+ * Family 1 run 3: keep nearest on Community Forensics (KEEP 404faa6
+ * TPR gain) and medium-smooth SigLIP (try to recover TNR).
  */
 export const CANVAS_RESAMPLE = {
-  imageSmoothingEnabled: false,
-  imageSmoothingQuality: "medium",
+  commfor: { imageSmoothingEnabled: false, imageSmoothingQuality: "medium" },
+  siglip: { imageSmoothingEnabled: true, imageSmoothingQuality: "medium" },
 };
 
-export function applyCanvasResample(ctx) {
-  ctx.imageSmoothingEnabled = CANVAS_RESAMPLE.imageSmoothingEnabled;
-  ctx.imageSmoothingQuality = CANVAS_RESAMPLE.imageSmoothingQuality;
+export function applyCanvasResample(ctx, which = "commfor") {
+  const spec = CANVAS_RESAMPLE[which] || CANVAS_RESAMPLE.commfor;
+  ctx.imageSmoothingEnabled = spec.imageSmoothingEnabled;
+  ctx.imageSmoothingQuality = spec.imageSmoothingQuality;
 }
 
 export function scaledSize(width, height, shortEdge = PREPROCESS.resizeShortEdge) {
