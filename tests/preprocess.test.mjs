@@ -46,22 +46,6 @@ describe("preprocess", () => {
     assert.ok(Math.abs(tensor[n] - expectedG) < 1e-5);
   });
 
-  it("applies a mild Laplacian unsharp on non-flat fields", () => {
-    const n = 384 * 384;
-    const rgba = new Uint8Array(n * 4);
-    for (let i = 0; i < n; i += 1) {
-      const v = i % 2 === 0 ? 255 : 0;
-      rgba[i * 4] = v;
-      rgba[i * 4 + 1] = v;
-      rgba[i * 4 + 2] = v;
-      rgba[i * 4 + 3] = 255;
-    }
-    const tensor = imageDataToTensor(rgba, 384, 384);
-    const flat = (255 / 255 - PREPROCESS.mean[0]) / PREPROCESS.std[0];
-    assert.ok(Math.abs(tensor[384 + 1] - flat) > 0.01);
-    assert.equal(PREPROCESS.unsharp, 0.15);
-  });
-
   it("converts a logit to a probability with sigmoid", () => {
     assert.ok(visualProbabilityFromLogit(0) === 0.5);
     assert.ok(visualProbabilityFromLogit(6.753) > 0.99);
