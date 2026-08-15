@@ -37,17 +37,6 @@ const AI_ASCII = [
   "ai-generated",
   "synthetic media",
   "digital source type",
-  "stabilityai",
-  "blackforestlabs",
-  "imagen 3",
-  "imagen3",
-  "gpt-image",
-  "chatgpt image",
-  "stable cascade",
-  "sd3.5",
-  "playground v2",
-  "recraft v3",
-  "hidream-i1",
 ];
 
 const CAMERA_MAKES = [
