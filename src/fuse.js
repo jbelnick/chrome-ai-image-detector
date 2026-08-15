@@ -19,9 +19,6 @@ export const FUSE_DEFAULTS = {
   flatToneLift: 0.05,
   flatToneBandMin: 0.5,
   flatToneBandMax: 0.68,
-  lowClipLift: 0.05,
-  lowClipBandMin: 0.5,
-  lowClipBandMax: 0.68,
   bias: 0,
   temperature: 0.9,
   scorePower: 0.85,
@@ -80,17 +77,6 @@ export function fuseScores({
   ) {
     score = Math.min(0.92, score + flatToneLift);
     reasons.push("flat-tone");
-  }
-
-  const lowClipLift = config.lowClipLift ?? 0;
-  if (
-    lowClipLift > 0 &&
-    graphic?.lowClip &&
-    score >= (config.lowClipBandMin ?? 0.5) &&
-    score < (config.lowClipBandMax ?? 0.68)
-  ) {
-    score = Math.min(0.92, score + lowClipLift);
-    reasons.push("low-clip");
   }
 
   const calibrated = applyPower(

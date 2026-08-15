@@ -14,7 +14,6 @@ export const TEXTURE = {
   mutedColorfulness: 28,
   flatToneLo: 0.92,
   flatToneHi: 1.08,
-  lowClip: 0.002,
 };
 
 export function analyzePixels(data, width, height) {
@@ -30,7 +29,6 @@ export function analyzePixels(data, width, height) {
   let centerN = 0;
   let borderLum = 0;
   let borderN = 0;
-  let clips = 0;
   const stride = Math.max(1, Math.floor(Math.min(width, height) / 96));
   const x0 = width * 0.25;
   const x1 = width * 0.75;
@@ -67,7 +65,6 @@ export function analyzePixels(data, width, height) {
         borderLum += lum;
         borderN += 1;
       }
-      if (Math.max(r, g, b) >= 250) clips += 1;
       samples += 1;
     }
   }
@@ -92,8 +89,6 @@ export function analyzePixels(data, width, height) {
   const centerBorder = centerMean / (borderMean + 1e-3);
   const flatTone =
     centerBorder >= TEXTURE.flatToneLo && centerBorder <= TEXTURE.flatToneHi;
-  const clipRatio = clips / n;
-  const lowClip = clipRatio <= TEXTURE.lowClip;
   return {
     uniqueRatio,
     edgeRatio,
@@ -105,8 +100,6 @@ export function analyzePixels(data, width, height) {
     muted,
     centerBorder,
     flatTone,
-    clipRatio,
-    lowClip,
   };
 }
 

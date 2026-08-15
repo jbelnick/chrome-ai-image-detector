@@ -76,23 +76,6 @@ describe("fuse", () => {
     assert.ok(Math.abs(toneOnly.fusedBeforeCalibration - 0.2) < 1e-9);
   });
 
-  it("lifts a low-clip mid-range visual without inventing a verdict from highlights alone", () => {
-    const lifted = fuseScores({
-      visual: 0.56,
-      provenance: { ai: false, camera: false },
-      graphic: { isGraphic: false, lowClip: true },
-    });
-    assert.ok(lifted.fusedBeforeCalibration > 0.56);
-    assert.ok(lifted.reasons.includes("low-clip"));
-
-    const clipOnly = fuseScores({
-      visual: 0.2,
-      provenance: { ai: false, camera: false },
-      graphic: { isGraphic: false, lowClip: true },
-    });
-    assert.ok(Math.abs(clipOnly.fusedBeforeCalibration - 0.2) < 1e-9);
-  });
-
   it("lifts a muted mid-range visual without inventing a verdict from low colorfulness alone", () => {
     const lifted = fuseScores({
       visual: 0.56,
