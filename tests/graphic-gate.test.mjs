@@ -52,4 +52,24 @@ describe("graphic-gate", () => {
     assert.equal(analysis.vivid, true);
     assert.ok(analysis.colorfulness >= 72);
   });
+
+  it("flags a bright-center dark-border field as isolated", () => {
+    const w = 64;
+    const h = 64;
+    const data = new Uint8Array(w * h * 4);
+    for (let y = 0; y < h; y += 1) {
+      for (let x = 0; x < w; x += 1) {
+        const i = (y * w + x) * 4;
+        const center = x >= 16 && x < 48 && y >= 16 && y < 48;
+        const v = center ? 240 : 20;
+        data[i] = v;
+        data[i + 1] = v;
+        data[i + 2] = v;
+        data[i + 3] = 255;
+      }
+    }
+    const analysis = analyzePixels(data, w, h);
+    assert.equal(analysis.isolated, true);
+    assert.ok(analysis.centerBorder >= 1.45);
+  });
 });

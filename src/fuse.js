@@ -16,6 +16,9 @@ export const FUSE_DEFAULTS = {
   mutedLift: 0.05,
   mutedBandMin: 0.5,
   mutedBandMax: 0.68,
+  isolateLift: 0.05,
+  isolateBandMin: 0.5,
+  isolateBandMax: 0.68,
   bias: 0,
   temperature: 0.9,
   scorePower: 0.85,
@@ -63,6 +66,17 @@ export function fuseScores({
   ) {
     score = Math.min(0.92, score + mutedLift);
     reasons.push("muted-color");
+  }
+
+  const isolateLift = config.isolateLift ?? 0;
+  if (
+    isolateLift > 0 &&
+    graphic?.isolated &&
+    score >= (config.isolateBandMin ?? 0.5) &&
+    score < (config.isolateBandMax ?? 0.68)
+  ) {
+    score = Math.min(0.92, score + isolateLift);
+    reasons.push("center-surround");
   }
 
   const calibrated = applyPower(
