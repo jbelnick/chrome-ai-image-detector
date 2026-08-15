@@ -307,6 +307,30 @@ webgpu:      UNVERIFIED
 
 Versus KEEP `b6b95ca` on the same mix: TPR held, TNR +1, net +1, BA 0.863128 → 0.865922. Secondary 360 held 0.883333 — not cratered.
 
+## Current broader-proxy best (`3a75475`)
+
+Strong-grain drop (0.25) when `analyzePixels` flags `fineRatio >= 0.44` and the calibrated score is in `[0.80, 0.95)`. Fuse bias stays 0. Command: `npm run eval:chrome`. Date: 2026-08-15. Finished 718/718 with no stall, EXIT:0.
+
+```
+SCALAR broader-proxy (keep/revert)
+bal_acc_065: 0.871508
+tpr_065:     0.854749
+tnr_065:     0.888268
+tp/fn/tn/fp: 153 / 26 / 159 / 20
+n:           358
+
+SECONDARY official-360 (not the ratchet)
+bal_acc_065: 0.883333
+tpr_065:     0.816667
+tnr_065:     0.950000
+tp/fn/tn/fp: 147 / 33 / 171 / 9
+n:           360
+backend:     wasm
+webgpu:      UNVERIFIED
+```
+
+Versus KEEP `1419dd7` on the same mix: TPR held, TNR +2, net +2, BA 0.865922 → 0.871508. Secondary 360 BA held 0.883333 (TPR −1, TNR +1) — called out, not hidden, not a crater.
+
 ## Rules checklist
 
 - [x] No cloud inference
