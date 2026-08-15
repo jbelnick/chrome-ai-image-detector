@@ -9,27 +9,11 @@ export function quantizeChannel(value, bins = 16) {
   return Math.min(bins - 1, Math.floor(value / step));
 }
 
-function lumaAt(data, width, x, y) {
-  const i = (y * width + x) * 4;
-  return 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
-}
-
-/**
- * Mean-abs 4-neighbor Laplacian on luma. Camera photos keep grain even
- * in flat regions; many generators oversmooth that residual.
- * Threshold is on 8-bit luma units, not fit to eval identities.
- */
-export const TEXTURE = {
-  oversmoothLap: 11,
-};
-
 export function analyzePixels(data, width, height) {
   const bins = 12;
   const colors = new Set();
   let edge = 0;
   let samples = 0;
-  let lapSum = 0;
-  let lapN = 0;
   const stride = Math.max(1, Math.floor(Math.min(width, height) / 96));
 
   for (let y = 0; y < height - stride; y += stride) {
@@ -43,36 +27,22 @@ export function analyzePixels(data, width, height) {
           (quantizeChannel(g, bins) << 4) |
           quantizeChannel(b, bins),
       );
-      const lum = lumaAt(data, width, x, y);
-      const lumX = lumaAt(data, width, x + stride, y);
-      const lumY = lumaAt(data, width, x, y + stride);
+      const j = (y * width + (x + stride)) * 4;
+      const k = ((y + stride) * width + x) * 4;
+      const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+      const lumX = 0.299 * data[j] + 0.587 * data[j + 1] + 0.114 * data[j + 2];
+      const lumY = 0.299 * data[k] + 0.587 * data[k + 1] + 0.114 * data[k + 2];
       if (Math.abs(lum - lumX) > 28 || Math.abs(lum - lumY) > 28) edge += 1;
-      if (x >= stride && y >= stride) {
-        const lumW = lumaAt(data, width, x - stride, y);
-        const lumN = lumaAt(data, width, x, y - stride);
-        lapSum += Math.abs(4 * lum - lumW - lumX - lumN - lumY);
-        lapN += 1;
-      }
       samples += 1;
     }
   }
 
   const uniqueRatio = samples === 0 ? 1 : colors.size / samples;
   const edgeRatio = samples === 0 ? 0 : edge / samples;
-  const lapEnergy = lapN === 0 ? 0 : lapSum / lapN;
   // Quantized palette size, not unique/samples — large photos always look
   // "sparse" if you divide by pixel count.
   const isGraphic = colors.size < 48 && edgeRatio > 0.12;
-  const oversmooth = lapEnergy < TEXTURE.oversmoothLap;
-  return {
-    uniqueRatio,
-    edgeRatio,
-    isGraphic,
-    samples,
-    uniqueColors: colors.size,
-    lapEnergy,
-    oversmooth,
-  };
+  return { uniqueRatio, edgeRatio, isGraphic, samples, uniqueColors: colors.size };
 }
 
 export function graphicScale(analysis) {

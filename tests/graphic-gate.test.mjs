@@ -36,23 +36,5 @@ describe("graphic-gate", () => {
     }
     const analysis = analyzePixels(data, w, h);
     assert.equal(analysis.isGraphic, false);
-    assert.equal(analysis.oversmooth, false);
-    assert.ok(analysis.lapEnergy > 11);
-  });
-
-  it("flags a near-flat field as oversmooth", () => {
-    const w = 64;
-    const h = 64;
-    const data = new Uint8Array(w * h * 4);
-    for (let i = 0; i < w * h; i += 1) {
-      const v = 120 + (i % 3);
-      data[i * 4] = v;
-      data[i * 4 + 1] = v;
-      data[i * 4 + 2] = v;
-      data[i * 4 + 3] = 255;
-    }
-    const analysis = analyzePixels(data, w, h);
-    assert.equal(analysis.oversmooth, true);
-    assert.ok(analysis.lapEnergy < 11);
   });
 });
