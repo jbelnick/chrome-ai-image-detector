@@ -14,6 +14,8 @@ export const TEXTURE = {
   mutedColorfulness: 28,
   flatToneLo: 0.92,
   flatToneHi: 1.08,
+  hueBins: 12,
+  huePeak: 0.22,
 };
 
 export function analyzePixels(data, width, height) {
@@ -29,6 +31,7 @@ export function analyzePixels(data, width, height) {
   let centerN = 0;
   let borderLum = 0;
   let borderN = 0;
+  const hueHist = new Uint32Array(TEXTURE.hueBins);
   const stride = Math.max(1, Math.floor(Math.min(width, height) / 96));
   const x0 = width * 0.25;
   const x1 = width * 0.75;
@@ -65,6 +68,12 @@ export function analyzePixels(data, width, height) {
         borderLum += lum;
         borderN += 1;
       }
+      const hue = Math.atan2(yb, rg);
+      const bin = Math.min(
+        TEXTURE.hueBins - 1,
+        Math.floor(((hue + Math.PI) / (2 * Math.PI)) * TEXTURE.hueBins),
+      );
+      hueHist[bin] += 1;
       samples += 1;
     }
   }
@@ -89,6 +98,12 @@ export function analyzePixels(data, width, height) {
   const centerBorder = centerMean / (borderMean + 1e-3);
   const flatTone =
     centerBorder >= TEXTURE.flatToneLo && centerBorder <= TEXTURE.flatToneHi;
+  let huePeak = 0;
+  for (let b = 0; b < hueHist.length; b += 1) {
+    if (hueHist[b] > huePeak) huePeak = hueHist[b];
+  }
+  const huePeakRatio = huePeak / n;
+  const huePeakish = huePeakRatio >= TEXTURE.huePeak;
   return {
     uniqueRatio,
     edgeRatio,
@@ -100,6 +115,8 @@ export function analyzePixels(data, width, height) {
     muted,
     centerBorder,
     flatTone,
+    huePeakRatio,
+    huePeakish,
   };
 }
 
