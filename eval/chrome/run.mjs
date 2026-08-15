@@ -117,10 +117,16 @@ async function startServer({ vendor, models, lib, data, official }) {
   const server = createServer(async (req, res) => {
     try {
       const url = new URL(req.url, "http://127.0.0.1");
+      if (req.method === "POST") {
+        console.error(`${req.method} ${url.pathname}`);
+      }
       if (req.method === "POST" && url.pathname === "/progress") {
         const body = JSON.parse((await readBody(req)).toString("utf8"));
         const secs = body.elapsedMs ? `  ${Math.round(body.elapsedMs / 1000)}s` : "";
-        console.error(`scored ${body.scored}/${body.total}  provider=${body.provider}${secs}`);
+        const phase = body.phase ? `  ${body.phase}` : "";
+        console.error(
+          `scored ${body.scored}/${body.total}  provider=${body.provider}${secs}${phase}`,
+        );
         res.writeHead(200, { "content-type": "application/json" });
         res.end('{"ok":true}');
         return;
@@ -262,8 +268,12 @@ function printReport(official, payload) {
       "WebGPU: software-swiftshader — ORT webgpu EP ran, but this is not a real GPU device (UNVERIFIED for hardware WebGPU)",
     );
   } else if (webgpu === "UNVERIFIED") {
+    const arch = String(gpu.adapterInfo?.architecture || "");
+    const software = /swiftshader|llvmpipe/i.test(arch);
     console.log(
-      `WebGPU: UNVERIFIED — navigator.gpu=${Boolean(gpu.hasNavigatorGpu)} adapter=${Boolean(gpu.adapter)}`,
+      software
+        ? "WebGPU: UNVERIFIED — only a software adapter (SwiftShader); no real GPU device. ORT used wasm."
+        : `WebGPU: UNVERIFIED — navigator.gpu=${Boolean(gpu.hasNavigatorGpu)} adapter=${Boolean(gpu.adapter)}`,
     );
   } else {
     console.log(`WebGPU: ${webgpu}`);

@@ -44,14 +44,20 @@ async function fetchOk(url, tries = 4) {
   throw last;
 }
 
-async function post(path, body) {
-  const res = await fetch(path, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify(body),
-  });
-  if (!res.ok) throw new Error(`POST ${path} ${res.status}`);
-  return res.json().catch(() => ({}));
+async function post(path, body, { required = true } = {}) {
+  try {
+    const res = await fetch(path, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) throw new Error(`POST ${path} ${res.status}`);
+    return res.json().catch(() => ({}));
+  } catch (err) {
+    if (required) throw err;
+    console.warn(`POST ${path} failed`, err);
+    return {};
+  }
 }
 
 async function readModelBuffer(spec) {
@@ -183,8 +189,14 @@ async function main() {
   ort.env.wasm.numThreads = 1;
 
   const gpu = await probeGpu();
-  const preferGpu = gpu.hasNavigatorGpu;
-  log(`navigator.gpu=${gpu.hasNavigatorGpu} adapter=${gpu.adapter}`);
+  const arch = String(gpu.adapterInfo?.architecture || "").toLowerCase();
+  const softwareAdapter = arch.includes("swiftshader") || arch.includes("llvmpipe");
+  // Software WebGPU is not a real GPU device. Jason asked for UNVERIFIED
+  // hardware WebGPU in that case and a labeled WASM run.
+  const preferGpu = gpu.hasNavigatorGpu && gpu.adapter && !softwareAdapter;
+  log(
+    `navigator.gpu=${gpu.hasNavigatorGpu} adapter=${gpu.adapter} software=${softwareAdapter} preferGpu=${preferGpu}`,
+  );
 
   const cf = await readModelBuffer(MODELS.commfor);
   const sl = await readModelBuffer(MODELS.siglip2);
@@ -195,14 +207,24 @@ async function main() {
       ? cfCreated.provider
       : `${cfCreated.provider}+${slCreated.provider}`;
   const webgpuSession = provider.includes("webgpu");
-  const arch = String(gpu.adapterInfo?.architecture || "").toLowerCase();
-  const softwareAdapter = arch.includes("swiftshader") || arch.includes("llvmpipe");
   const webgpu = webgpuSession
     ? softwareAdapter
       ? "software-swiftshader"
       : "initialized"
     : "UNVERIFIED";
   log(`sessions ready provider=${provider} webgpu=${webgpu}`);
+  await post(
+    "/progress",
+    {
+      scored: 0,
+      total: 0,
+      provider,
+      webgpu,
+      elapsedMs: 0,
+      phase: "sessions-ready",
+    },
+    { required: false },
+  );
   await new Promise((r) => setTimeout(r, 250));
 
   const manifest = await (await fetchOk("/manifest.json")).json();
@@ -227,15 +249,19 @@ async function main() {
       commfor: result.commfor,
       reasons: result.reasons,
     });
-    if ((index + 1) % 25 === 0 || index === manifest.length - 1) {
+    if ((index + 1) % 5 === 0 || index === manifest.length - 1) {
       log(`scored ${index + 1}/${manifest.length}`);
-      await post("/progress", {
-        scored: index + 1,
-        total: manifest.length,
-        provider,
-        webgpu,
-        elapsedMs: Date.now() - startedAt,
-      });
+      await post(
+        "/progress",
+        {
+          scored: index + 1,
+          total: manifest.length,
+          provider,
+          webgpu,
+          elapsedMs: Date.now() - startedAt,
+        },
+        { required: false },
+      );
     }
   }
 
