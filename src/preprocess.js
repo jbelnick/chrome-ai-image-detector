@@ -5,7 +5,7 @@
  */
 
 export const PREPROCESS = {
-  resizeShortEdge: 480,
+  resizeShortEdge: 440,
   crop: 384,
   mean: [0.485, 0.456, 0.406],
   std: [0.229, 0.224, 0.225],
