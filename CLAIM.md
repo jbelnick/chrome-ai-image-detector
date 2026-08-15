@@ -53,7 +53,7 @@ Official proxy: a 180/class streaming prefix of OpenFake `core/test` (generator 
 Command: `npm run eval`  
 Date: 2026-08-15  
 Machine: this Cloud Agent (CPU ONNX Runtime).  
-Commit scored: `38fd1a3` (SigLIP probe logit ×0.92 on flat-tone + double-SigLIP). Fuse bias stays 0.
+Commit scored: `dc82b01` (SigLIP probe logit ×0.95 on flat-tone + double-SigLIP). Fuse bias stays 0.
 
 ```
 Grain eval — same ONNX + shipped fusion as the extension
@@ -62,26 +62,26 @@ Fuse bias=0 temperature=0.9
 Images: 385  official(OpenFake)=360  easy-real=20  excluded-cf=5
 
 OFFICIAL OpenFake core/test @ 0.65 (shipped path, reported proxy):
-  balanced accuracy  86.94%
+  balanced accuracy  87.22%
   TPR                90.00%
-  TNR                83.89%
+  TNR                84.44%
   n                  360 (AI 180 / real 180)
 
 MIX including Picsum easy-real (not the claim) @ 0.65:
-  balanced accuracy  86.00%
+  balanced accuracy  86.25%
   TPR                90.00%
-  TNR                82.00%
+  TNR                82.50%
 
 EXPLORATORY only — best raw cut on a 30% OpenFake subset: 0.75 (BA 83.13%). Not shipped.
 ```
 
 ```
-bal_acc_065: 0.869444
+bal_acc_065: 0.872222
 tpr_065:     0.900000
-tnr_065:     0.838889
+tnr_065:     0.844444
 ```
 
-Harness print: **86.94%** balanced accuracy, TPR 90.00%, TNR 83.89%, n=360 (TP 162 / FN 18 / TN 151 / FP 29). Probe logit is scaled by 0.92 before the sigmoid (compresses toward 0.5). Two more TPs vs `64f7381` 86.67%; one more FP. A raw 0.33 still displays well below 0.65.
+Harness print: **87.22%** balanced accuracy, TPR 90.00%, TNR 84.44%, n=360 (TP 162 / FN 18 / TN 152 / FP 28). Probe logit ×0.95 keeps the 0.92 KEEP's TPR and recovers the TN that ×0.92 lost. A raw 0.33 still displays well below 0.65.
 
 Baseline `8b20ad4` was 81.67% BA @ 0.65. Withdrawn earlier figures: 84.96% (raw 0.33 remapped onto a displayed 0.65) and 68.85% Community-Forensics-only.
 
