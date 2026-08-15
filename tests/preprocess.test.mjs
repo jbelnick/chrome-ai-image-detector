@@ -38,7 +38,7 @@ describe("preprocess", () => {
       rgba[i * 4 + 2] = 0;
       rgba[i * 4 + 3] = 255;
     }
-    const tensor = imageDataToTensor(rgba, 384, 384, { minmax: false });
+    const tensor = imageDataToTensor(rgba, 384, 384);
     assert.equal(tensor.length, 3 * n);
     const expectedR = (1 - PREPROCESS.mean[0]) / PREPROCESS.std[0];
     const expectedG = (0 - PREPROCESS.mean[1]) / PREPROCESS.std[1];
