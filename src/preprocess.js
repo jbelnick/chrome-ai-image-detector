@@ -17,12 +17,13 @@ export const PREPROCESS = {
 
 /**
  * OffscreenCanvas resample used by the extension and chrome-path eval.
- * Family 1 run 5: quality "low" with smoothing on.
- * Ladder so far: high 0.8722 < medium 0.8750 < nearest 0.8778.
+ * Chrome-path family 1 run 2: nearest-neighbor (smoothing off).
+ * KEEP d8976dc used quality medium; this tests whether a harder
+ * kernel recovers more of the 22 remaining FPs.
  */
 export const CANVAS_RESAMPLE = {
-  imageSmoothingEnabled: true,
-  imageSmoothingQuality: "low",
+  imageSmoothingEnabled: false,
+  imageSmoothingQuality: "medium",
 };
 
 export function applyCanvasResample(ctx) {
