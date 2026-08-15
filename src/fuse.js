@@ -15,7 +15,7 @@ export const FUSE_DEFAULTS = {
   vividBandMax: 0.68,
   mutedLift: 0.05,
   mutedBandMin: 0.5,
-  mutedBandMax: 0.72,
+  mutedBandMax: 0.68,
   flatToneLift: 0.05,
   flatToneBandMin: 0.5,
   flatToneBandMax: 0.68,
