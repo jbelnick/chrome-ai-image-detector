@@ -77,15 +77,15 @@ EXPLORATORY only — best raw cut on a 30% OpenFake subset: 0.27 (BA 84.58%). No
 
 Reported proxy score (baseline, `b3e1487` / `8b20ad4`): **81.67%** BA @ 0.65.
 
-Autoresearch running best `21c9ee6` (soft-OR blend, graphic/camera scales 1, temperature 0.90, bias 0):
+Autoresearch running best `6067a8a` (soft-OR blend, graphic/camera scales 1, temperature 0.90, bias 0, scorePower 0.85):
 
 ```
-bal_acc_065: 0.844444
-tpr_065:     0.744444
-tnr_065:     0.944444
+bal_acc_065: 0.847222
+tpr_065:     0.761111
+tnr_065:     0.933333
 ```
 
-Harness print: **84.44%** balanced accuracy, TPR 74.44%, TNR 94.44%, n=360. Temperature 0.90 matches 0.85 on this proxy and is the milder sharpen; the cut is still `score >= 0.65` on that calibrated value (not a raw-0.05 relabel).
+Harness print: **84.72%** balanced accuracy, TPR 76.11%, TNR 93.33%, n=360 (TP 137 / FN 43 / TN 168 / FP 12). Power 0.85 is beta calibration after T=0.90; a raw 0.33 still displays well below 0.65 (not a remapped cut). Previous best `21c9ee6` was 84.44%.
 
 Withdrawn earlier figures: 84.96% (raw 0.33 remapped onto a displayed 0.65) and 68.85% Community-Forensics-only.
 
