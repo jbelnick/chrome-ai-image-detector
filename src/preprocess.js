@@ -62,18 +62,9 @@ export function imageDataToTensor(
   return tensor;
 }
 
-/**
- * Community Forensics logit → P(AI). Temperature < 1 sharpens this
- * forensic head only. SigLIP must pass temperature=1 so its probe
- * sigmoid stays identity.
- */
-export const CF_LOGIT_TEMPERATURE = 0.75;
-
-export function visualProbabilityFromLogit(logit, temperature = CF_LOGIT_TEMPERATURE) {
+export function visualProbabilityFromLogit(logit) {
   if (!Number.isFinite(logit)) return 0.5;
-  const t = temperature === 0 ? 1 : temperature;
-  const z = logit / t;
-  if (z >= 20) return 1 - 1e-6;
-  if (z <= -20) return 1e-6;
-  return 1 / (1 + Math.exp(-z));
+  if (logit >= 20) return 1 - 1e-6;
+  if (logit <= -20) return 1e-6;
+  return 1 / (1 + Math.exp(-logit));
 }
