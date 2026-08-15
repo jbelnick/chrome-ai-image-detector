@@ -25,7 +25,7 @@ export const FUSE_DEFAULTS = {
   strongGrainDrop: 0.25,
   strongGrainBandMin: 0.8,
   strongGrainBandMax: 0.95,
-  mutedHighDrop: 0.2,
+  mutedHighDrop: 0.28,
   mutedHighBandMin: 0.8,
   mutedHighBandMax: 0.88,
   flatHighDrop: 0.2,
