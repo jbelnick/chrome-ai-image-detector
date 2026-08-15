@@ -29,9 +29,12 @@ export function scaledSize(width, height, shortEdge = PREPROCESS.resizeShortEdge
 
 export function centerCropBox(width, height, crop = PREPROCESS.crop) {
   const size = Math.min(crop, width, height);
+  // Experiment: bias the crop toward the upper third. Faces and
+  // subjects usually sit above geometric center; official CF is
+  // dead-center and may miss them on tall frames.
   return {
     x: Math.max(0, Math.floor((width - size) / 2)),
-    y: Math.max(0, Math.floor((height - size) / 2)),
+    y: Math.max(0, Math.floor((height - size) * 0.35)),
     size,
   };
 }
