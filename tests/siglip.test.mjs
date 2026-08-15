@@ -14,9 +14,9 @@ describe("siglip probe", () => {
     assert.equal(Number.isFinite(z), true);
   });
 
-  it("soft-ORs the two visual heads", () => {
-    assert.ok(Math.abs(blendVisual(0.2, 0.9) - 0.92) < 1e-9);
-    assert.ok(Math.abs(blendVisual(0.8, 0.1) - 0.82) < 1e-9);
+  it("soft-ORs with a 1.3 Community Forensics weight", () => {
+    const expected = Math.min(1 - 1e-6, 0.8 + 1.3 * 0.1 - 1.3 * 0.8 * 0.1);
+    assert.ok(Math.abs(blendVisual(0.8, 0.1) - expected) < 1e-9);
   });
 
   it("builds a 1x3x224x224 SigLIP tensor", () => {
