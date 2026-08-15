@@ -9,6 +9,55 @@ export function quantizeChannel(value, bins = 16) {
   return Math.min(bins - 1, Math.floor(value / step));
 }
 
+function lumaAt(data, width, x, y) {
+  const i = (y * width + x) * 4;
+  return 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+}
+
+/**
+ * Ratio of mean |Δluma| on 8-pixel JPEG block boundaries vs interior.
+ * >1 means extra energy on the codec grid — a cheap periodic-artifact cue.
+ */
+export const TEXTURE = {
+  blockyRatio: 1.18,
+};
+
+export function jpegBlockRatio(data, width, height) {
+  let boundary = 0;
+  let interior = 0;
+  let nB = 0;
+  let nI = 0;
+  const step = 1;
+  for (let y = 0; y < height; y += step) {
+    for (let x = 0; x < width - 1; x += step) {
+      const d = Math.abs(lumaAt(data, width, x, y) - lumaAt(data, width, x + 1, y));
+      if ((x + 1) % 8 === 0) {
+        boundary += d;
+        nB += 1;
+      } else {
+        interior += d;
+        nI += 1;
+      }
+    }
+  }
+  for (let y = 0; y < height - 1; y += step) {
+    for (let x = 0; x < width; x += step) {
+      const d = Math.abs(lumaAt(data, width, x, y) - lumaAt(data, width, x, y + 1));
+      if ((y + 1) % 8 === 0) {
+        boundary += d;
+        nB += 1;
+      } else {
+        interior += d;
+        nI += 1;
+      }
+    }
+  }
+  const b = nB === 0 ? 0 : boundary / nB;
+  const inn = nI === 0 ? 0 : interior / nI;
+  if (inn === 0) return b > 0 ? 99 : 0;
+  return b / inn;
+}
+
 export function analyzePixels(data, width, height) {
   const bins = 12;
   const colors = new Set();
@@ -42,7 +91,17 @@ export function analyzePixels(data, width, height) {
   // Quantized palette size, not unique/samples — large photos always look
   // "sparse" if you divide by pixel count.
   const isGraphic = colors.size < 48 && edgeRatio > 0.12;
-  return { uniqueRatio, edgeRatio, isGraphic, samples, uniqueColors: colors.size };
+  const blockRatio = jpegBlockRatio(data, width, height);
+  const blocky = blockRatio >= TEXTURE.blockyRatio;
+  return {
+    uniqueRatio,
+    edgeRatio,
+    isGraphic,
+    samples,
+    uniqueColors: colors.size,
+    blockRatio,
+    blocky,
+  };
 }
 
 export function graphicScale(analysis) {

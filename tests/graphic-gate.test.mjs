@@ -37,4 +37,28 @@ describe("graphic-gate", () => {
     const analysis = analyzePixels(data, w, h);
     assert.equal(analysis.isGraphic, false);
   });
+
+  it("flags an 8x8 tiled field as blocky and a smooth ramp as not", () => {
+    const w = 64;
+    const h = 64;
+    const tiled = new Uint8Array(w * h * 4);
+    const ramp = new Uint8Array(w * h * 4);
+    for (let y = 0; y < h; y += 1) {
+      for (let x = 0; x < w; x += 1) {
+        const i = (y * w + x) * 4;
+        const tile = (((x >> 3) + (y >> 3)) % 2) * 200 + 20;
+        tiled[i] = tile;
+        tiled[i + 1] = tile;
+        tiled[i + 2] = tile;
+        tiled[i + 3] = 255;
+        const v = Math.floor((x + y) * 1.5);
+        ramp[i] = v;
+        ramp[i + 1] = v;
+        ramp[i + 2] = v;
+        ramp[i + 3] = 255;
+      }
+    }
+    assert.equal(analyzePixels(tiled, w, h).blocky, true);
+    assert.equal(analyzePixels(ramp, w, h).blocky, false);
+  });
 });
