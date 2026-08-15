@@ -14,6 +14,9 @@ export const TEXTURE = {
   mutedColorfulness: 28,
   flatToneLo: 0.92,
   flatToneHi: 1.08,
+  // Studio-like unimodal luma (not a flat graphic).
+  peakedLumaMin: 0.28,
+  peakedMinColors: 32,
 };
 
 export function analyzePixels(data, width, height) {
@@ -29,6 +32,7 @@ export function analyzePixels(data, width, height) {
   let centerN = 0;
   let borderLum = 0;
   let borderN = 0;
+  const lumaBins = new Uint32Array(16);
   const stride = Math.max(1, Math.floor(Math.min(width, height) / 96));
   const x0 = width * 0.25;
   const x1 = width * 0.75;
@@ -58,6 +62,7 @@ export function analyzePixels(data, width, height) {
       ybSum += yb;
       rgSq += rg * rg;
       ybSq += yb * yb;
+      lumaBins[Math.min(15, lum >> 4)] += 1;
       if (x >= x0 && x < x1 && y >= y0 && y < y1) {
         centerLum += lum;
         centerN += 1;
@@ -89,6 +94,14 @@ export function analyzePixels(data, width, height) {
   const centerBorder = centerMean / (borderMean + 1e-3);
   const flatTone =
     centerBorder >= TEXTURE.flatToneLo && centerBorder <= TEXTURE.flatToneHi;
+  let lumaPeak = 0;
+  for (let b = 0; b < lumaBins.length; b += 1) {
+    if (lumaBins[b] > lumaPeak) lumaPeak = lumaBins[b];
+  }
+  const lumaPeakFrac = samples === 0 ? 0 : lumaPeak / samples;
+  const peakedLuma =
+    lumaPeakFrac >= TEXTURE.peakedLumaMin &&
+    colors.size >= TEXTURE.peakedMinColors;
   return {
     uniqueRatio,
     edgeRatio,
@@ -100,6 +113,8 @@ export function analyzePixels(data, width, height) {
     muted,
     centerBorder,
     flatTone,
+    lumaPeakFrac,
+    peakedLuma,
   };
 }
 

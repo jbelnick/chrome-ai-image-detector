@@ -53,6 +53,49 @@ describe("graphic-gate", () => {
     assert.ok(analysis.colorfulness >= 72);
   });
 
+  it("flags a many-color field with a unimodal luma peak", () => {
+    const w = 64;
+    const h = 64;
+    const data = new Uint8Array(w * h * 4);
+    let seed = 7;
+    for (let i = 0; i < w * h; i += 1) {
+      seed = (seed * 1664525 + 1013904223) >>> 0;
+      const y = 130 + (seed % 11) - 5;
+      let r = 40 + (seed % 180);
+      let g = 40 + ((seed >>> 8) % 180);
+      let b = Math.round((y - 0.299 * r - 0.587 * g) / 0.114);
+      if (b < 0 || b > 255) {
+        r = y;
+        g = y;
+        b = y;
+      }
+      data[i * 4] = r;
+      data[i * 4 + 1] = g;
+      data[i * 4 + 2] = b;
+      data[i * 4 + 3] = 255;
+    }
+    const analysis = analyzePixels(data, w, h);
+    assert.equal(analysis.peakedLuma, true);
+    assert.ok(analysis.lumaPeakFrac >= 0.28);
+    assert.ok(analysis.uniqueColors >= 32);
+  });
+
+  it("does not flag full-range photographic noise as peaked-luma", () => {
+    const w = 128;
+    const h = 128;
+    const data = new Uint8Array(w * h * 4);
+    let seed = 1;
+    for (let i = 0; i < w * h; i += 1) {
+      seed = (seed * 1664525 + 1013904223) >>> 0;
+      data[i * 4] = seed & 255;
+      data[i * 4 + 1] = (seed >>> 8) & 255;
+      data[i * 4 + 2] = (seed >>> 16) & 255;
+      data[i * 4 + 3] = 255;
+    }
+    const analysis = analyzePixels(data, w, h);
+    assert.equal(analysis.peakedLuma, false);
+  });
+
   it("flags a uniform field as flat-tone", () => {
     const w = 64;
     const h = 64;
