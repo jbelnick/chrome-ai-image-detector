@@ -83,6 +83,8 @@ tnr_065:     0.844444
 
 Harness print: **87.22%** balanced accuracy, TPR 90.00%, TNR 84.44%, n=360 (TP 162 / FN 18 / TN 152 / FP 28). Probe logit ×0.97 matches ×0.95 and is closer to identity. A raw 0.33 still displays well below 0.65.
 
+Fresh re-eval of HEAD `9df44c4` (src identical to `1e19a9f`) on 2026-08-15 reproduced the same `bal_acc_065: 0.872222`. Autoresearch froze after three hypothesis families in a row were flat (spatial-tone, calibration nips, ensemble/new-signal). No later KEEP beat 0.872222.
+
 Baseline `8b20ad4` was 81.67% BA @ 0.65. Withdrawn earlier figures: 84.96% (raw 0.33 remapped onto a displayed 0.65) and 68.85% Community-Forensics-only.
 
 ## Rules checklist
