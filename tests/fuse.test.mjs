@@ -76,23 +76,6 @@ describe("fuse", () => {
     assert.ok(Math.abs(toneOnly.fusedBeforeCalibration - 0.2) < 1e-9);
   });
 
-  it("lifts a peaked-luma mid-range visual without inventing a verdict from the histogram alone", () => {
-    const lifted = fuseScores({
-      visual: 0.56,
-      provenance: { ai: false, camera: false },
-      graphic: { isGraphic: false, peakedLuma: true },
-    });
-    assert.ok(lifted.fusedBeforeCalibration > 0.56);
-    assert.ok(lifted.reasons.includes("peaked-luma"));
-
-    const histOnly = fuseScores({
-      visual: 0.2,
-      provenance: { ai: false, camera: false },
-      graphic: { isGraphic: false, peakedLuma: true },
-    });
-    assert.ok(Math.abs(histOnly.fusedBeforeCalibration - 0.2) < 1e-9);
-  });
-
   it("lifts a muted mid-range visual without inventing a verdict from low colorfulness alone", () => {
     const lifted = fuseScores({
       visual: 0.56,

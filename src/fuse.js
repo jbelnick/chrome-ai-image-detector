@@ -19,9 +19,6 @@ export const FUSE_DEFAULTS = {
   flatToneLift: 0.05,
   flatToneBandMin: 0.5,
   flatToneBandMax: 0.68,
-  peakedLumaLift: 0.05,
-  peakedLumaBandMin: 0.5,
-  peakedLumaBandMax: 0.68,
   bias: 0,
   temperature: 0.9,
   scorePower: 0.85,
@@ -80,17 +77,6 @@ export function fuseScores({
   ) {
     score = Math.min(0.92, score + flatToneLift);
     reasons.push("flat-tone");
-  }
-
-  const peakedLumaLift = config.peakedLumaLift ?? 0;
-  if (
-    peakedLumaLift > 0 &&
-    graphic?.peakedLuma &&
-    score >= (config.peakedLumaBandMin ?? 0.5) &&
-    score < (config.peakedLumaBandMax ?? 0.68)
-  ) {
-    score = Math.min(0.92, score + peakedLumaLift);
-    reasons.push("peaked-luma");
   }
 
   const calibrated = applyPower(
