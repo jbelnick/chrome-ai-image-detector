@@ -283,6 +283,30 @@ webgpu:      UNVERIFIED
 
 Versus KEEP `f977495` on the same mix: TPR −4, TNR +5, net +1, BA 0.860335 → 0.863128. Secondary 360 slipped 0.886111 → 0.883333 (TPR −6, TNR +5) — called out, not hidden, not a crater.
 
+## Current broader-proxy best (`1419dd7`)
+
+JPEG metadata-only provenance: scan APP0–APP15 + COM, not compressed entropy. Fixes a false `sdxl` hit on a real web JPEG (`webreal_0076`). Fuse bias stays 0. Command: `npm run eval:chrome`. Date: 2026-08-15. Finished 718/718 with no stall, EXIT:0.
+
+```
+SCALAR broader-proxy (keep/revert)
+bal_acc_065: 0.865922
+tpr_065:     0.854749
+tnr_065:     0.877095
+tp/fn/tn/fp: 153 / 26 / 157 / 22
+n:           358
+
+SECONDARY official-360 (not the ratchet)
+bal_acc_065: 0.883333
+tpr_065:     0.822222
+tnr_065:     0.944444
+tp/fn/tn/fp: 148 / 32 / 170 / 10
+n:           360
+backend:     wasm
+webgpu:      UNVERIFIED
+```
+
+Versus KEEP `b6b95ca` on the same mix: TPR held, TNR +1, net +1, BA 0.863128 → 0.865922. Secondary 360 held 0.883333 — not cratered.
+
 ## Rules checklist
 
 - [x] No cloud inference
