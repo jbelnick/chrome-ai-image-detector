@@ -76,6 +76,23 @@ describe("fuse", () => {
     assert.ok(Math.abs(toneOnly.fusedBeforeCalibration - 0.2) < 1e-9);
   });
 
+  it("lifts a hue-peaked mid-range visual without inventing a verdict from hue alone", () => {
+    const lifted = fuseScores({
+      visual: 0.56,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, huePeakish: true },
+    });
+    assert.ok(lifted.fusedBeforeCalibration > 0.56);
+    assert.ok(lifted.reasons.includes("hue-peak"));
+
+    const hueOnly = fuseScores({
+      visual: 0.2,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, huePeakish: true },
+    });
+    assert.ok(Math.abs(hueOnly.fusedBeforeCalibration - 0.2) < 1e-9);
+  });
+
   it("lifts a muted mid-range visual without inventing a verdict from low colorfulness alone", () => {
     const lifted = fuseScores({
       visual: 0.56,
