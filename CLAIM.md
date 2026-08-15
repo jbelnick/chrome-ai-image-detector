@@ -128,6 +128,33 @@ webgpu:      UNVERIFIED
 
 Balanced accuracy matches Node at **0.872222**. The confusion matrix moved: Chrome WASM is 157/23/157/23 vs Node 162/18/152/28 (TPR down 5, TNR up 5). Decode difference (`createImageBitmap` / `OffscreenCanvas` vs `sharp`) is enough to flip 10 decisions; fusion was not changed.
 
+## Mac hardware WebGPU (same 360, verified)
+
+Jason ran `npm run eval:chrome` on a Mac at repo `456a2cb` (`cursor/in-browser-ai-detector-2aeb`), `CHROME_PATH` = Google Chrome.app, no `GRAIN_CHROME_EVAL_LIMIT`. Source of truth: `eval/results/chrome.json` on that machine. These numbers are copied from that verified file — not invented.
+
+```
+backend:     webgpu
+webgpu:      initialized
+GPU adapter: {"vendor":"apple","architecture":"metal-3","device":"0x0000"}
+bal_acc_065: 0.872222
+tpr_065:     0.872222
+tnr_065:     0.872222
+n:           360
+TP/FN/TN/FP: 157 / 23 / 157 / 23
+fuse.bias:   0
+threshold:   0.65
+```
+
+ONNX SHA-256 pins matched. Metal-3 WebGPU printed the **same confusion matrix** as this VM's Chrome WASM run. Cloud `npm run eval:chrome` (WASM fallback) is therefore the chrome-path proxy for Mac WebGPU on this 360. It is labeled chrome-path, not hardware WebGPU.
+
+Compare:
+
+| path | backend | BA | TPR | TNR | TP/FN/TN/FP |
+| --- | --- | --- | --- | --- | --- |
+| Node KEEP `1e19a9f` | onnxruntime-node + sharp | 0.872222 | 0.900000 | 0.844444 | 162/18/152/28 |
+| Cloud Chrome WASM | ort-web wasm (SwiftShader only) | 0.872222 | 0.872222 | 0.872222 | 157/23/157/23 |
+| Mac Chrome WebGPU | ort-web webgpu (Apple Metal-3) | 0.872222 | 0.872222 | 0.872222 | 157/23/157/23 |
+
 ## Rules checklist
 
 - [x] No cloud inference

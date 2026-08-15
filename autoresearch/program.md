@@ -14,17 +14,21 @@ Hard stop: Sunday 16 Aug 2026, 05:45 UTC. Freeze and ship. No on-chain claim, no
 
 ## Scalar metric (higher is better)
 
-Official number from the frozen harness: OpenFake `core/test` prefix only, predicted AI iff `score >= 0.65`, balanced accuracy `(TPR+TNR)/2`.
+**Chrome-path** `bal_acc_065` from `npm run eval:chrome`. Same OpenFake `core/test` 180/class prefix, AI iff `score >= 0.65`, BA = `(TPR+TNR)/2`.
 
-Print after every eval:
+On this cloud VM there is no real GPU. Chrome WASM printed the same 157/23/157/23 matrix as Mac Metal WebGPU. Treat VM `eval:chrome` as the chrome-path proxy. Label it chrome-path, never hardware WebGPU.
+
+Print after every chrome-path eval:
 
 ```
-bal_acc_065: 0.742000
-tpr_065:     0.000000
-tnr_065:     0.000000
+bal_acc_065: 0.872222
+tpr_065:     0.872222
+tnr_065:     0.872222
+backend:     wasm
+webgpu:      UNVERIFIED
 ```
 
-Source of truth: `eval/results/latest.json` → `officialOpenFake`. Do not invent. Do not use the Picsum mix or the exploratory raw-cut search as the ratchet.
+Source of truth: `eval/results/chrome.json` → `officialOpenFake`. `node autoresearch/print-chrome-score.mjs`. Do not invent. Do not use Node `latest.json`, Picsum, or the exploratory raw-cut search as the ratchet. Do not retune fuse bias. Do not remap a raw cut onto 0.65.
 
 Log every completed run to untracked `autoresearch/results.tsv`:
 
@@ -39,7 +43,7 @@ commit	bal_acc_065	status	description
 1. First run is the baseline on current HEAD. Record it. Keep it.
 2. Form **one** hypothesis. Edit detector code only.
 3. `git commit` that change only.
-4. `npm run eval` → `autoresearch/run.log`. Then `node autoresearch/print-score.mjs`. `grep "^bal_acc_065:"`.
+4. `npm run eval:chrome` → `autoresearch/run.log`. Then `node autoresearch/print-chrome-score.mjs`. `grep "^bal_acc_065:"`.
 5. Crash or empty grep: fix a dumb bug at most twice, else log `crash`, `git reset --hard` to the running best, next idea.
 6. Strictly higher `bal_acc_065` than the running best → **KEEP**. Update best. Spin the three bounty reviewers on that commit. A disqualifier invalidates the KEEP: revert, log, next idea. Nits do not block.
 7. Equal or worse → `git reset --hard` to the previous best. Log `discard`.
@@ -68,4 +72,4 @@ Must not change: eval set, labels, metric formula, 0.65 keep/discard threshold, 
 
 ## When to freeze
 
-Asymptote or hard stop, whichever first. Write `CLAIM.md` with the real `npm run eval` block and the best `bal_acc_065`. PR body includes `results.tsv` summary, best score, and the claim packet.
+Asymptote (three chrome-path families in a row flat) or Sunday 16 Aug 2026 05:45 UTC, whichever first. Write `CLAIM.md` with the real chrome-path block and the best `bal_acc_065`. PR body includes `results.tsv` summary, best score, and the claim packet.
