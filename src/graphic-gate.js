@@ -11,6 +11,7 @@ export function quantizeChannel(value, bins = 16) {
 
 export const TEXTURE = {
   vividColorfulness: 72,
+  mutedColorfulness: 28,
 };
 
 export function analyzePixels(data, width, height) {
@@ -65,6 +66,7 @@ export function analyzePixels(data, width, height) {
     Math.sqrt(rgStd * rgStd + ybStd * ybStd) +
     0.3 * Math.sqrt(rgMean * rgMean + ybMean * ybMean);
   const vivid = colorfulness >= TEXTURE.vividColorfulness;
+  const muted = colorfulness <= TEXTURE.mutedColorfulness;
   return {
     uniqueRatio,
     edgeRatio,
@@ -73,6 +75,7 @@ export function analyzePixels(data, width, height) {
     uniqueColors: colors.size,
     colorfulness,
     vivid,
+    muted,
   };
 }
 
