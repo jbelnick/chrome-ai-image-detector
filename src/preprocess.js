@@ -1,8 +1,8 @@
 /**
  * Community Forensics test-time preprocessing:
  * resize shorter edge to 440, center-crop 384, mean-center, NCHW.
- * Experiment: ImageNet mean only — std is identity so channel gain
- * is not forced to the ImageNet training recipe.
+ * Experiment: ImageNet mean only, plus a mild Laplacian unsharp so
+ * high-frequency forensic cues are not washed out by generator grading.
  */
 
 export const PREPROCESS = {
@@ -13,6 +13,7 @@ export const PREPROCESS = {
   // centering, drops the per-channel gain that can hide generator
   // color-grade differences.
   std: [1, 1, 1],
+  unsharp: 0.15,
 };
 
 export function scaledSize(width, height, shortEdge = PREPROCESS.resizeShortEdge) {
@@ -62,6 +63,21 @@ export function imageDataToTensor(
     tensor[i] = (r - mean[0]) / std[0];
     tensor[plane + i] = (g - mean[1]) / std[1];
     tensor[2 * plane + i] = (b - mean[2]) / std[2];
+  }
+  const k = PREPROCESS.unsharp;
+  if (k) {
+    const copy = tensor.slice();
+    for (let c = 0; c < 3; c += 1) {
+      const off = c * plane;
+      for (let y = 1; y < height - 1; y += 1) {
+        for (let x = 1; x < width - 1; x += 1) {
+          const i = off + y * width + x;
+          const lap =
+            4 * copy[i] - copy[i - 1] - copy[i + 1] - copy[i - width] - copy[i + width];
+          tensor[i] = copy[i] + k * lap;
+        }
+      }
+    }
   }
   return tensor;
 }
