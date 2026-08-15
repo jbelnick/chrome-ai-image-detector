@@ -75,7 +75,17 @@ MIX including Picsum easy-real (not the claim) @ 0.65:
 EXPLORATORY only — best raw cut on a 30% OpenFake subset: 0.27 (BA 84.58%). Not shipped.
 ```
 
-Reported proxy score: **81.67% balanced accuracy at threshold 0.65** on OpenFake `core/test` (180 AI / 180 real), shipped fuse (`bias=0`). This is the product path.
+Reported proxy score (baseline, `b3e1487` / `8b20ad4`): **81.67%** BA @ 0.65.
+
+Autoresearch KEEP `d58dfaf` (soft-OR visual blend, fuse still `bias=0`):
+
+```
+bal_acc_065: 0.830556
+tpr_065:     0.716667
+tnr_065:     0.944444
+```
+
+Harness print: **83.06%** balanced accuracy, TPR 71.67%, TNR 94.44%, n=360. This is the current product path and the running best.
 
 Withdrawn earlier figures: 84.96% (raw 0.33 remapped onto a displayed 0.65) and 68.85% Community-Forensics-only.
 
