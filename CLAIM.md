@@ -41,10 +41,11 @@ npm run build
 ```bash
 npm test
 npm run eval:download   # needs: pip install datasets pillow
-npm run eval
+npm run eval            # Node + onnxruntime-node + sharp
+npm run eval:chrome     # headless Chrome, ORT-web, createImageBitmap + OffscreenCanvas
 ```
 
-Same fusion object as the extension (`FUSE_DEFAULTS.bias = 0`). Node uses `onnxruntime-node` + `sharp`; Chrome uses canvas `drawImage` + WebGPU/WASM. Those decode paths are not identical.
+Same fusion object as the extension (`FUSE_DEFAULTS.bias = 0`). Node uses `onnxruntime-node` + `sharp`; Chrome uses `createImageBitmap` + `OffscreenCanvas` + ORT-web. Those decode paths are not identical.
 
 Official proxy: a 180/class streaming prefix of OpenFake `core/test` (generator holdout, JPEG q=88). Not the full published `core/test` protocol and not OpenFake `reddit/test`. Lorem Picsum is easy-real padding and is **not** the claim. Community Forensics DALL·E extras are excluded (embedded generator ASCII). The SigLIP2 linear probe was fit on OpenFake **validation** only — the train script does not read `eval/data`.
 
@@ -86,6 +87,46 @@ Harness print: **87.22%** balanced accuracy, TPR 90.00%, TNR 84.44%, n=360 (TP 1
 Fresh re-eval of HEAD `9df44c4` (src identical to `1e19a9f`) on 2026-08-15 reproduced the same `bal_acc_065: 0.872222`. Autoresearch froze after three hypothesis families in a row were flat (spatial-tone, calibration nips, ensemble/new-signal). No later KEEP beat 0.872222.
 
 Baseline `8b20ad4` was 81.67% BA @ 0.65. Withdrawn earlier figures: 84.96% (raw 0.33 remapped onto a displayed 0.65) and 68.85% Community-Forensics-only.
+
+## Chrome path (same 360)
+
+Command: `npm run eval:chrome`  
+Date: 2026-08-15  
+Machine: this Cloud Agent. Chrome 148.0.7778.96 headless. No `/dev/dri`.  
+`navigator.gpu` is present; `requestAdapter()` returned SwiftShader (`vendor=google`, `architecture=swiftshader`, `device=0xc0de`). That is **not** a real GPU. Hardware WebGPU is **UNVERIFIED**. A SwiftShader WebGPU attempt hung on the full set, so ORT used the **wasm** EP (the extension fallback).  
+Same OpenFake `core/test` 180/class prefix as `npm run eval`. Same SHA-256 pins. Fuse bias stays 0. Detector was not retuned.
+
+```
+Grain Chrome eval — ORT-web + createImageBitmap / OffscreenCanvas
+Models: siglip2-vision-base-224 + commfor-vit-s-384
+Fuse bias=0 temperature=0.9
+AI iff score >= 0.65
+Images: official(OpenFake)=360  (Picsum/CF extras not scored)
+Backend: wasm
+WebGPU: UNVERIFIED — only a software adapter (SwiftShader); no real GPU device. ORT used wasm.
+GPU adapter: {"vendor":"google","architecture":"swiftshader","device":"0xc0de"}
+
+OFFICIAL OpenFake core/test @ 0.65 (Chrome path):
+  balanced accuracy  87.22%
+  TPR                87.22%
+  TNR                87.22%
+  n                  360 (AI 180 / real 180)
+  TP/FN/TN/FP        157 / 23 / 157 / 23
+
+NODE reference (KEEP 1e19a9f, onnxruntime-node + sharp):
+  bal_acc_065: 0.872222
+  tpr_065:     0.900000
+  tnr_065:     0.844444
+  delta_ba:    +0.000000
+
+bal_acc_065: 0.872222
+tpr_065:     0.872222
+tnr_065:     0.872222
+backend:     wasm
+webgpu:      UNVERIFIED
+```
+
+Balanced accuracy matches Node at **0.872222**. The confusion matrix moved: Chrome WASM is 157/23/157/23 vs Node 162/18/152/28 (TPR down 5, TNR up 5). Decode difference (`createImageBitmap` / `OffscreenCanvas` vs `sharp`) is enough to flip 10 decisions; fusion was not changed.
 
 ## Rules checklist
 

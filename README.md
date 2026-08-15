@@ -67,7 +67,7 @@ npm run eval:chrome     # Chrome ORT-web + createImageBitmap / OffscreenCanvas (
 
 Balanced accuracy = (TPR + TNR) / 2. An image is predicted AI when the **shipped** fused score `>= 0.65`. Fuse bias is `0` — the harness does not remap a lower raw cut onto 0.65.
 
-The number printed as **OFFICIAL OpenFake core/test** is the proxy score recorded in [CLAIM.md](CLAIM.md) (**81.67%** BA @ 0.65 on 360 OpenFake images, 2026-08-15). Picsum photographs are easy-real padding and are labeled as such. Community Forensics DALL·E extras are excluded because they embed generator ASCII.
+The number printed as **OFFICIAL OpenFake core/test** is the proxy score recorded in [CLAIM.md](CLAIM.md): Node+sharp **87.22%** BA @ 0.65 (TPR 90.00% / TNR 84.44%); Chrome ORT-web WASM **87.22%** BA @ 0.65 (TPR 87.22% / TNR 87.22%), same 360. Hardware WebGPU was UNVERIFIED on the measurement machine. Picsum photographs are easy-real padding and are labeled as such. Community Forensics DALL·E extras are excluded because they embed generator ASCII.
 
 This is a public **generator-holdout** proxy, **not** the private maintainer set and **not** OpenFake `reddit/test` (in-the-wild web JPEG). The downloader takes a streaming prefix of 180/class from `core/test` (not the full published protocol) and JPEG-saves at q=88. That is harder than CIFAKE/Picsum and still easier than a private multi-generation web-JPEG bench.
 
@@ -76,7 +76,7 @@ This is a public **generator-holdout** proxy, **not** the private maintainer set
 ```
 src/                 shared detection core (extension + eval)
 extension/           unpacked MV3 extension (load this folder)
-eval/                proxy download + harness
+eval/                proxy download + Node harness + Chrome ORT-web harness
 scripts/             build, fetch-models, icons
 tools/export_onnx.py reproducible ONNX export
 tests/               node:test unit tests
