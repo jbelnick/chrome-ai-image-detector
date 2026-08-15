@@ -9,7 +9,7 @@ import { graphicScale } from "./graphic-gate.js";
 export const FUSE_DEFAULTS = {
   provenanceAiScore: 0.93,
   cameraRealScale: 0.88,
-  graphicScaleWhenFlagged: 0.72,
+  graphicScaleWhenFlagged: 1,
   bias: 0,
   temperature: 1,
 };
