@@ -64,7 +64,7 @@ npm run eval            # prints official BA / TPR / TNR at threshold 0.65
 
 Balanced accuracy = (TPR + TNR) / 2. An image is predicted AI when the **shipped** fused score `>= 0.65`. Fuse bias is `0` — the harness does not remap a lower raw cut onto 0.65.
 
-The number printed as **OFFICIAL OpenFake core/test** is the proxy score. Picsum photographs are easy-real padding and are labeled as such. Community Forensics DALL·E extras are excluded because they embed generator ASCII.
+The number printed as **OFFICIAL OpenFake core/test** is the proxy score recorded in [CLAIM.md](CLAIM.md) (**81.67%** BA @ 0.65 on 360 OpenFake images, 2026-08-15). Picsum photographs are easy-real padding and are labeled as such. Community Forensics DALL·E extras are excluded because they embed generator ASCII.
 
 This is a public proxy, **not** the private maintainer set. OpenFake `core/test` holds out generators; it is still easier than a private web-JPEG bench of recent models.
 

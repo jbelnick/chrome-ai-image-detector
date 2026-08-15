@@ -1,6 +1,25 @@
-import { bytesToBase64 } from "./lib/transfer-bytes.js";
+(() => {
+  const TABLE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  function bytesToBase64(bytes) {
+    const u8 = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
+    let out = "";
+    let i = 0;
+    for (; i + 2 < u8.length; i += 3) {
+      const n = (u8[i] << 16) | (u8[i + 1] << 8) | u8[i + 2];
+      out += TABLE[(n >> 18) & 63] + TABLE[(n >> 12) & 63] + TABLE[(n >> 6) & 63] + TABLE[n & 63];
+    }
+    const rem = u8.length - i;
+    if (rem === 1) {
+      const n = u8[i] << 16;
+      out += TABLE[(n >> 18) & 63] + TABLE[(n >> 12) & 63] + "==";
+    } else if (rem === 2) {
+      const n = (u8[i] << 16) | (u8[i + 1] << 8);
+      out += TABLE[(n >> 18) & 63] + TABLE[(n >> 12) & 63] + TABLE[(n >> 6) & 63] + "=";
+    }
+    return out;
+  }
 
-const MIN_SIDE = 64;
+  const MIN_SIDE = 64;
 const MAX_ATTEMPTS = 2;
 const pending = new Map();
 const badges = new WeakMap();
@@ -200,3 +219,4 @@ mo.observe(document.documentElement, {
 
 window.addEventListener("scroll", repositionAll, { passive: true, capture: true });
 window.addEventListener("resize", repositionAll, { passive: true });
+})();

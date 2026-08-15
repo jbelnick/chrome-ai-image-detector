@@ -50,9 +50,34 @@ Official proxy: OpenFake `core/test` only. Lorem Picsum is easy-real padding and
 
 ## Proxy score
 
-**UNVERIFIED after the honesty/compliance rewrite.** The previous 84.96% figure was a calib-split remapping of raw 0.33 onto a displayed 0.65 and is **withdrawn**. The previous 80.73% uncalibrated figure mixed Picsum / CF extras into a 70% split and is also not the current official number.
+Command: `npm run eval`  
+Date: 2026-08-15  
+Machine: this Cloud Agent (CPU ONNX Runtime).  
+Commit scored: `b3e1487` (honesty rewrite; fuse bias=0). Content-script encoder inlining after this run does not change scores.
 
-Re-run `npm run eval` and paste the `OFFICIAL OpenFake core/test @ 0.65` block here. Do not invent a replacement.
+```
+Grain eval — same ONNX + shipped fusion as the extension
+Models: siglip2-vision-base-224 + commfor-vit-s-384
+Fuse bias=0 temperature=1
+Images: 385  official(OpenFake)=360  easy-real=20  excluded-cf=5
+
+OFFICIAL OpenFake core/test @ 0.65 (shipped path, reported proxy):
+  balanced accuracy  81.67%
+  TPR                68.89%
+  TNR                94.44%
+  n                  360 (AI 180 / real 180)
+
+MIX including Picsum easy-real (not the claim) @ 0.65:
+  balanced accuracy  81.94%
+  TPR                68.89%
+  TNR                95.00%
+
+EXPLORATORY only — best raw cut on a 30% OpenFake subset: 0.27 (BA 84.58%). Not shipped.
+```
+
+Reported proxy score: **81.67% balanced accuracy at threshold 0.65** on OpenFake `core/test` (180 AI / 180 real), shipped fuse (`bias=0`). This is the product path.
+
+Withdrawn earlier figures: 84.96% (raw 0.33 remapped onto a displayed 0.65) and 68.85% Community-Forensics-only.
 
 ## Rules checklist
 
