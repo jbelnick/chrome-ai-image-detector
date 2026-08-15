@@ -14,6 +14,8 @@ export const TEXTURE = {
   mutedColorfulness: 28,
   flatToneLo: 0.92,
   flatToneHi: 1.08,
+  axisEdgeMin: 0.14,
+  axisOrientMin: 1.8,
 };
 
 export function analyzePixels(data, width, height) {
@@ -29,6 +31,8 @@ export function analyzePixels(data, width, height) {
   let centerN = 0;
   let borderLum = 0;
   let borderN = 0;
+  let axisSumX = 0;
+  let axisSumY = 0;
   const stride = Math.max(1, Math.floor(Math.min(width, height) / 96));
   const x0 = width * 0.25;
   const x1 = width * 0.75;
@@ -51,7 +55,11 @@ export function analyzePixels(data, width, height) {
       const lum = 0.299 * r + 0.587 * g + 0.114 * b;
       const lumX = 0.299 * data[j] + 0.587 * data[j + 1] + 0.114 * data[j + 2];
       const lumY = 0.299 * data[k] + 0.587 * data[k + 1] + 0.114 * data[k + 2];
-      if (Math.abs(lum - lumX) > 28 || Math.abs(lum - lumY) > 28) edge += 1;
+      const dX = Math.abs(lum - lumX);
+      const dY = Math.abs(lum - lumY);
+      if (dX > 28 || dY > 28) edge += 1;
+      axisSumX += dX;
+      axisSumY += dY;
       const rg = r - g;
       const yb = 0.5 * (r + g) - b;
       rgSum += rg;
@@ -89,6 +97,10 @@ export function analyzePixels(data, width, height) {
   const centerBorder = centerMean / (borderMean + 1e-3);
   const flatTone =
     centerBorder >= TEXTURE.flatToneLo && centerBorder <= TEXTURE.flatToneHi;
+  const axisOrient =
+    Math.max(axisSumX, axisSumY) / (Math.min(axisSumX, axisSumY) + 1e-3);
+  const axisHeavy =
+    edgeRatio >= TEXTURE.axisEdgeMin && axisOrient >= TEXTURE.axisOrientMin;
   return {
     uniqueRatio,
     edgeRatio,
@@ -100,6 +112,8 @@ export function analyzePixels(data, width, height) {
     muted,
     centerBorder,
     flatTone,
+    axisOrient,
+    axisHeavy,
   };
 }
 
