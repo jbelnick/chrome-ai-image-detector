@@ -7,6 +7,7 @@ import {
   imageDataToTensor,
   visualProbabilityFromLogit,
   PREPROCESS,
+  equalizeLumaTiles,
 } from "../src/preprocess.js";
 
 describe("preprocess", () => {
@@ -38,12 +39,37 @@ describe("preprocess", () => {
       rgba[i * 4 + 2] = 0;
       rgba[i * 4 + 3] = 255;
     }
-    const tensor = imageDataToTensor(rgba, 384, 384);
+    const tensor = imageDataToTensor(rgba, 384, 384, { clahe: 0 });
     assert.equal(tensor.length, 3 * n);
     const expectedR = (1 - PREPROCESS.mean[0]) / PREPROCESS.std[0];
     const expectedG = (0 - PREPROCESS.mean[1]) / PREPROCESS.std[1];
     assert.ok(Math.abs(tensor[0] - expectedR) < 1e-5);
     assert.ok(Math.abs(tensor[n] - expectedG) < 1e-5);
+  });
+
+  it("equalizes luma inside tiles on a two-level field", () => {
+    const w = 64;
+    const h = 64;
+    const data = new Uint8Array(w * h * 4);
+    for (let y = 0; y < h; y += 1) {
+      for (let x = 0; x < w; x += 1) {
+        const i = (y * w + x) * 4;
+        const v = (x + y) % 2 === 0 ? 40 : 80;
+        data[i] = v;
+        data[i + 1] = v;
+        data[i + 2] = v;
+        data[i + 3] = 255;
+      }
+    }
+    const out = equalizeLumaTiles(data, w, h, 2);
+    let min = 255;
+    let max = 0;
+    for (let i = 0; i < w * h; i += 1) {
+      min = Math.min(min, out[i * 4]);
+      max = Math.max(max, out[i * 4]);
+    }
+    assert.ok(max - min > 80);
+    assert.equal(PREPROCESS.claheTiles, 4);
   });
 
   it("converts a logit to a probability with sigmoid", () => {
