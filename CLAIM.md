@@ -235,6 +235,30 @@ webgpu:      UNVERIFIED
 
 The broader mix is harder than the 360, almost entirely on TNR (49 FP vs 11 FN). That matches the hypothesis that remaining private-bench miss is distribution shift, not another canvas nip. This is still **not** Kenny's private bench.
 
+## Current broader-proxy best (`f977495`)
+
+Ignore Community Forensics when SigLIP < 0.25. Fuse bias stays 0. Command: `npm run eval:chrome`. Date: 2026-08-15.
+
+```
+SCALAR broader-proxy (keep/revert)
+bal_acc_065: 0.860335
+tpr_065:     0.877095
+tnr_065:     0.843575
+tp/fn/tn/fp: 157 / 22 / 151 / 28
+n:           358
+
+SECONDARY official-360 (not the ratchet)
+bal_acc_065: 0.886111
+tpr_065:     0.855556
+tnr_065:     0.916667
+tp/fn/tn/fp: 154 / 26 / 165 / 15
+n:           360
+backend:     wasm
+webgpu:      UNVERIFIED
+```
+
+Versus baseline `9d7a712` on the same mix: TPR −11, TNR +21, net +10, BA 0.832402 → 0.860335. The secondary 360 **rose** (0.880556 → 0.886111) — this KEEP did not crater the old proxy.
+
 ## Rules checklist
 
 - [x] No cloud inference
