@@ -2,6 +2,8 @@ const OFFSCREEN_URL = "offscreen.html";
 
 let offscreenReady = null;
 const pageStats = new Map();
+const resultCache = new Map();
+const MAX_CACHE = 256;
 
 async function ensureOffscreen() {
   if (offscreenReady) return offscreenReady;
@@ -84,6 +86,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message?.type === "analyze") {
     const tabId = sender.tab?.id;
     (async () => {
+      if (resultCache.has(message.src)) {
+        return resultCache.get(message.src);
+      }
       await ensureOffscreen();
       const { buffer, mime } = await fetchImageBytes(message.src);
       const result = await sendToOffscreen({
@@ -92,6 +97,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         mime,
         buffer,
       });
+      if (resultCache.size >= MAX_CACHE) {
+        const first = resultCache.keys().next().value;
+        resultCache.delete(first);
+      }
+      resultCache.set(message.src, result);
       bumpStats(tabId, "analyzed");
       if (result.score >= 0.65) bumpStats(tabId, "ai");
       return result;

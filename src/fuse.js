@@ -10,7 +10,9 @@ export const FUSE_DEFAULTS = {
   provenanceAiScore: 0.93,
   cameraRealScale: 0.88,
   graphicScaleWhenFlagged: 0.72,
-  bias: 0,
+  // Fit on the 30% calib split (seed 20260815), never on the reported test split.
+  // Maps raw 0.33 → displayed 0.65. See eval/results/fuse.json after `npm run eval`.
+  bias: -1.3272242663307092,
   temperature: 1,
 };
 

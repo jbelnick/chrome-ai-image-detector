@@ -12,7 +12,12 @@ License: [MIT](LICENSE).
 - Optionally short-circuits when C2PA / XMP / generator metadata is present.
 - Down-weights charts / UI screenshots so photo-trained scores are not treated as gospel.
 
-The visual backbone is a deterministic ONNX export of the public MIT-licensed [Community Forensics ViT-S/384](https://huggingface.co/OwensLab/commfor-model-384) checkpoint (Park & Owens, 2024). `sigmoid(logit)` is P(AI-generated). See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+The visual path is a hybrid:
+
+1. A SigLIP2-base vision encoder ([onnx-community export](https://huggingface.co/onnx-community/siglip2-base-patch16-224-ONNX) of `google/siglip2-base-patch16-224`) plus a tiny linear probe trained on **OpenFake validation only**.
+2. A deterministic ONNX export of the public MIT-licensed [Community Forensics ViT-S/384](https://huggingface.co/OwensLab/commfor-model-384) checkpoint, used as a high-precision booster on older generators.
+
+`sigmoid` outputs are fused in-browser. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 ## Build from source
 
@@ -29,8 +34,8 @@ npm test                # unit tests for metrics, calibration, provenance, prepr
 
 `npm run fetch-models` will:
 
-1. Reuse `models/commfor-vit-s-384.onnx` if its SHA-256 matches the pin in `src/model-config.js`.
-2. Otherwise export it from `OwensLab/commfor-model-384` via `tools/export_onnx.py`.
+1. Reuse `models/commfor-vit-s-384.onnx` if its SHA-256 matches the pin in `src/model-config.js`, otherwise export it from `OwensLab/commfor-model-384`.
+2. Download `siglip2-vision.onnx` (~355 MB, one-time) from Hugging Face and SHA-256 verify it. After that the extension does not fetch weights again.
 
 After a successful build the unpacked extension root is **`extension/`**.
 

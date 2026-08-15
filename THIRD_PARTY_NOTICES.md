@@ -1,5 +1,13 @@
 # Third-party notices
 
+## SigLIP2 vision encoder
+
+- ONNX: [onnx-community/siglip2-base-patch16-224-ONNX](https://huggingface.co/onnx-community/siglip2-base-patch16-224-ONNX) `vision_model.onnx`
+- Base: [google/siglip2-base-patch16-224](https://huggingface.co/google/siglip2-base-patch16-224)
+- License: Apache-2.0
+- One-time download, SHA-256 pinned in `src/model-config.js`.
+- The linear probe in `src/siglip-probe.js` was fit on OpenFake **validation** only.
+
 ## Community Forensics ViT-S/384
 
 - Source: [OwensLab/commfor-model-384](https://huggingface.co/OwensLab/commfor-model-384)

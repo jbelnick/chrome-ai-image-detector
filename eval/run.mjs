@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Eval harness: same preprocess + fusion + Community Forensics ONNX
- * as the extension. Prints balanced accuracy at the required 0.65 cut.
+ * Eval harness: same preprocess, fusion, and ONNX weights as the extension.
+ * Prints balanced accuracy at the required 0.65 cut.
  */
 import { createHash } from "node:crypto";
 import { readdir, readFile, writeFile, mkdir } from "node:fs/promises";
@@ -9,7 +9,7 @@ import { dirname, join, extname } from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 import * as ort from "onnxruntime-node";
-import { MODEL, EVAL_THRESHOLD } from "../src/model-config.js";
+import { MODELS, EVAL_THRESHOLD } from "../src/model-config.js";
 import {
   PREPROCESS,
   scaledSize,
@@ -17,6 +17,7 @@ import {
   imageDataToTensor,
   visualProbabilityFromLogit,
 } from "../src/preprocess.js";
+import { imageDataToSiglipTensor, siglipProbability, blendVisual, SIGLIP } from "../src/siglip.js";
 import { scanProvenance } from "../src/provenance.js";
 import { analyzePixels } from "../src/graphic-gate.js";
 import { fuseScores, FUSE_DEFAULTS } from "../src/fuse.js";
@@ -25,7 +26,6 @@ import { summarize } from "../src/metrics.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const dataDir = join(root, "eval/data");
-const modelPath = join(root, "models", MODEL.filename);
 const IMAGE_EXT = new Set([".jpg", ".jpeg", ".png", ".webp", ".bmp"]);
 
 function mulberry32(seed) {
@@ -51,7 +51,10 @@ function shuffle(items, seed) {
 
 async function listLabeled() {
   const rows = [];
-  for (const [folder, label] of [["ai", 1], ["real", 0]]) {
+  for (const [folder, label] of [
+    ["ai", 1],
+    ["real", 0],
+  ]) {
     const dir = join(dataDir, folder);
     let names = [];
     try {
@@ -79,12 +82,10 @@ function rgbToRgba(rgb, width, height) {
   return rgba;
 }
 
-async function tensorFromFile(path) {
+async function decodeBoth(path) {
   const file = await readFile(path);
   const meta = await sharp(file).rotate().metadata();
-  const width = meta.width;
-  const height = meta.height;
-  const scaled = scaledSize(width, height);
+  const scaled = scaledSize(meta.width, meta.height);
   const resized = await sharp(file)
     .rotate()
     .resize(scaled.width, scaled.height, { kernel: "cubic", fit: "fill" })
@@ -98,12 +99,32 @@ async function tensorFromFile(path) {
     .extract({ left: box.x, top: box.y, width: box.size, height: box.size })
     .raw()
     .toBuffer();
-  const rgba = rgbToRgba(cropped, box.size, box.size);
+  const rgbaCf = rgbToRgba(cropped, box.size, box.size);
+
+  const siglipRaw = await sharp(file)
+    .rotate()
+    .resize(SIGLIP.size, SIGLIP.size, { kernel: "lanczos3", fit: "fill" })
+    .removeAlpha()
+    .raw()
+    .toBuffer();
+  const rgbaSig = rgbToRgba(siglipRaw, SIGLIP.size, SIGLIP.size);
+
   return {
     bytes: file,
-    rgba,
-    tensor: imageDataToTensor(rgba, box.size, box.size),
+    rgbaCf,
+    tensorCf: imageDataToTensor(rgbaCf, box.size, box.size),
+    tensorSig: imageDataToSiglipTensor(rgbaSig, SIGLIP.size, SIGLIP.size),
   };
+}
+
+async function verifyModel(spec) {
+  const path = join(root, "models", spec.filename);
+  const buf = await readFile(path);
+  const hash = createHash("sha256").update(buf).digest("hex");
+  if (hash !== spec.sha256) {
+    throw new Error(`${spec.id} SHA-256 mismatch: ${hash}`);
+  }
+  return { path, hash };
 }
 
 async function main() {
@@ -113,25 +134,29 @@ async function main() {
     process.exit(2);
   }
 
-  const modelBuf = await readFile(modelPath);
-  const hash = createHash("sha256").update(modelBuf).digest("hex");
-  if (hash !== MODEL.sha256) {
-    console.warn(`model hash ${hash} != pinned ${MODEL.sha256}`);
-  }
-
-  const session = await ort.InferenceSession.create(modelPath, {
+  const cfSpec = await verifyModel(MODELS.commfor);
+  const slSpec = await verifyModel(MODELS.siglip2);
+  const cfSess = await ort.InferenceSession.create(cfSpec.path, {
+    executionProviders: ["cpu"],
+  });
+  const slSess = await ort.InferenceSession.create(slSpec.path, {
     executionProviders: ["cpu"],
   });
 
   const scored = [];
   for (const [index, row] of files.entries()) {
-    const { bytes, rgba, tensor } = await tensorFromFile(row.path);
+    const { bytes, rgbaCf, tensorCf, tensorSig } = await decodeBoth(row.path);
     const provenance = scanProvenance(bytes);
-    const graphic = analyzePixels(rgba, PREPROCESS.crop, PREPROCESS.crop);
-    const input = new ort.Tensor("float32", tensor, [1, 3, PREPROCESS.crop, PREPROCESS.crop]);
-    const outputs = await session.run({ [MODEL.inputName]: input });
-    const logit = Number(outputs[MODEL.outputName].data[0]);
-    const visual = visualProbabilityFromLogit(logit);
+    const graphic = analyzePixels(rgbaCf, PREPROCESS.crop, PREPROCESS.crop);
+    const cfOut = await cfSess.run({
+      [MODELS.commfor.inputName]: new ort.Tensor("float32", tensorCf, [1, 3, PREPROCESS.crop, PREPROCESS.crop]),
+    });
+    const slOut = await slSess.run({
+      [MODELS.siglip2.inputName]: new ort.Tensor("float32", tensorSig, [1, 3, SIGLIP.size, SIGLIP.size]),
+    });
+    const commfor = visualProbabilityFromLogit(Number(cfOut[MODELS.commfor.outputName].data[0]));
+    const siglip = siglipProbability(slOut[MODELS.siglip2.outputName].data);
+    const visual = blendVisual(siglip, commfor);
     const fused = fuseScores({
       visual,
       provenance,
@@ -141,8 +166,9 @@ async function main() {
     scored.push({
       ...row,
       visual,
+      siglip,
+      commfor,
       score: fused.fusedBeforeCalibration,
-      logit,
       reasons: fused.reasons,
     });
     if ((index + 1) % 25 === 0 || index === files.length - 1) {
@@ -170,24 +196,19 @@ async function main() {
     calibratedTest.map((r) => ({ label: r.label, score: r.score })),
     EVAL_THRESHOLD,
   );
-  const rawAll = summarize(
-    scored.map((r) => ({ label: r.label, score: r.score })),
-    EVAL_THRESHOLD,
-  );
 
   const report = {
-    model: MODEL.id,
-    modelSha256: hash,
+    models: [MODELS.commfor.id, MODELS.siglip2.id],
+    hashes: { commfor: cfSpec.hash, siglip2: slSpec.hash },
     threshold: EVAL_THRESHOLD,
     nTotal: scored.length,
     nCalib: calib.length,
     nTest: test.length,
     calibBestRawThreshold: best,
     fittedBias: bias,
-    uncalibratedAll: rawAll,
     uncalibratedTest: rawTest,
     calibratedTest: calTest,
-    note: "Calibration split is unused for the reported calibratedTest number.",
+    note: "Calibration split is unused for the reported calibratedTest number. OpenFake core/test images were not used to train the SigLIP2 probe.",
   };
 
   await mkdir(join(root, "eval/results"), { recursive: true });
@@ -199,8 +220,8 @@ async function main() {
 
   const pct = (x) => `${(x * 100).toFixed(2)}%`;
   console.log("");
-  console.log("Grain eval — same Community Forensics ONNX + fusion as the extension");
-  console.log(`Model: ${MODEL.id}  sha256=${hash.slice(0, 12)}…`);
+  console.log("Grain eval — same ONNX + fusion path as the extension");
+  console.log(`Models: ${MODELS.siglip2.id} + ${MODELS.commfor.id}`);
   console.log(`Images: ${scored.length}  calib=${calib.length}  test=${test.length}`);
   console.log(`Calib-optimal raw threshold: ${best.threshold.toFixed(2)} (BA ${pct(best.balancedAccuracy)})`);
   console.log(`Fitted bias so that raw ${best.threshold.toFixed(2)} → ${EVAL_THRESHOLD}`);

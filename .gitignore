@@ -1,5 +1,6 @@
 node_modules/
 models/*.bin
+models/siglip2-vision.onnx
 eval/data/
 eval/results/
 eval/.cache/
@@ -11,6 +12,4 @@ __pycache__/
 *.pyc
 .DS_Store
 *.log
-extension/vendor/
-extension/models/*.onnx
 .cache/

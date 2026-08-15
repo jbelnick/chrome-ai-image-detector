@@ -21,7 +21,7 @@ const libDir = join(root, "extension/lib");
 await rm(libDir, { recursive: true, force: true });
 await mkdir(libDir, { recursive: true });
 for (const name of await readdir(join(root, "src"))) {
-  if (name.endsWith(".js")) {
+  if (name.endsWith(".js") || name.endsWith(".json")) {
     await cp(join(root, "src", name), join(libDir, name));
   }
 }
@@ -71,14 +71,15 @@ if (copied === 0) {
   throw new Error("onnxruntime-web dist files were not found");
 }
 
-const modelSrc = join(root, "models/commfor-vit-s-384.onnx");
 const modelDstDir = join(root, "extension/models");
 await mkdir(modelDstDir, { recursive: true });
-try {
-  await cp(modelSrc, join(modelDstDir, "commfor-vit-s-384.onnx"));
-  console.log("copied packaged model");
-} catch {
-  console.log("model weights not present yet — run npm run fetch-models");
+for (const name of ["commfor-vit-s-384.onnx", "siglip2-vision.onnx"]) {
+  try {
+    await cp(join(root, "models", name), join(modelDstDir, name));
+    console.log("copied", name);
+  } catch {
+    console.log(`${name} not present yet — run npm run fetch-models`);
+  }
 }
 
 console.log(`build ok (copied ${copied} onnxruntime files)`);
