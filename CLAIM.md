@@ -259,6 +259,30 @@ webgpu:      UNVERIFIED
 
 Versus baseline `9d7a712` on the same mix: TPR −11, TNR +21, net +10, BA 0.832402 → 0.860335. The secondary 360 **rose** (0.880556 → 0.886111) — this KEEP did not crater the old proxy.
 
+## Current broader-proxy best (`b6b95ca`)
+
+Photo-grain drop (0.12) when `analyzePixels` flags grainy and the calibrated score is in `[0.65, 0.78)`. Fuse bias stays 0. Command: `npm run eval:chrome`. Date: 2026-08-15. The run stalled ~28 min once (425→430) then finished 718/718, EXIT:0.
+
+```
+SCALAR broader-proxy (keep/revert)
+bal_acc_065: 0.863128
+tpr_065:     0.854749
+tnr_065:     0.871508
+tp/fn/tn/fp: 153 / 26 / 156 / 23
+n:           358
+
+SECONDARY official-360 (not the ratchet)
+bal_acc_065: 0.883333
+tpr_065:     0.822222
+tnr_065:     0.944444
+tp/fn/tn/fp: 148 / 32 / 170 / 10
+n:           360
+backend:     wasm
+webgpu:      UNVERIFIED
+```
+
+Versus KEEP `f977495` on the same mix: TPR −4, TNR +5, net +1, BA 0.860335 → 0.863128. Secondary 360 slipped 0.886111 → 0.883333 (TPR −6, TNR +5) — called out, not hidden, not a crater.
+
 ## Rules checklist
 
 - [x] No cloud inference
