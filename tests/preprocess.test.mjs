@@ -7,7 +7,6 @@ import {
   imageDataToTensor,
   visualProbabilityFromLogit,
   PREPROCESS,
-  CF_LOGIT_BIAS,
 } from "../src/preprocess.js";
 
 describe("preprocess", () => {
@@ -48,13 +47,8 @@ describe("preprocess", () => {
   });
 
   it("converts a logit to a probability with sigmoid", () => {
-    assert.ok(visualProbabilityFromLogit(0, 0) === 0.5);
-    assert.ok(visualProbabilityFromLogit(6.753, 0) > 0.99);
-    assert.ok(visualProbabilityFromLogit(-6.7, 0) < 0.01);
-  });
-
-  it("applies a positive Community Forensics logit prior", () => {
-    assert.ok(visualProbabilityFromLogit(0) > 0.5);
-    assert.equal(CF_LOGIT_BIAS, 0.35);
+    assert.ok(visualProbabilityFromLogit(0) === 0.5);
+    assert.ok(visualProbabilityFromLogit(6.753) > 0.99);
+    assert.ok(visualProbabilityFromLogit(-6.7) < 0.01);
   });
 });

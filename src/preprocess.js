@@ -62,17 +62,9 @@ export function imageDataToTensor(
   return tensor;
 }
 
-/**
- * Community Forensics logit → P(AI). A small positive bias is a
- * forensic-head prior (CF was trained to find generators). SigLIP
- * must pass bias=0 so its probe stays an identity sigmoid.
- */
-export const CF_LOGIT_BIAS = 0.35;
-
-export function visualProbabilityFromLogit(logit, bias = CF_LOGIT_BIAS) {
+export function visualProbabilityFromLogit(logit) {
   if (!Number.isFinite(logit)) return 0.5;
-  const z = logit + bias;
-  if (z >= 20) return 1 - 1e-6;
-  if (z <= -20) return 1e-6;
-  return 1 / (1 + Math.exp(-z));
+  if (logit >= 20) return 1 - 1e-6;
+  if (logit <= -20) return 1e-6;
+  return 1 / (1 + Math.exp(-logit));
 }
