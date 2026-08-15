@@ -59,14 +59,21 @@ describe("fuse", () => {
     assert.ok(Math.abs(colorOnly.fusedBeforeCalibration - 0.2) < 1e-9);
   });
 
-  it("does not lift a flat-tone mid-range visual (web-real FP pattern)", () => {
-    const result = fuseScores({
+  it("lifts a flat-tone mid-range visual without inventing a verdict from even illumination alone", () => {
+    const lifted = fuseScores({
       visual: 0.56,
       provenance: { ai: false, camera: false },
       graphic: { isGraphic: false, flatTone: true },
     });
-    assert.ok(Math.abs(result.fusedBeforeCalibration - 0.56) < 1e-9);
-    assert.equal(result.reasons.includes("flat-tone"), false);
+    assert.ok(lifted.fusedBeforeCalibration > 0.56);
+    assert.ok(lifted.reasons.includes("flat-tone"));
+
+    const toneOnly = fuseScores({
+      visual: 0.2,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, flatTone: true },
+    });
+    assert.ok(Math.abs(toneOnly.fusedBeforeCalibration - 0.2) < 1e-9);
   });
 
   it("lifts a muted mid-range visual without inventing a verdict from low colorfulness alone", () => {
