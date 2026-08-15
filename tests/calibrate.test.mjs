@@ -2,6 +2,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
   applyCalibration,
+  applyPower,
   biasForTarget,
   bestRawThreshold,
   sigmoid,
@@ -33,5 +34,11 @@ describe("calibrate", () => {
 
   it("logit and sigmoid are inverses on (0,1)", () => {
     assert.ok(Math.abs(sigmoid(logit(0.22)) - 0.22) < 1e-6);
+  });
+
+  it("power < 1 lifts mid scores without mapping 0.33 onto 0.65", () => {
+    assert.ok(applyPower(0.6, 0.85) > 0.6);
+    assert.ok(applyPower(0.33, 0.85) < 0.45);
+    assert.ok(Math.abs(applyPower(0.73, 1) - 0.73) < 1e-6);
   });
 });

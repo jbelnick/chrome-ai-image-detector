@@ -31,6 +31,16 @@ export function applyCalibration(rawScore, { bias = 0, temperature = 1 } = {}) {
 }
 
 /**
+ * Beta / power calibration. power < 1 lifts all scores toward 1
+ * (milder than remapping a raw 0.33 onto 0.65). power = 1 is identity.
+ */
+export function applyPower(score, power = 1) {
+  const p = clamp01(score);
+  if (!Number.isFinite(power) || power <= 0 || power === 1) return p;
+  return p ** power;
+}
+
+/**
  * Choose bias so that applyCalibration(rawThreshold) === targetThreshold
  * when temperature is 1. Used after picking the accuracy-optimal raw cut.
  */

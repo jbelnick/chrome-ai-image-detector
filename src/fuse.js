@@ -1,4 +1,4 @@
-import { applyCalibration } from "./calibrate.js";
+import { applyCalibration, applyPower } from "./calibrate.js";
 import { graphicScale } from "./graphic-gate.js";
 
 /**
@@ -12,6 +12,7 @@ export const FUSE_DEFAULTS = {
   graphicScaleWhenFlagged: 1,
   bias: 0,
   temperature: 0.9,
+  scorePower: 0.85,
 };
 
 export function fuseScores({
@@ -36,10 +37,13 @@ export function fuseScores({
     reasons.push("graphic-gate");
   }
 
-  const calibrated = applyCalibration(score, {
-    bias: config.bias,
-    temperature: config.temperature,
-  });
+  const calibrated = applyPower(
+    applyCalibration(score, {
+      bias: config.bias,
+      temperature: config.temperature,
+    }),
+    config.scorePower ?? 1,
+  );
 
   return {
     score: calibrated,
