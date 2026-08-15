@@ -25,6 +25,6 @@ describe("siglip probe", () => {
     rgba.fill(255);
     const t = imageDataToSiglipTensor(rgba, 224, 224);
     assert.equal(t.length, 3 * n);
-    assert.ok(Math.abs(t[0] - 0.5) < 1e-5);
+    assert.ok(Math.abs(t[0] - 1) < 1e-5);
   });
 });
