@@ -20,7 +20,7 @@ export const FUSE_DEFAULTS = {
   flatToneBandMin: 0.5,
   flatToneBandMax: 0.68,
   bias: 0,
-  temperature: 0.9,
+  temperature: 0.92,
   scorePower: 0.85,
 };
 
