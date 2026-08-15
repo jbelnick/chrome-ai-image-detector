@@ -77,15 +77,15 @@ EXPLORATORY only — best raw cut on a 30% OpenFake subset: 0.27 (BA 84.58%). No
 
 Reported proxy score (baseline, `b3e1487` / `8b20ad4`): **81.67%** BA @ 0.65.
 
-Autoresearch KEEP `d58dfaf` (soft-OR visual blend, fuse still `bias=0`):
+Autoresearch running best `6a80004` (soft-OR visual blend + graphic-gate scale 1, fuse still `bias=0`):
 
 ```
-bal_acc_065: 0.830556
-tpr_065:     0.716667
+bal_acc_065: 0.833333
+tpr_065:     0.722222
 tnr_065:     0.944444
 ```
 
-Harness print: **83.06%** balanced accuracy, TPR 71.67%, TNR 94.44%, n=360. This is the current product path and the running best.
+Harness print: **83.33%** balanced accuracy, TPR 72.22%, TNR 94.44%, n=360. This is the current product path.
 
 Withdrawn earlier figures: 84.96% (raw 0.33 remapped onto a displayed 0.65) and 68.85% Community-Forensics-only.
 
