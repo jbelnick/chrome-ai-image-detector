@@ -1,7 +1,9 @@
-import { cp, mkdir, readdir, rm, stat } from "node:fs/promises";
+import { createHash } from "node:crypto";
+import { cp, mkdir, readFile, readdir, rm, stat } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
+import { MODELS } from "../src/model-config.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -73,15 +75,23 @@ if (copied === 0) {
 
 const modelDstDir = join(root, "extension/models");
 await mkdir(modelDstDir, { recursive: true });
-for (const name of ["commfor-vit-s-384.onnx", "siglip2-vision.onnx"]) {
-  const src = join(root, "models", name);
+for (const spec of [MODELS.commfor, MODELS.siglip2]) {
+  const src = join(root, "models", spec.filename);
   try {
     await stat(src);
   } catch {
-    throw new Error(`missing ${name} — run npm run fetch-models before npm run build`);
+    throw new Error(`missing ${spec.filename} — run npm run fetch-models before npm run build`);
   }
-  await cp(src, join(modelDstDir, name));
-  console.log("copied", name);
+  const buf = await readFile(src);
+  if (buf.byteLength !== spec.bytes) {
+    throw new Error(`${spec.id} size ${buf.byteLength} != ${spec.bytes}`);
+  }
+  const hash = createHash("sha256").update(buf).digest("hex");
+  if (hash !== spec.sha256) {
+    throw new Error(`${spec.id} SHA-256 mismatch: got ${hash}, expected ${spec.sha256}`);
+  }
+  await cp(src, join(modelDstDir, spec.filename));
+  console.log("copied", spec.filename, hash);
 }
 
 console.log(`build ok (copied ${copied} onnxruntime files)`);

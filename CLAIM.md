@@ -13,7 +13,7 @@ MIT License. This packet does not submit an on-chain claim.
 - Auto-analyzes images on ordinary webpages and overlays an AI confidence badge.
 - Runs **all** inference in-browser (ONNX Runtime Web: WebGPU session create, then WASM if that throws).
 - Does not call cloud detectors, localhost helpers, or any native backend.
-- Bundles a SHA-256-pinned Community Forensics ViT-S/384 ONNX. Downloads SigLIP2 vision ONNX **once** (`npm run fetch-models` or first setup), SHA-256 verifies it, then stays offline for weights.
+- Bundles a SHA-256-pinned Community Forensics ViT-S/384 ONNX. Downloads SigLIP2 vision ONNX **once** during `npm run fetch-models`, SHA-256 verifies it at fetch and again at `npm run build`, then stays offline for weights. Setup only checks already-packaged files.
 - Sends image bytes as Base64 over `chrome.runtime.sendMessage` (JSON-safe). An `ArrayBuffer` field would serialize to `{}`.
 
 ## How to build

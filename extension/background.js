@@ -123,12 +123,24 @@ async function analyzeImage(message, tabId) {
   } else {
     base64ToBytes(bytesB64);
   }
-  const result = await sendToOffscreen({
-    type: "infer",
-    id: message.id,
-    mime,
-    bytesB64,
-  });
+  let result;
+  try {
+    result = await sendToOffscreen({
+      type: "infer",
+      id: message.id,
+      mime,
+      bytesB64,
+    });
+  } catch (err) {
+    offscreenReady = null;
+    await ensureOffscreen();
+    result = await sendToOffscreen({
+      type: "infer",
+      id: message.id,
+      mime,
+      bytesB64,
+    });
+  }
   if (resultCache.size >= MAX_CACHE) {
     const first = resultCache.keys().next().value;
     resultCache.delete(first);

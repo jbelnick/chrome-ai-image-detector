@@ -125,7 +125,6 @@ function analyze(img) {
   if (!eligible(img)) return;
   const used = attempts.get(img) || 0;
   if (used >= MAX_ATTEMPTS) return;
-  attempts.set(img, used + 1);
   const src = sourceOf(img);
   if (!src || src.startsWith("chrome://") || src.startsWith("chrome-extension://")) return;
   const id = `g${seq++}`;
@@ -134,14 +133,28 @@ function analyze(img) {
   const send = (extra) => {
     chrome.runtime.sendMessage({ ...payload, ...extra }, (response) => {
       pending.delete(id);
+      const transient =
+        chrome.runtime.lastError?.message ||
+        (response?.error && /Receiving end does not exist|offscreen ping/i.test(response.error)
+          ? response.error
+          : "");
+      if (transient && used + 1 < MAX_ATTEMPTS) {
+        img.dataset.grainError = transient;
+        attempts.set(img, used + 1);
+        setTimeout(() => analyze(img), 400);
+        return;
+      }
       if (chrome.runtime.lastError) {
+        attempts.set(img, MAX_ATTEMPTS);
         img.dataset.grainError = chrome.runtime.lastError.message;
         return;
       }
       if (!response || response.error) {
+        attempts.set(img, MAX_ATTEMPTS);
         img.dataset.grainError = response?.error || "no-response";
         return;
       }
+      attempts.set(img, MAX_ATTEMPTS);
       delete img.dataset.grainError;
       paintBadge(img, response);
     });
@@ -171,14 +184,14 @@ function watch(img) {
   if (watching.has(img) || img.dataset.grainWatch === "1") return;
   watching.add(img);
   img.dataset.grainWatch = "1";
-  if (img.complete && eligible(img)) {
-    io.observe(img);
+  if (img.complete) {
+    if (eligible(img)) io.observe(img);
     return;
   }
   img.addEventListener(
     "load",
     () => {
-      io.observe(img);
+      if (eligible(img)) io.observe(img);
     },
     { once: true },
   );
