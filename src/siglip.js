@@ -49,9 +49,16 @@ export function siglipProbability(pooler) {
   return visualProbabilityFromLogit(probeLogit(pooler));
 }
 
-/** Soft-OR: independent heads both vote AI. */
+/**
+ * Soft-OR, unless Community Forensics is sure-real. Mean-only CF
+ * raised TPR and spent false positives; a low CF veto lets the
+ * forensic head overrule a high SigLIP on camera-like crops.
+ */
+export const CF_SURE_REAL = 0.22;
+
 export function blendVisual(siglip, commfor) {
   const a = Number.isFinite(siglip) ? siglip : 0;
   const b = Number.isFinite(commfor) ? commfor : 0;
+  if (b <= CF_SURE_REAL) return b;
   return a + b - a * b;
 }

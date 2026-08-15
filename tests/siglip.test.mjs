@@ -14,9 +14,10 @@ describe("siglip probe", () => {
     assert.equal(Number.isFinite(z), true);
   });
 
-  it("soft-ORs the two visual heads", () => {
+  it("soft-ORs the two visual heads unless CF is sure-real", () => {
     assert.ok(Math.abs(blendVisual(0.2, 0.9) - 0.92) < 1e-9);
-    assert.ok(Math.abs(blendVisual(0.8, 0.1) - 0.82) < 1e-9);
+    assert.ok(Math.abs(blendVisual(0.8, 0.1) - 0.1) < 1e-9);
+    assert.ok(Math.abs(blendVisual(0.8, 0.4) - 0.88) < 1e-9);
   });
 
   it("builds a 1x3x224x224 SigLIP tensor", () => {
