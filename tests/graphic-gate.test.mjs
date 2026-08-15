@@ -94,6 +94,35 @@ describe("graphic-gate", () => {
     assert.equal(analysis.strongGrain, true);
   });
 
+  it("flags a muted noisy field as muted-fine and a vivid noisy field as not", () => {
+    const w = 128;
+    const h = 128;
+    const muted = new Uint8Array(w * h * 4);
+    let seed = 1;
+    for (let i = 0; i < w * h; i += 1) {
+      seed = (seed * 1664525 + 1013904223) >>> 0;
+      const v = 120 + ((seed & 31) - 15);
+      muted[i * 4] = v;
+      muted[i * 4 + 1] = v;
+      muted[i * 4 + 2] = v;
+      muted[i * 4 + 3] = 255;
+    }
+    const mutedAnalysis = analyzePixels(muted, w, h);
+    assert.equal(mutedAnalysis.muted, true);
+    assert.equal(mutedAnalysis.mutedFine, true);
+
+    const vivid = new Uint8Array(w * h * 4);
+    seed = 1;
+    for (let i = 0; i < w * h; i += 1) {
+      seed = (seed * 1664525 + 1013904223) >>> 0;
+      vivid[i * 4] = seed & 255;
+      vivid[i * 4 + 1] = (seed >>> 8) & 255;
+      vivid[i * 4 + 2] = (seed >>> 16) & 255;
+      vivid[i * 4 + 3] = 255;
+    }
+    assert.equal(analyzePixels(vivid, w, h).mutedFine, false);
+  });
+
   it("flags a uniform field as flat-tone", () => {
     const w = 64;
     const h = 64;

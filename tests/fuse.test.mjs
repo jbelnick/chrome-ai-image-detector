@@ -173,6 +173,24 @@ describe("fuse", () => {
     assert.equal(vividOnly.reasons.includes("vivid-high"), false);
   });
 
+  it("drops a muted-fine high-band visual without inventing a real verdict from muted grain alone", () => {
+    const dropped = fuseScores({
+      visual: 0.85,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, mutedFine: true },
+    });
+    assert.ok(dropped.score < 0.65);
+    assert.ok(dropped.reasons.includes("muted-fine"));
+
+    const fineOnly = fuseScores({
+      visual: 0.2,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, mutedFine: true },
+    });
+    assert.ok(Math.abs(fineOnly.fusedBeforeCalibration - 0.2) < 1e-9);
+    assert.equal(fineOnly.reasons.includes("muted-fine"), false);
+  });
+
   it("lifts a muted mid-range visual without inventing a verdict from low colorfulness alone", () => {
     const lifted = fuseScores({
       visual: 0.56,

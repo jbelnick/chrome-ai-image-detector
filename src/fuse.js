@@ -34,6 +34,9 @@ export const FUSE_DEFAULTS = {
   vividHighDrop: 0.24,
   vividHighBandMin: 0.87,
   vividHighBandMax: 0.89,
+  mutedFineDrop: 0.28,
+  mutedFineBandMin: 0.88,
+  mutedFineBandMax: 0.93,
   bias: 0,
   temperature: 0.9,
   scorePower: 0.85,
@@ -156,6 +159,17 @@ export function fuseScores({
   ) {
     calibrated -= vividHighDrop;
     reasons.push("vivid-high");
+  }
+
+  const mutedFineDrop = config.mutedFineDrop ?? 0;
+  if (
+    mutedFineDrop > 0 &&
+    graphic?.mutedFine &&
+    calibrated >= (config.mutedFineBandMin ?? 0.88) &&
+    calibrated < (config.mutedFineBandMax ?? 0.93)
+  ) {
+    calibrated -= mutedFineDrop;
+    reasons.push("muted-fine");
   }
 
   return {

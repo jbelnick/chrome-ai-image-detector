@@ -92,6 +92,9 @@ export function analyzePixels(data, width, height) {
     0.3 * Math.sqrt(rgMean * rgMean + ybMean * ybMean);
   const vivid = colorfulness >= TEXTURE.vividColorfulness;
   const muted = colorfulness <= TEXTURE.mutedColorfulness;
+  // Muted + denser-than-ordinary grain. Used for a high-band drop on
+  // leftover web-real FPs that sit above the muted-high window.
+  const mutedFine = !isGraphic && muted && fineRatio >= 0.32;
   const centerMean = centerLum / (centerN || 1);
   const borderMean = borderLum / (borderN || 1);
   const centerBorder = centerMean / (borderMean + 1e-3);
@@ -111,6 +114,7 @@ export function analyzePixels(data, width, height) {
     fineRatio,
     grainy,
     strongGrain,
+    mutedFine,
   };
 }
 
