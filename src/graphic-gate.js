@@ -14,9 +14,6 @@ export const TEXTURE = {
   mutedColorfulness: 28,
   flatToneLo: 0.92,
   flatToneHi: 1.08,
-  // Luma structure with oversmoothed opponent color — a generator tell.
-  deadChromaLumaMin: 0.16,
-  deadChromaRelMax: 0.5,
 };
 
 export function analyzePixels(data, width, height) {
@@ -32,7 +29,6 @@ export function analyzePixels(data, width, height) {
   let centerN = 0;
   let borderLum = 0;
   let borderN = 0;
-  let chromaEdge = 0;
   const stride = Math.max(1, Math.floor(Math.min(width, height) / 96));
   const x0 = width * 0.25;
   const x1 = width * 0.75;
@@ -58,18 +54,6 @@ export function analyzePixels(data, width, height) {
       if (Math.abs(lum - lumX) > 28 || Math.abs(lum - lumY) > 28) edge += 1;
       const rg = r - g;
       const yb = 0.5 * (r + g) - b;
-      const rgX = data[j] - data[j + 1];
-      const rgY = data[k] - data[k + 1];
-      const ybX = 0.5 * (data[j] + data[j + 1]) - data[j + 2];
-      const ybY = 0.5 * (data[k] + data[k + 1]) - data[k + 2];
-      if (
-        Math.abs(rg - rgX) > 18 ||
-        Math.abs(rg - rgY) > 18 ||
-        Math.abs(yb - ybX) > 18 ||
-        Math.abs(yb - ybY) > 18
-      ) {
-        chromaEdge += 1;
-      }
       rgSum += rg;
       ybSum += yb;
       rgSq += rg * rg;
@@ -105,10 +89,6 @@ export function analyzePixels(data, width, height) {
   const centerBorder = centerMean / (borderMean + 1e-3);
   const flatTone =
     centerBorder >= TEXTURE.flatToneLo && centerBorder <= TEXTURE.flatToneHi;
-  const chromaEdgeRatio = samples === 0 ? 0 : chromaEdge / samples;
-  const deadChroma =
-    edgeRatio >= TEXTURE.deadChromaLumaMin &&
-    chromaEdgeRatio <= TEXTURE.deadChromaRelMax * edgeRatio;
   return {
     uniqueRatio,
     edgeRatio,
@@ -120,8 +100,6 @@ export function analyzePixels(data, width, height) {
     muted,
     centerBorder,
     flatTone,
-    chromaEdgeRatio,
-    deadChroma,
   };
 }
 

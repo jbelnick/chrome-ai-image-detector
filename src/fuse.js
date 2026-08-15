@@ -19,9 +19,6 @@ export const FUSE_DEFAULTS = {
   flatToneLift: 0.05,
   flatToneBandMin: 0.5,
   flatToneBandMax: 0.68,
-  deadChromaLift: 0.05,
-  deadChromaBandMin: 0.5,
-  deadChromaBandMax: 0.68,
   bias: 0,
   temperature: 0.9,
   scorePower: 0.85,
@@ -80,17 +77,6 @@ export function fuseScores({
   ) {
     score = Math.min(0.92, score + flatToneLift);
     reasons.push("flat-tone");
-  }
-
-  const deadChromaLift = config.deadChromaLift ?? 0;
-  if (
-    deadChromaLift > 0 &&
-    graphic?.deadChroma &&
-    score >= (config.deadChromaBandMin ?? 0.5) &&
-    score < (config.deadChromaBandMax ?? 0.68)
-  ) {
-    score = Math.min(0.92, score + deadChromaLift);
-    reasons.push("dead-chroma");
   }
 
   const calibrated = applyPower(
