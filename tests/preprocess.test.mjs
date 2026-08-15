@@ -7,6 +7,8 @@ import {
   imageDataToTensor,
   visualProbabilityFromLogit,
   PREPROCESS,
+  CANVAS_RESAMPLE,
+  applyCanvasResample,
 } from "../src/preprocess.js";
 
 describe("preprocess", () => {
@@ -44,6 +46,13 @@ describe("preprocess", () => {
     const expectedG = (0 - PREPROCESS.mean[1]) / PREPROCESS.std[1];
     assert.ok(Math.abs(tensor[0] - expectedR) < 1e-5);
     assert.ok(Math.abs(tensor[n] - expectedG) < 1e-5);
+  });
+
+  it("applies the shared canvas resample settings", () => {
+    const ctx = { imageSmoothingEnabled: false, imageSmoothingQuality: "low" };
+    applyCanvasResample(ctx);
+    assert.equal(ctx.imageSmoothingEnabled, CANVAS_RESAMPLE.imageSmoothingEnabled);
+    assert.equal(ctx.imageSmoothingQuality, CANVAS_RESAMPLE.imageSmoothingQuality);
   });
 
   it("converts a logit to a probability with sigmoid", () => {

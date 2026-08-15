@@ -11,6 +11,7 @@ import {
   centerCropBox,
   imageDataToTensor,
   visualProbabilityFromLogit,
+  applyCanvasResample,
 } from "/lib/preprocess.js";
 import { analyzePixels } from "/lib/graphic-gate.js";
 import { fuseScores, FUSE_DEFAULTS } from "/lib/fuse.js";
@@ -115,8 +116,7 @@ function cropForCommfor(bitmap) {
   const { width, height } = scaledSize(bitmap.width, bitmap.height);
   const canvas = new OffscreenCanvas(width, height);
   const ctx = canvas.getContext("2d", { willReadFrequently: true });
-  ctx.imageSmoothingEnabled = true;
-  ctx.imageSmoothingQuality = "high";
+  applyCanvasResample(ctx);
   ctx.drawImage(bitmap, 0, 0, width, height);
   const box = centerCropBox(width, height, PREPROCESS.crop);
   return ctx.getImageData(box.x, box.y, box.size, box.size);
@@ -125,8 +125,7 @@ function cropForCommfor(bitmap) {
 function squareForSiglip(bitmap) {
   const canvas = new OffscreenCanvas(SIGLIP.size, SIGLIP.size);
   const ctx = canvas.getContext("2d", { willReadFrequently: true });
-  ctx.imageSmoothingEnabled = true;
-  ctx.imageSmoothingQuality = "high";
+  applyCanvasResample(ctx);
   ctx.drawImage(bitmap, 0, 0, SIGLIP.size, SIGLIP.size);
   return ctx.getImageData(0, 0, SIGLIP.size, SIGLIP.size);
 }

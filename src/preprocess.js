@@ -15,6 +15,21 @@ export const PREPROCESS = {
   std: [1, 1, 1],
 };
 
+/**
+ * OffscreenCanvas resample used by the extension and chrome-path eval.
+ * Chrome-path family 1: "medium" instead of "high" — hypothesis that
+ * the remaining 23/23 errors sit on the canvas kernel, not sharp.
+ */
+export const CANVAS_RESAMPLE = {
+  imageSmoothingEnabled: true,
+  imageSmoothingQuality: "medium",
+};
+
+export function applyCanvasResample(ctx) {
+  ctx.imageSmoothingEnabled = CANVAS_RESAMPLE.imageSmoothingEnabled;
+  ctx.imageSmoothingQuality = CANVAS_RESAMPLE.imageSmoothingQuality;
+}
+
 export function scaledSize(width, height, shortEdge = PREPROCESS.resizeShortEdge) {
   if (width <= 0 || height <= 0) {
     throw new Error("image has no area");
