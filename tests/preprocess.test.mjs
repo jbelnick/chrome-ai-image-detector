@@ -57,11 +57,11 @@ describe("preprocess", () => {
     assert.equal(ctx.imageSmoothingEnabled, CANVAS_RESAMPLE.siglip.imageSmoothingEnabled);
   });
 
-  it("medium-smooths Community Forensics and nearest-neighbors SigLIP", () => {
+  it("high-smooths Community Forensics and nearest-neighbors SigLIP", () => {
     const cf = { imageSmoothingEnabled: false, imageSmoothingQuality: "low" };
     applyCanvasResample(cf, "commfor");
     assert.equal(cf.imageSmoothingEnabled, true);
-    assert.equal(cf.imageSmoothingQuality, "medium");
+    assert.equal(cf.imageSmoothingQuality, "high");
 
     const sl = { imageSmoothingEnabled: true, imageSmoothingQuality: "high" };
     applyCanvasResample(sl, "siglip");

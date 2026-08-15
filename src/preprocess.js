@@ -17,12 +17,12 @@ export const PREPROCESS = {
 
 /**
  * OffscreenCanvas resample used by the extension and chrome-path eval.
- * Family 1 run 6: opposite of discarded 47bdfd0.
- * Medium-smooth Community Forensics (try to recover TNR);
- * nearest-neighbor SigLIP (KEEP 404faa6 TPR came from the 224 stretch).
+ * Family 1 run 7: KEEP 9d7a712 pinned nearest SigLIP; test CF quality
+ * "high" vs the KEEP's "medium" (shared ladder was high < medium, but
+ * that was with both models on the same kernel).
  */
 export const CANVAS_RESAMPLE = {
-  commfor: { imageSmoothingEnabled: true, imageSmoothingQuality: "medium" },
+  commfor: { imageSmoothingEnabled: true, imageSmoothingQuality: "high" },
   siglip: { imageSmoothingEnabled: false, imageSmoothingQuality: "medium" },
 };
 
