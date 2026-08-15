@@ -13,9 +13,6 @@ export const FUSE_DEFAULTS = {
   vividLift: 0.05,
   vividBandMin: 0.5,
   vividBandMax: 0.68,
-  grainyDrop: 0.05,
-  grainyBandMin: 0.6,
-  grainyBandMax: 0.78,
   bias: 0,
   temperature: 0.9,
   scorePower: 0.85,
@@ -52,17 +49,6 @@ export function fuseScores({
   ) {
     score = Math.min(0.92, score + lift);
     reasons.push("colorfulness");
-  }
-
-  const drop = config.grainyDrop ?? 0;
-  if (
-    drop > 0 &&
-    graphic?.grainy &&
-    score >= (config.grainyBandMin ?? 0.6) &&
-    score < (config.grainyBandMax ?? 0.78)
-  ) {
-    score = Math.max(0.05, score - drop);
-    reasons.push("grain-real");
   }
 
   const calibrated = applyPower(
