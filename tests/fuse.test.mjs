@@ -58,4 +58,21 @@ describe("fuse", () => {
     });
     assert.ok(Math.abs(colorOnly.fusedBeforeCalibration - 0.2) < 1e-9);
   });
+
+  it("drops a grainy mid-high visual without inventing a real verdict from edges alone", () => {
+    const dropped = fuseScores({
+      visual: 0.66,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, grainy: true },
+    });
+    assert.ok(dropped.fusedBeforeCalibration < 0.66);
+    assert.ok(dropped.reasons.includes("grain-real"));
+
+    const grainOnly = fuseScores({
+      visual: 0.4,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, grainy: true },
+    });
+    assert.ok(Math.abs(grainOnly.fusedBeforeCalibration - 0.4) < 1e-9);
+  });
 });
