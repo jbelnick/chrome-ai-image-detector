@@ -38,26 +38,12 @@ describe("preprocess", () => {
       rgba[i * 4 + 2] = 0;
       rgba[i * 4 + 3] = 255;
     }
-    const tensor = imageDataToTensor(rgba, 384, 384, { ycbcr: false });
+    const tensor = imageDataToTensor(rgba, 384, 384);
     assert.equal(tensor.length, 3 * n);
     const expectedR = (1 - PREPROCESS.mean[0]) / PREPROCESS.std[0];
     const expectedG = (0 - PREPROCESS.mean[1]) / PREPROCESS.std[1];
     assert.ok(Math.abs(tensor[0] - expectedR) < 1e-5);
     assert.ok(Math.abs(tensor[n] - expectedG) < 1e-5);
-  });
-
-  it("emits mean-centered YCbCr when ycbcr is on", () => {
-    const n = 384 * 384;
-    const rgba = new Uint8Array(n * 4);
-    for (let i = 0; i < n; i += 1) {
-      rgba[i * 4] = 255;
-      rgba[i * 4 + 1] = 0;
-      rgba[i * 4 + 2] = 0;
-      rgba[i * 4 + 3] = 255;
-    }
-    const tensor = imageDataToTensor(rgba, 384, 384);
-    assert.ok(Math.abs(tensor[0] - (0.299 - 0.45)) < 1e-5);
-    assert.equal(PREPROCESS.ycbcr, true);
   });
 
   it("converts a logit to a probability with sigmoid", () => {
