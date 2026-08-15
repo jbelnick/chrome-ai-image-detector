@@ -10,10 +10,11 @@ import {
 } from "../src/preprocess.js";
 
 describe("preprocess", () => {
-  it("resizes the shorter edge to 440 while keeping aspect ratio", () => {
+  it("stretches the full frame to the 384 crop when stretchToCrop is on", () => {
     const s = scaledSize(800, 600, 440);
-    assert.equal(s.height, 440);
-    assert.equal(s.width, Math.round(800 * (440 / 600)));
+    assert.equal(s.width, PREPROCESS.crop);
+    assert.equal(s.height, PREPROCESS.crop);
+    assert.equal(PREPROCESS.stretchToCrop, true);
   });
 
   it("center-crops a 384 square", () => {

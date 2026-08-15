@@ -1,12 +1,15 @@
 /**
- * Official Community Forensics test-time preprocessing:
- * resize shorter edge to 440, center-crop 384, ImageNet normalize, NCHW.
- * Mirrors torchvision Resize(440) + CenterCrop(384) + Normalize.
+ * Community Forensics preprocessing.
+ * Experiment: stretch the full frame to the 384 crop (aspect-distorting
+ * fill) instead of official Resize(440)+CenterCrop(384). Same geometry
+ * SigLIP already uses, applied to the ViT so the long side is not cropped
+ * away.
  */
 
 export const PREPROCESS = {
   resizeShortEdge: 440,
   crop: 384,
+  stretchToCrop: true,
   mean: [0.485, 0.456, 0.406],
   std: [0.229, 0.224, 0.225],
 };
@@ -14,6 +17,9 @@ export const PREPROCESS = {
 export function scaledSize(width, height, shortEdge = PREPROCESS.resizeShortEdge) {
   if (width <= 0 || height <= 0) {
     throw new Error("image has no area");
+  }
+  if (PREPROCESS.stretchToCrop) {
+    return { width: PREPROCESS.crop, height: PREPROCESS.crop };
   }
   const short = Math.min(width, height);
   const scale = shortEdge / short;
