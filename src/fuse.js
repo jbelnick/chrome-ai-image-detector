@@ -12,7 +12,7 @@ export const FUSE_DEFAULTS = {
   graphicScaleWhenFlagged: 1,
   vividLift: 0.05,
   vividBandMin: 0.5,
-  vividBandMax: 0.68,
+  vividBandMax: 0.72,
   mutedLift: 0.05,
   mutedBandMin: 0.5,
   mutedBandMax: 0.68,
