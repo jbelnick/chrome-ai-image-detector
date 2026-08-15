@@ -16,10 +16,10 @@ describe("preprocess", () => {
     assert.equal(s.width, Math.round(800 * (440 / 600)));
   });
 
-  it("center-crops a 384 square", () => {
+  it("crops a 384 square slightly right of center", () => {
     const box = centerCropBox(586, 440, 384);
     assert.equal(box.size, 384);
-    assert.equal(box.x, Math.floor((586 - 384) / 2));
+    assert.equal(box.x, Math.floor((586 - 384) * 0.62));
     assert.equal(box.y, Math.floor((440 - 384) / 2));
   });
 
