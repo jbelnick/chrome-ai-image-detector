@@ -81,7 +81,7 @@ export function analyzePixels(data, width, height) {
   const grainy = !isGraphic && fineRatio >= 0.08;
   // Stronger luma-delta density than ordinary photo-grain. Used for a
   // high-band drop on leftover web-real FPs that sit above 0.78.
-  const strongGrain = !isGraphic && fineRatio >= 0.44;
+  const strongGrain = !isGraphic && fineRatio >= 0.4;
   const n = samples || 1;
   const rgMean = rgSum / n;
   const ybMean = ybSum / n;
