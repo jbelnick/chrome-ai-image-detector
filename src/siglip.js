@@ -49,10 +49,9 @@ export function siglipProbability(pooler) {
   return visualProbabilityFromLogit(probeLogit(pooler));
 }
 
-/** Soft-OR with a stronger Community Forensics vote. */
+/** Soft-OR: independent heads both vote AI. */
 export function blendVisual(siglip, commfor) {
   const a = Number.isFinite(siglip) ? siglip : 0;
   const b = Number.isFinite(commfor) ? commfor : 0;
-  const w = 1.3;
-  return Math.min(1 - 1e-6, a + w * b - w * a * b);
+  return a + b - a * b;
 }
