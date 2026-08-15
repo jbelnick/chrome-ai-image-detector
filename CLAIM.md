@@ -355,6 +355,30 @@ webgpu:      UNVERIFIED
 
 Versus KEEP `3a75475` on the same mix: TPR held, TNR +1, net +1, BA 0.871508 → 0.874302. Secondary 360 rose 0.883333 → 0.886111 (TNR +1).
 
+## Current broader-proxy best (`242ca3e`)
+
+Flat-tone high-band drop (0.20) when `analyzePixels` flags flatTone and the calibrated score is in `[0.80, 0.83)`. Fuse bias stays 0. Command: `npm run eval:chrome`. Date: 2026-08-15. Finished 718/718 with no stall, EXIT:0.
+
+```
+SCALAR broader-proxy (keep/revert)
+bal_acc_065: 0.877095
+tpr_065:     0.854749
+tnr_065:     0.899441
+tp/fn/tn/fp: 153 / 26 / 161 / 18
+n:           358
+
+SECONDARY official-360 (not the ratchet)
+bal_acc_065: 0.886111
+tpr_065:     0.816667
+tnr_065:     0.955556
+tp/fn/tn/fp: 147 / 33 / 172 / 8
+n:           360
+backend:     wasm
+webgpu:      UNVERIFIED
+```
+
+Versus KEEP `ad6ea13` on the same mix: TPR held, TNR +1, net +1, BA 0.874302 → 0.877095. Secondary 360 held 0.886111.
+
 ## Rules checklist
 
 - [x] No cloud inference
