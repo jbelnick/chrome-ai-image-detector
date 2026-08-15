@@ -59,6 +59,23 @@ describe("fuse", () => {
     assert.ok(Math.abs(colorOnly.fusedBeforeCalibration - 0.2) < 1e-9);
   });
 
+  it("lifts a weak-chroma mid-range visual without inventing a verdict from correlation alone", () => {
+    const lifted = fuseScores({
+      visual: 0.56,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, weakChroma: true },
+    });
+    assert.ok(lifted.fusedBeforeCalibration > 0.56);
+    assert.ok(lifted.reasons.includes("weak-chroma"));
+
+    const corrOnly = fuseScores({
+      visual: 0.2,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, weakChroma: true },
+    });
+    assert.ok(Math.abs(corrOnly.fusedBeforeCalibration - 0.2) < 1e-9);
+  });
+
   it("lifts a flat-tone mid-range visual without inventing a verdict from even illumination alone", () => {
     const lifted = fuseScores({
       visual: 0.56,
