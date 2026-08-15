@@ -21,7 +21,7 @@ export const FUSE_DEFAULTS = {
   flatToneBandMax: 0.68,
   bias: 0,
   temperature: 0.9,
-  scorePower: 0.85,
+  scorePower: 0.8,
 };
 
 export function fuseScores({
