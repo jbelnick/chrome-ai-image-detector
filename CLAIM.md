@@ -53,41 +53,37 @@ Official proxy: a 180/class streaming prefix of OpenFake `core/test` (generator 
 Command: `npm run eval`  
 Date: 2026-08-15  
 Machine: this Cloud Agent (CPU ONNX Runtime).  
-Commit scored: `b3e1487` (honesty rewrite; fuse bias=0). Later commits (`3fd8db2`, `eff404d`, and this docs/storage-fuse lock) do not change the scoring path.
+Commit scored: `b9829bc` (double-SigLIP soft-OR on the shipped path). Fuse bias stays 0.
 
 ```
 Grain eval — same ONNX + shipped fusion as the extension
 Models: siglip2-vision-base-224 + commfor-vit-s-384
-Fuse bias=0 temperature=1
+Fuse bias=0 temperature=0.9
 Images: 385  official(OpenFake)=360  easy-real=20  excluded-cf=5
 
 OFFICIAL OpenFake core/test @ 0.65 (shipped path, reported proxy):
-  balanced accuracy  81.67%
-  TPR                68.89%
-  TNR                94.44%
+  balanced accuracy  86.39%
+  TPR                88.33%
+  TNR                84.44%
   n                  360 (AI 180 / real 180)
 
 MIX including Picsum easy-real (not the claim) @ 0.65:
-  balanced accuracy  81.94%
-  TPR                68.89%
-  TNR                95.00%
+  balanced accuracy  85.67%
+  TPR                88.33%
+  TNR                83.00%
 
-EXPLORATORY only — best raw cut on a 30% OpenFake subset: 0.27 (BA 84.58%). Not shipped.
+EXPLORATORY only — best raw cut on a 30% OpenFake subset: 0.74 (BA 83.13%). Not shipped.
 ```
 
-Reported proxy score (baseline, `b3e1487` / `8b20ad4`): **81.67%** BA @ 0.65.
-
-Autoresearch running best `4c92821` (soft-OR, T=0.90, scorePower 0.85, vivid + muted colorfulness mid-band lifts, CF ImageNet mean-only / std=1):
-
 ```
-bal_acc_065: 0.855556
-tpr_065:     0.811111
-tnr_065:     0.900000
+bal_acc_065: 0.863889
+tpr_065:     0.883333
+tnr_065:     0.844444
 ```
 
-Harness print: **85.56%** balanced accuracy, TPR 81.11%, TNR 90.00%, n=360 (TP 146 / FN 34 / TN 162 / FP 18). Muted (low Hasler) colorfulness added one true positive vs `539f9e9` 85.28% with TNR held. A raw 0.33 still displays well below 0.65.
+Harness print: **86.39%** balanced accuracy, TPR 88.33%, TNR 84.44%, n=360 (TP 159 / FN 21 / TN 152 / FP 28). Visual blend is `1-(1-siglip)^2*(1-commfor)`. TPR rose 0.811→0.883 vs `4c92821`; TNR fell 0.900→0.844. A raw 0.33 still displays well below 0.65.
 
-Withdrawn earlier figures: 84.96% (raw 0.33 remapped onto a displayed 0.65) and 68.85% Community-Forensics-only.
+Baseline `8b20ad4` was 81.67% BA @ 0.65. Withdrawn earlier figures: 84.96% (raw 0.33 remapped onto a displayed 0.65) and 68.85% Community-Forensics-only.
 
 ## Rules checklist
 
