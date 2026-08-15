@@ -14,9 +14,9 @@ describe("siglip probe", () => {
     assert.equal(Number.isFinite(z), true);
   });
 
-  it("adds an agreement bonus when both heads are at least 0.4", () => {
+  it("soft-ORs the two visual heads", () => {
+    assert.ok(Math.abs(blendVisual(0.2, 0.9) - 0.92) < 1e-9);
     assert.ok(Math.abs(blendVisual(0.8, 0.1) - 0.82) < 1e-9);
-    assert.ok(blendVisual(0.5, 0.5) > 0.75);
   });
 
   it("builds a 1x3x224x224 SigLIP tensor", () => {
