@@ -1,8 +1,7 @@
 /**
- * Community Forensics test-time preprocessing:
+ * Official Community Forensics test-time preprocessing:
  * resize shorter edge to 440, center-crop 384, ImageNet normalize, NCHW.
- * Experiment: per-channel instance-norm after ImageNet so global
- * brightness/color shifts do not dominate the forensic ViT.
+ * Mirrors torchvision Resize(440) + CenterCrop(384) + Normalize.
  */
 
 export const PREPROCESS = {
@@ -10,7 +9,6 @@ export const PREPROCESS = {
   crop: 384,
   mean: [0.485, 0.456, 0.406],
   std: [0.229, 0.224, 0.225],
-  instanceNorm: true,
 };
 
 export function scaledSize(width, height, shortEdge = PREPROCESS.resizeShortEdge) {
@@ -46,11 +44,7 @@ export function imageDataToTensor(
   data,
   width,
   height,
-  {
-    mean = PREPROCESS.mean,
-    std = PREPROCESS.std,
-    instanceNorm = PREPROCESS.instanceNorm,
-  } = {},
+  { mean = PREPROCESS.mean, std = PREPROCESS.std } = {},
 ) {
   if (width !== PREPROCESS.crop || height !== PREPROCESS.crop) {
     throw new Error(`expected ${PREPROCESS.crop}x${PREPROCESS.crop} crop, got ${width}x${height}`);
@@ -64,21 +58,6 @@ export function imageDataToTensor(
     tensor[i] = (r - mean[0]) / std[0];
     tensor[plane + i] = (g - mean[1]) / std[1];
     tensor[2 * plane + i] = (b - mean[2]) / std[2];
-  }
-  if (instanceNorm) {
-    for (let c = 0; c < 3; c += 1) {
-      const off = c * plane;
-      let sum = 0;
-      for (let i = 0; i < plane; i += 1) sum += tensor[off + i];
-      const mu = sum / plane;
-      let varSum = 0;
-      for (let i = 0; i < plane; i += 1) {
-        const d = tensor[off + i] - mu;
-        varSum += d * d;
-      }
-      const inv = 1 / (Math.sqrt(varSum / plane) || 1);
-      for (let i = 0; i < plane; i += 1) tensor[off + i] = (tensor[off + i] - mu) * inv;
-    }
   }
   return tensor;
 }
