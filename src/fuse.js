@@ -21,8 +21,6 @@ export const FUSE_DEFAULTS = {
   flatToneBandMax: 0.68,
   bias: 0,
   temperature: 0.9,
-  highTemperature: 1.05,
-  highTemperatureFrom: 0.62,
   scorePower: 0.85,
 };
 
@@ -81,18 +79,10 @@ export function fuseScores({
     reasons.push("flat-tone");
   }
 
-  const highFrom = config.highTemperatureFrom;
-  const highT = config.highTemperature;
-  const temperature =
-    Number.isFinite(highFrom) &&
-    Number.isFinite(highT) &&
-    score >= highFrom
-      ? highT
-      : config.temperature;
   const calibrated = applyPower(
     applyCalibration(score, {
       bias: config.bias,
-      temperature,
+      temperature: config.temperature,
     }),
     config.scorePower ?? 1,
   );
