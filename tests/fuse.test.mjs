@@ -41,21 +41,4 @@ describe("fuse", () => {
     assert.ok(result.fusedBeforeCalibration < 0.8 * FUSE_DEFAULTS.graphicScaleWhenFlagged + 1e-6);
     assert.ok(result.reasons.includes("graphic-gate"));
   });
-
-  it("lifts a blocky mid-range visual without inventing a verdict from JPEG grid alone", () => {
-    const lifted = fuseScores({
-      visual: 0.55,
-      provenance: { ai: false, camera: false },
-      graphic: { isGraphic: false, blocky: true },
-    });
-    assert.ok(lifted.fusedBeforeCalibration > 0.55);
-    assert.ok(lifted.reasons.includes("jpeg-block"));
-
-    const gridOnly = fuseScores({
-      visual: 0.2,
-      provenance: { ai: false, camera: false },
-      graphic: { isGraphic: false, blocky: true },
-    });
-    assert.ok(Math.abs(gridOnly.fusedBeforeCalibration - 0.2) < 1e-9);
-  });
 });

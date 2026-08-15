@@ -10,9 +10,6 @@ export const FUSE_DEFAULTS = {
   provenanceAiScore: 0.93,
   cameraRealScale: 1,
   graphicScaleWhenFlagged: 1,
-  blockyLift: 0.06,
-  blockyBandMin: 0.48,
-  blockyBandMax: 0.7,
   bias: 0,
   temperature: 0.9,
   scorePower: 0.85,
@@ -38,17 +35,6 @@ export function fuseScores({
   if (graphic?.isGraphic) {
     score *= config.graphicScaleWhenFlagged ?? graphicScale(graphic);
     reasons.push("graphic-gate");
-  }
-
-  const lift = config.blockyLift ?? 0;
-  if (
-    lift > 0 &&
-    graphic?.blocky &&
-    score >= (config.blockyBandMin ?? 0.48) &&
-    score < (config.blockyBandMax ?? 0.7)
-  ) {
-    score = Math.min(0.92, score + lift);
-    reasons.push("jpeg-block");
   }
 
   const calibrated = applyPower(
