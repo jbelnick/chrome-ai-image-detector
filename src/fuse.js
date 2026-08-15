@@ -19,9 +19,6 @@ export const FUSE_DEFAULTS = {
   flatToneLift: 0.05,
   flatToneBandMin: 0.5,
   flatToneBandMax: 0.68,
-  huePeakDrop: 0.05,
-  huePeakBandMin: 0.58,
-  huePeakBandMax: 0.8,
   bias: 0,
   temperature: 0.9,
   scorePower: 0.85,
@@ -80,17 +77,6 @@ export function fuseScores({
   ) {
     score = Math.min(0.92, score + flatToneLift);
     reasons.push("flat-tone");
-  }
-
-  const huePeakDrop = config.huePeakDrop ?? 0;
-  if (
-    huePeakDrop > 0 &&
-    graphic?.huePeakish &&
-    score >= (config.huePeakBandMin ?? 0.58) &&
-    score < (config.huePeakBandMax ?? 0.8)
-  ) {
-    score = Math.max(0.08, score - huePeakDrop);
-    reasons.push("hue-peak");
   }
 
   const calibrated = applyPower(

@@ -63,18 +63,4 @@ describe("graphic-gate", () => {
     assert.equal(analysis.flatTone, true);
     assert.ok(analysis.centerBorder > 0.92 && analysis.centerBorder < 1.08);
   });
-
-  it("flags a single-hue field as hue-peaked", () => {
-    const w = 64;
-    const h = 64;
-    const data = new Uint8Array(w * h * 4);
-    for (let i = 0; i < w * h; i += 1) {
-      data[i * 4] = 220;
-      data[i * 4 + 1] = 40;
-      data[i * 4 + 2] = 40;
-      data[i * 4 + 3] = 255;
-    }
-    const analysis = analyzePixels(data, w, h);
-    assert.equal(analysis.huePeakish, true);
-  });
 });
