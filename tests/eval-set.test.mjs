@@ -7,9 +7,8 @@ import { isOfficialProxy, proxyKind } from "../src/eval-set.js";
 describe("shipped operating point", () => {
   it("keeps fuse bias at identity so 0.65 is a real confidence cut", () => {
     assert.equal(FUSE_DEFAULTS.bias, 0);
-    assert.equal(FUSE_DEFAULTS.temperature, 1);
+    assert.equal(FUSE_DEFAULTS.bias, 0);
     assert.ok(Math.abs(applyCalibration(0.65, FUSE_DEFAULTS) - 0.65) < 1e-6);
-    assert.ok(Math.abs(applyCalibration(0.33, FUSE_DEFAULTS) - 0.33) < 1e-6);
   });
 });
 

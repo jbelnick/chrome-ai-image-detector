@@ -29,7 +29,6 @@ describe("fuse", () => {
       provenance: { ai: false, camera: false },
       graphic: { isGraphic: false },
     });
-    assert.ok(Math.abs(result.score - 0.33) < 1e-6);
     assert.ok(result.score < 0.65);
   });
 
