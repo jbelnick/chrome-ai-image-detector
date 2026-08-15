@@ -65,12 +65,33 @@ describe("graphic-gate", () => {
       noisy[i * 4 + 2] = (seed >>> 16) & 255;
       noisy[i * 4 + 3] = 255;
     }
-    assert.equal(analyzePixels(noisy, w, h).grainy, true);
+    const noisyAnalysis = analyzePixels(noisy, w, h);
+    assert.equal(noisyAnalysis.grainy, true);
 
     const flat = new Uint8Array(w * h * 4);
     flat.fill(128);
     for (let i = 3; i < flat.length; i += 4) flat[i] = 255;
     assert.equal(analyzePixels(flat, w, h).grainy, false);
+    assert.equal(analyzePixels(flat, w, h).strongGrain, false);
+  });
+
+  it("flags dense mid-delta luma as strong-grain", () => {
+    const w = 128;
+    const h = 128;
+    const data = new Uint8Array(w * h * 4);
+    for (let y = 0; y < h; y += 1) {
+      for (let x = 0; x < w; x += 1) {
+        const i = (y * w + x) * 4;
+        const v = 120 + ((x + y) % 2 === 0 ? 12 : -12);
+        data[i] = v;
+        data[i + 1] = v;
+        data[i + 2] = v;
+        data[i + 3] = 255;
+      }
+    }
+    const analysis = analyzePixels(data, w, h);
+    assert.equal(analysis.grainy, true);
+    assert.equal(analysis.strongGrain, true);
   });
 
   it("flags a uniform field as flat-tone", () => {

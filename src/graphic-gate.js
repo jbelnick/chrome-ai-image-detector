@@ -79,6 +79,9 @@ export function analyzePixels(data, width, height) {
   // "sparse" if you divide by pixel count.
   const isGraphic = colors.size < 48 && edgeRatio > 0.12;
   const grainy = !isGraphic && fineRatio >= 0.08;
+  // Stronger luma-delta density than ordinary photo-grain. Used for a
+  // high-band drop on leftover web-real FPs that sit above 0.78.
+  const strongGrain = !isGraphic && fineRatio >= 0.44;
   const n = samples || 1;
   const rgMean = rgSum / n;
   const ybMean = ybSum / n;
@@ -107,6 +110,7 @@ export function analyzePixels(data, width, height) {
     flatTone,
     fineRatio,
     grainy,
+    strongGrain,
   };
 }
 

@@ -22,6 +22,9 @@ export const FUSE_DEFAULTS = {
   grainDrop: 0.12,
   grainBandMin: 0.65,
   grainBandMax: 0.78,
+  strongGrainDrop: 0.25,
+  strongGrainBandMin: 0.8,
+  strongGrainBandMax: 0.95,
   bias: 0,
   temperature: 0.9,
   scorePower: 0.85,
@@ -99,6 +102,17 @@ export function fuseScores({
   ) {
     calibrated -= grainDrop;
     reasons.push("photo-grain");
+  }
+
+  const strongGrainDrop = config.strongGrainDrop ?? 0;
+  if (
+    strongGrainDrop > 0 &&
+    graphic?.strongGrain &&
+    calibrated >= (config.strongGrainBandMin ?? 0.8) &&
+    calibrated < (config.strongGrainBandMax ?? 0.95)
+  ) {
+    calibrated -= strongGrainDrop;
+    reasons.push("strong-grain");
   }
 
   return {
