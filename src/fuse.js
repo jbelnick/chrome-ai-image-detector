@@ -22,7 +22,6 @@ export const FUSE_DEFAULTS = {
   bias: 0,
   temperature: 0.9,
   scorePower: 0.85,
-  scorePowerCeil: 0.7,
 };
 
 export function fuseScores({
@@ -80,16 +79,13 @@ export function fuseScores({
     reasons.push("flat-tone");
   }
 
-  const afterT = applyCalibration(score, {
-    bias: config.bias,
-    temperature: config.temperature,
-  });
-  const power = config.scorePower ?? 1;
-  const powerCeil = config.scorePowerCeil;
-  const calibrated =
-    Number.isFinite(powerCeil) && afterT >= powerCeil
-      ? afterT
-      : applyPower(afterT, power);
+  const calibrated = applyPower(
+    applyCalibration(score, {
+      bias: config.bias,
+      temperature: config.temperature,
+    }),
+    config.scorePower ?? 1,
+  );
 
   return {
     score: calibrated,
