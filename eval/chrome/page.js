@@ -12,6 +12,7 @@ import {
   imageDataToTensor,
   visualProbabilityFromLogit,
   applyCanvasResample,
+  BITMAP_DECODE,
 } from "/lib/preprocess.js";
 import { analyzePixels } from "/lib/graphic-gate.js";
 import { fuseScores, FUSE_DEFAULTS } from "/lib/fuse.js";
@@ -133,7 +134,7 @@ function squareForSiglip(bitmap) {
 async function inferBytes(cfSession, slSession, bytes, mime) {
   const provenance = scanProvenance(bytes);
   const blob = new Blob([bytes], { type: mime || "application/octet-stream" });
-  const bitmap = await createImageBitmap(blob);
+  const bitmap = await createImageBitmap(blob, BITMAP_DECODE);
   try {
     const cfPixels = cropForCommfor(bitmap);
     const slPixels = squareForSiglip(bitmap);
