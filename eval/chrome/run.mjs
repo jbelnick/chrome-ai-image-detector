@@ -368,6 +368,7 @@ async function main() {
       nOfficial: official.length,
       officialOpenFake: summary,
       nodeReference: NODE_REF,
+      rows: payload.rows,
       note:
         "OFFICIAL Chrome number uses the same OpenFake core/test 180/class prefix as npm run eval. " +
         "Decode is createImageBitmap + OffscreenCanvas (extension path). " +

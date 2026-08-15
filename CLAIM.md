@@ -156,29 +156,30 @@ Compare:
 | Mac Chrome WebGPU | ort-web webgpu (Apple Metal-3) | 0.872222 | 0.872222 | 0.872222 | 157/23/157/23 |
 | Cloud chrome-path KEEP `d8976dc` | ort-web wasm, canvas quality medium | 0.875000 | 0.872222 | 0.877778 | 157/23/158/22 |
 | Cloud chrome-path KEEP `404faa6` | ort-web wasm, canvas smoothing off | 0.877778 | 0.894444 | 0.861111 | 161/19/155/25 |
+| Cloud chrome-path KEEP `9d7a712` | ort-web wasm, medium CF + nearest SigLIP | 0.880556 | 0.894444 | 0.866667 | 161/19/156/24 |
 
-## Current chrome-path best (`404faa6`)
+## Current chrome-path best (`9d7a712`)
 
 Command: `npm run eval:chrome`  
 Date: 2026-08-15  
-Commit: `404faa6` — OffscreenCanvas `imageSmoothingEnabled: false` (nearest-neighbor). Fuse bias stays 0.
+Commit: `9d7a712` — OffscreenCanvas medium-smooth Community Forensics, nearest-neighbor SigLIP. Fuse bias stays 0.
 
 ```
 OFFICIAL OpenFake core/test @ 0.65 (Chrome path):
-  balanced accuracy  87.78%
+  balanced accuracy  88.06%
   TPR                89.44%
-  TNR                86.11%
+  TNR                86.67%
   n                  360 (AI 180 / real 180)
-  TP/FN/TN/FP        161 / 19 / 155 / 25
+  TP/FN/TN/FP        161 / 19 / 156 / 24
 
-bal_acc_065: 0.877778
+bal_acc_065: 0.880556
 tpr_065:     0.894444
-tnr_065:     0.861111
+tnr_065:     0.866667
 backend:     wasm
 webgpu:      UNVERIFIED
 ```
 
-Versus medium KEEP `d8976dc` (0.875000, 157/23/158/22): TPR +4, TNR −3, net +1. Mac Metal has not re-run this commit; VM WASM remains the chrome-path proxy.
+Versus nearest KEEP `404faa6` (0.877778, 161/19/155/25): TPR held, TNR +1. Mac Metal has not re-run this commit; VM WASM remains the chrome-path proxy.
 
 ## Rules checklist
 
