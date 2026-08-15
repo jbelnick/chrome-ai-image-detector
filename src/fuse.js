@@ -19,6 +19,9 @@ export const FUSE_DEFAULTS = {
   flatToneLift: 0.05,
   flatToneBandMin: 0.5,
   flatToneBandMax: 0.68,
+  unevenSatLift: 0.05,
+  unevenSatBandMin: 0.5,
+  unevenSatBandMax: 0.68,
   bias: 0,
   temperature: 0.9,
   scorePower: 0.85,
@@ -77,6 +80,17 @@ export function fuseScores({
   ) {
     score = Math.min(0.92, score + flatToneLift);
     reasons.push("flat-tone");
+  }
+
+  const unevenSatLift = config.unevenSatLift ?? 0;
+  if (
+    unevenSatLift > 0 &&
+    graphic?.unevenSat &&
+    score >= (config.unevenSatBandMin ?? 0.5) &&
+    score < (config.unevenSatBandMax ?? 0.68)
+  ) {
+    score = Math.min(0.92, score + unevenSatLift);
+    reasons.push("uneven-sat");
   }
 
   const calibrated = applyPower(
