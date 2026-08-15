@@ -14,9 +14,10 @@ describe("siglip probe", () => {
     assert.equal(Number.isFinite(z), true);
   });
 
-  it("lets a confident Community Forensics score lift the visual probability", () => {
+  it("takes the more AI-confident of the two visual heads", () => {
     assert.equal(blendVisual(0.2, 0.9), 0.9);
     assert.equal(blendVisual(0.8, 0.1), 0.8);
+    assert.equal(blendVisual(0.2, 0.4), 0.4);
   });
 
   it("builds a 1x3x224x224 SigLIP tensor", () => {

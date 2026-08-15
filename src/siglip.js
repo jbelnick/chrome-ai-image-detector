@@ -49,8 +49,9 @@ export function siglipProbability(pooler) {
   return visualProbabilityFromLogit(probeLogit(pooler));
 }
 
-/** Community Forensics is high-precision on older generators; SigLIP2 is the primary. */
+/** Take the more AI-confident of the two visual heads. */
 export function blendVisual(siglip, commfor) {
-  if (Number.isFinite(commfor) && commfor >= 0.5) return Math.max(siglip, commfor);
-  return siglip;
+  const a = Number.isFinite(siglip) ? siglip : 0;
+  const b = Number.isFinite(commfor) ? commfor : 0;
+  return Math.max(a, b);
 }
