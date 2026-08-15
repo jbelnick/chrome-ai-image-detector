@@ -379,6 +379,30 @@ webgpu:      UNVERIFIED
 
 Versus KEEP `ad6ea13` on the same mix: TPR held, TNR +1, net +1, BA 0.874302 → 0.877095. Secondary 360 held 0.886111.
 
+## Current broader-proxy best (`6bcafbc`)
+
+Muted high-band drop raised from 0.20 to 0.28 (same muted flag, same `[0.80, 0.88)` band). Fuse bias stays 0. Command: `npm run eval:chrome`. Date: 2026-08-15. Finished 718/718 with no stall, EXIT:0.
+
+```
+SCALAR broader-proxy (keep/revert)
+bal_acc_065: 0.879888
+tpr_065:     0.854749
+tnr_065:     0.905028
+tp/fn/tn/fp: 153 / 26 / 162 / 17
+n:           358
+
+SECONDARY official-360 (not the ratchet)
+bal_acc_065: 0.886111
+tpr_065:     0.816667
+tnr_065:     0.955556
+tp/fn/tn/fp: 147 / 33 / 172 / 8
+n:           360
+backend:     wasm
+webgpu:      UNVERIFIED
+```
+
+Versus KEEP `242ca3e` on the same mix: TPR held, TNR +1, net +1, BA 0.877095 → 0.879888. Secondary 360 held 0.886111.
+
 ## Rules checklist
 
 - [x] No cloud inference
