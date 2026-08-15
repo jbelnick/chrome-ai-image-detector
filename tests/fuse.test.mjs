@@ -68,4 +68,14 @@ describe("fuse", () => {
     assert.ok(lifted.fusedBeforeCalibration > 0.56);
     assert.ok(lifted.reasons.includes("muted-color"));
   });
+
+  it("lifts a flat-contrast mid-range visual without inventing a verdict from RMS alone", () => {
+    const lifted = fuseScores({
+      visual: 0.56,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, flatContrast: true },
+    });
+    assert.ok(lifted.fusedBeforeCalibration > 0.56);
+    assert.ok(lifted.reasons.includes("flat-contrast"));
+  });
 });

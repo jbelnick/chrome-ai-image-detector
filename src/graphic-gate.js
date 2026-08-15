@@ -12,6 +12,7 @@ export function quantizeChannel(value, bins = 16) {
 export const TEXTURE = {
   vividColorfulness: 72,
   mutedColorfulness: 28,
+  flatRms: 22,
 };
 
 export function analyzePixels(data, width, height) {
@@ -23,6 +24,8 @@ export function analyzePixels(data, width, height) {
   let ybSum = 0;
   let rgSq = 0;
   let ybSq = 0;
+  let lumSum = 0;
+  let lumSq = 0;
   const stride = Math.max(1, Math.floor(Math.min(width, height) / 96));
 
   for (let y = 0; y < height - stride; y += stride) {
@@ -48,6 +51,8 @@ export function analyzePixels(data, width, height) {
       ybSum += yb;
       rgSq += rg * rg;
       ybSq += yb * yb;
+      lumSum += lum;
+      lumSq += lum * lum;
       samples += 1;
     }
   }
@@ -67,6 +72,9 @@ export function analyzePixels(data, width, height) {
     0.3 * Math.sqrt(rgMean * rgMean + ybMean * ybMean);
   const vivid = colorfulness >= TEXTURE.vividColorfulness;
   const muted = colorfulness <= TEXTURE.mutedColorfulness;
+  const lumMean = lumSum / n;
+  const rms = Math.sqrt(Math.max(0, lumSq / n - lumMean * lumMean));
+  const flatContrast = rms <= TEXTURE.flatRms;
   return {
     uniqueRatio,
     edgeRatio,
@@ -76,6 +84,8 @@ export function analyzePixels(data, width, height) {
     colorfulness,
     vivid,
     muted,
+    rms,
+    flatContrast,
   };
 }
 
