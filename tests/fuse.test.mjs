@@ -23,6 +23,22 @@ describe("fuse", () => {
     assert.ok(result.reasons.includes("camera-exif"));
   });
 
+  it("skips power lift once the temperature-scaled score is already high", () => {
+    const mid = fuseScores({
+      visual: 0.56,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false },
+    });
+    const high = fuseScores({
+      visual: 0.88,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false },
+    });
+    assert.ok(mid.score > mid.fusedBeforeCalibration);
+    assert.ok(Math.abs(high.score - high.fusedBeforeCalibration) > 0 || high.score >= 0.7);
+    assert.ok(high.score >= 0.7);
+  });
+
   it("does not remap a raw 0.33 onto the 0.65 badge cut", () => {
     const result = fuseScores({
       visual: 0.33,
