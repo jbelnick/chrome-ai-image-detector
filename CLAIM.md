@@ -403,6 +403,30 @@ webgpu:      UNVERIFIED
 
 Versus KEEP `242ca3e` on the same mix: TPR held, TNR +1, net +1, BA 0.877095 → 0.879888. Secondary 360 held 0.886111.
 
+## Current broader-proxy best (`ccad982`)
+
+Strong-grain threshold lowered from `fineRatio >= 0.44` to `fineRatio >= 0.40` (same 0.25 drop, same `[0.80, 0.95)` band). Flips leftover holdout FP `ofhold_real_0009`. Fuse bias stays 0. Command: `npm run eval:chrome`. Date: 2026-08-15. Finished 718/718 with no stall, EXIT:0.
+
+```
+SCALAR broader-proxy (keep/revert)
+bal_acc_065: 0.882682
+tpr_065:     0.854749
+tnr_065:     0.910615
+tp/fn/tn/fp: 153 / 26 / 163 / 16
+n:           358
+
+SECONDARY official-360 (not the ratchet)
+bal_acc_065: 0.888889
+tpr_065:     0.816667
+tnr_065:     0.961111
+tp/fn/tn/fp: 147 / 33 / 173 / 7
+n:           360
+backend:     wasm
+webgpu:      UNVERIFIED
+```
+
+Versus KEEP `6bcafbc` on the same mix: TPR held, TNR +1, net +1, BA 0.879888 → 0.882682. Secondary 360 rose 0.886111 → 0.888889 (TNR +1).
+
 ## Rules checklist
 
 - [x] No cloud inference
