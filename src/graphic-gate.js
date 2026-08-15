@@ -14,7 +14,6 @@ export const TEXTURE = {
   mutedColorfulness: 28,
   flatToneLo: 0.92,
   flatToneHi: 1.08,
-  unevenSatCv: 0.85,
 };
 
 export function analyzePixels(data, width, height) {
@@ -30,8 +29,6 @@ export function analyzePixels(data, width, height) {
   let centerN = 0;
   let borderLum = 0;
   let borderN = 0;
-  let satSum = 0;
-  let satSq = 0;
   const stride = Math.max(1, Math.floor(Math.min(width, height) / 96));
   const x0 = width * 0.25;
   const x1 = width * 0.75;
@@ -68,10 +65,6 @@ export function analyzePixels(data, width, height) {
         borderLum += lum;
         borderN += 1;
       }
-      const mx = Math.max(r, g, b);
-      const sat = mx === 0 ? 0 : (mx - Math.min(r, g, b)) / mx;
-      satSum += sat;
-      satSq += sat * sat;
       samples += 1;
     }
   }
@@ -96,10 +89,6 @@ export function analyzePixels(data, width, height) {
   const centerBorder = centerMean / (borderMean + 1e-3);
   const flatTone =
     centerBorder >= TEXTURE.flatToneLo && centerBorder <= TEXTURE.flatToneHi;
-  const satMean = satSum / n;
-  const satStd = Math.sqrt(Math.max(0, satSq / n - satMean * satMean));
-  const satCv = satStd / (satMean + 1e-3);
-  const unevenSat = satCv >= TEXTURE.unevenSatCv;
   return {
     uniqueRatio,
     edgeRatio,
@@ -111,8 +100,6 @@ export function analyzePixels(data, width, height) {
     muted,
     centerBorder,
     flatTone,
-    satCv,
-    unevenSat,
   };
 }
 
