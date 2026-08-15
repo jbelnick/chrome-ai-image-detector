@@ -22,18 +22,7 @@ let cfSession = null;
 let slSession = null;
 let activeProvider = "wasm";
 let initPromise = null;
-let fuseConfig = { ...FUSE_DEFAULTS };
-
-async function loadFuseConfig() {
-  try {
-    const stored = await chrome.storage.local.get(["fuse"]);
-    if (stored.fuse && typeof stored.fuse === "object") {
-      fuseConfig = { ...FUSE_DEFAULTS, ...stored.fuse };
-    }
-  } catch {
-    fuseConfig = { ...FUSE_DEFAULTS };
-  }
-}
+const fuseConfig = { ...FUSE_DEFAULTS };
 
 async function readModelBuffer(spec) {
   const url = chrome.runtime.getURL(`models/${spec.filename}`);
@@ -102,7 +91,6 @@ async function initModel() {
   if (cfSession && slSession) return { ready: true, provider: activeProvider };
   if (!initPromise) {
     initPromise = (async () => {
-      await loadFuseConfig();
       return createSessions();
     })().catch((err) => {
       initPromise = null;

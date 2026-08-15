@@ -46,14 +46,14 @@ npm run eval
 
 Same fusion object as the extension (`FUSE_DEFAULTS.bias = 0`). Node uses `onnxruntime-node` + `sharp`; Chrome uses canvas `drawImage` + WebGPU/WASM. Those decode paths are not identical.
 
-Official proxy: OpenFake `core/test` only. Lorem Picsum is easy-real padding and is **not** the claim. Community Forensics DALL·E extras are excluded (embedded generator ASCII). The SigLIP2 linear probe was fit on OpenFake **validation** only — the train script does not read `eval/data`.
+Official proxy: a 180/class streaming prefix of OpenFake `core/test` (generator holdout, JPEG q=88). Not the full published `core/test` protocol and not OpenFake `reddit/test`. Lorem Picsum is easy-real padding and is **not** the claim. Community Forensics DALL·E extras are excluded (embedded generator ASCII). The SigLIP2 linear probe was fit on OpenFake **validation** only — the train script does not read `eval/data`.
 
 ## Proxy score
 
 Command: `npm run eval`  
 Date: 2026-08-15  
 Machine: this Cloud Agent (CPU ONNX Runtime).  
-Commit scored: `b3e1487` (honesty rewrite; fuse bias=0). Content-script encoder inlining after this run does not change scores.
+Commit scored: `b3e1487` (honesty rewrite; fuse bias=0). Later commits (`3fd8db2`, `eff404d`, and this docs/storage-fuse lock) do not change the scoring path.
 
 ```
 Grain eval — same ONNX + shipped fusion as the extension

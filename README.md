@@ -46,7 +46,7 @@ After a successful build the unpacked extension root is **`extension/`**. `exten
 3. Click **Load unpacked**.
 4. Select the `extension/` directory from this repo (the folder that contains `manifest.json`).
 5. The setup tab verifies the packaged weights (SHA-256) and warms the engine. After that the extension works **offline**.
-6. Browse any normal webpage. Badges appear on analyzed images. The toolbar popup shows status and a display-only threshold slider.
+6. Browse any normal webpage. Badges appear on analyzed images. The toolbar slider changes the **flag cut** used to color a badge and count AI hits; the printed `AI N%` is still the fused score. Default cut is 0.65.
 
 Optional: in the extension details, allow access to file URLs if you want `file://` pages scored.
 
@@ -66,7 +66,7 @@ Balanced accuracy = (TPR + TNR) / 2. An image is predicted AI when the **shipped
 
 The number printed as **OFFICIAL OpenFake core/test** is the proxy score recorded in [CLAIM.md](CLAIM.md) (**81.67%** BA @ 0.65 on 360 OpenFake images, 2026-08-15). Picsum photographs are easy-real padding and are labeled as such. Community Forensics DALL·E extras are excluded because they embed generator ASCII.
 
-This is a public proxy, **not** the private maintainer set. OpenFake `core/test` holds out generators; it is still easier than a private web-JPEG bench of recent models.
+This is a public **generator-holdout** proxy, **not** the private maintainer set and **not** OpenFake `reddit/test` (in-the-wild web JPEG). The downloader takes a streaming prefix of 180/class from `core/test` (not the full published protocol) and JPEG-saves at q=88. That is harder than CIFAKE/Picsum and still easier than a private multi-generation web-JPEG bench.
 
 ## Repository layout
 

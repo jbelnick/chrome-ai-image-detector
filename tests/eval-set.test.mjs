@@ -14,7 +14,7 @@ describe("shipped operating point", () => {
 });
 
 describe("eval-set", () => {
-  it("treats OpenFake files as the official hard proxy", () => {
+  it("treats OpenFake files as the official public proxy", () => {
     assert.equal(proxyKind("ai/openfake_ai_0001.jpg"), "openfake");
     assert.equal(isOfficialProxy("ai/openfake_ai_0001.jpg"), true);
   });

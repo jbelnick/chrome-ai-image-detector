@@ -2,7 +2,9 @@
 /**
  * Download the public proxy set.
  *
- * Official / hard subset: OpenFake core/test (held-out generators).
+ * Official subset: a 180/class streaming prefix of OpenFake core/test
+ * (held-out generators). Not the full published test protocol, and not
+ * the OpenFake reddit/test web-JPEG split.
  * Optional easy-real padding: seeded Lorem Picsum photographs.
  *
  * Community Forensics DALL·E extras are NOT downloaded. Those PNGs embed
@@ -57,8 +59,10 @@ n_ai = 0
 n_real = 0
 target = 180
 for i, row in enumerate(ds):
-    label = row.get("label") or row.get("type") or ""
-    lab = str(label).lower()
+    raw = row.get("label")
+    if raw is None:
+        raw = row.get("type")
+    lab = "" if raw is None else str(raw).lower()
     is_ai = lab in {"fake", "ai", "synthetic", "1", "generated"}
     is_real = lab in {"real", "0", "authentic"}
     if not (is_ai or is_real):
