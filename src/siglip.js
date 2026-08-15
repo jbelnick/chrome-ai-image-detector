@@ -51,15 +51,11 @@ export function siglipProbability(pooler) {
 
 /**
  * Soft-OR with SigLIP counted twice: 1-(1-s)^2*(1-c).
- * If Community Forensics is sure-real and SigLIP disagrees hard,
- * fall back to a single soft-OR so one head cannot dominate.
+ * Opposite of the discarded double-CF rule.
  */
 export function blendVisual(siglip, commfor) {
   const a = Number.isFinite(siglip) ? siglip : 0;
   const b = Number.isFinite(commfor) ? commfor : 0;
   const missS = 1 - a;
-  if (b < 0.22 && a - b > 0.35) {
-    return 1 - missS * (1 - b);
-  }
   return 1 - missS * missS * (1 - b);
 }
