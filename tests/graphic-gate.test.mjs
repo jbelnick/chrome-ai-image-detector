@@ -37,4 +37,19 @@ describe("graphic-gate", () => {
     const analysis = analyzePixels(data, w, h);
     assert.equal(analysis.isGraphic, false);
   });
+
+  it("flags a saturated opponent-color field as vivid", () => {
+    const w = 64;
+    const h = 64;
+    const data = new Uint8Array(w * h * 4);
+    for (let i = 0; i < w * h; i += 1) {
+      data[i * 4] = i % 2 === 0 ? 255 : 0;
+      data[i * 4 + 1] = i % 2 === 0 ? 0 : 255;
+      data[i * 4 + 2] = 0;
+      data[i * 4 + 3] = 255;
+    }
+    const analysis = analyzePixels(data, w, h);
+    assert.equal(analysis.vivid, true);
+    assert.ok(analysis.colorfulness >= 72);
+  });
 });

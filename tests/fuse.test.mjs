@@ -41,4 +41,21 @@ describe("fuse", () => {
     assert.ok(result.fusedBeforeCalibration < 0.8 * FUSE_DEFAULTS.graphicScaleWhenFlagged + 1e-6);
     assert.ok(result.reasons.includes("graphic-gate"));
   });
+
+  it("lifts a vivid mid-range visual without inventing a verdict from colorfulness alone", () => {
+    const lifted = fuseScores({
+      visual: 0.56,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, vivid: true },
+    });
+    assert.ok(lifted.fusedBeforeCalibration > 0.56);
+    assert.ok(lifted.reasons.includes("colorfulness"));
+
+    const colorOnly = fuseScores({
+      visual: 0.2,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, vivid: true },
+    });
+    assert.ok(Math.abs(colorOnly.fusedBeforeCalibration - 0.2) < 1e-9);
+  });
 });

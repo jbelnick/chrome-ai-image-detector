@@ -9,11 +9,19 @@ export function quantizeChannel(value, bins = 16) {
   return Math.min(bins - 1, Math.floor(value / step));
 }
 
+export const TEXTURE = {
+  vividColorfulness: 72,
+};
+
 export function analyzePixels(data, width, height) {
   const bins = 12;
   const colors = new Set();
   let edge = 0;
   let samples = 0;
+  let rgSum = 0;
+  let ybSum = 0;
+  let rgSq = 0;
+  let ybSq = 0;
   const stride = Math.max(1, Math.floor(Math.min(width, height) / 96));
 
   for (let y = 0; y < height - stride; y += stride) {
@@ -33,6 +41,12 @@ export function analyzePixels(data, width, height) {
       const lumX = 0.299 * data[j] + 0.587 * data[j + 1] + 0.114 * data[j + 2];
       const lumY = 0.299 * data[k] + 0.587 * data[k + 1] + 0.114 * data[k + 2];
       if (Math.abs(lum - lumX) > 28 || Math.abs(lum - lumY) > 28) edge += 1;
+      const rg = r - g;
+      const yb = 0.5 * (r + g) - b;
+      rgSum += rg;
+      ybSum += yb;
+      rgSq += rg * rg;
+      ybSq += yb * yb;
       samples += 1;
     }
   }
@@ -42,7 +56,24 @@ export function analyzePixels(data, width, height) {
   // Quantized palette size, not unique/samples — large photos always look
   // "sparse" if you divide by pixel count.
   const isGraphic = colors.size < 48 && edgeRatio > 0.12;
-  return { uniqueRatio, edgeRatio, isGraphic, samples, uniqueColors: colors.size };
+  const n = samples || 1;
+  const rgMean = rgSum / n;
+  const ybMean = ybSum / n;
+  const rgStd = Math.sqrt(Math.max(0, rgSq / n - rgMean * rgMean));
+  const ybStd = Math.sqrt(Math.max(0, ybSq / n - ybMean * ybMean));
+  const colorfulness =
+    Math.sqrt(rgStd * rgStd + ybStd * ybStd) +
+    0.3 * Math.sqrt(rgMean * rgMean + ybMean * ybMean);
+  const vivid = colorfulness >= TEXTURE.vividColorfulness;
+  return {
+    uniqueRatio,
+    edgeRatio,
+    isGraphic,
+    samples,
+    uniqueColors: colors.size,
+    colorfulness,
+    vivid,
+  };
 }
 
 export function graphicScale(analysis) {

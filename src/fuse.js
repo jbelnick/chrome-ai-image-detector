@@ -10,6 +10,9 @@ export const FUSE_DEFAULTS = {
   provenanceAiScore: 0.93,
   cameraRealScale: 1,
   graphicScaleWhenFlagged: 1,
+  vividLift: 0.05,
+  vividBandMin: 0.5,
+  vividBandMax: 0.68,
   bias: 0,
   temperature: 0.9,
   scorePower: 0.85,
@@ -35,6 +38,17 @@ export function fuseScores({
   if (graphic?.isGraphic) {
     score *= config.graphicScaleWhenFlagged ?? graphicScale(graphic);
     reasons.push("graphic-gate");
+  }
+
+  const lift = config.vividLift ?? 0;
+  if (
+    lift > 0 &&
+    graphic?.vivid &&
+    score >= (config.vividBandMin ?? 0.5) &&
+    score < (config.vividBandMax ?? 0.68)
+  ) {
+    score = Math.min(0.92, score + lift);
+    reasons.push("colorfulness");
   }
 
   const calibrated = applyPower(
