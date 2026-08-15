@@ -49,9 +49,11 @@ export function siglipProbability(pooler) {
   return visualProbabilityFromLogit(probeLogit(pooler));
 }
 
-/** Soft-OR: independent heads both vote AI. */
+/** Soft-OR, plus a small bonus when both heads agree the image is AI-ish. */
 export function blendVisual(siglip, commfor) {
   const a = Number.isFinite(siglip) ? siglip : 0;
   const b = Number.isFinite(commfor) ? commfor : 0;
-  return a + b - a * b;
+  const or = a + b - a * b;
+  if (a >= 0.4 && b >= 0.4) return Math.min(1 - 1e-6, or + 0.04);
+  return or;
 }
