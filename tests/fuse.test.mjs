@@ -76,6 +76,24 @@ describe("fuse", () => {
     assert.ok(Math.abs(toneOnly.fusedBeforeCalibration - 0.2) < 1e-9);
   });
 
+  it("drops a grainy just-over-cut visual without inventing a real verdict from grain alone", () => {
+    const dropped = fuseScores({
+      visual: 0.70,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, grainy: true },
+    });
+    assert.ok(dropped.score < 0.65);
+    assert.ok(dropped.reasons.includes("photo-grain"));
+
+    const grainOnly = fuseScores({
+      visual: 0.2,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, grainy: true },
+    });
+    assert.ok(Math.abs(grainOnly.fusedBeforeCalibration - 0.2) < 1e-9);
+    assert.equal(grainOnly.reasons.includes("photo-grain"), false);
+  });
+
   it("lifts a muted mid-range visual without inventing a verdict from low colorfulness alone", () => {
     const lifted = fuseScores({
       visual: 0.56,

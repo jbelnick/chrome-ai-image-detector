@@ -20,6 +20,7 @@ export function analyzePixels(data, width, height) {
   const bins = 12;
   const colors = new Set();
   let edge = 0;
+  let fine = 0;
   let samples = 0;
   let rgSum = 0;
   let ybSum = 0;
@@ -51,7 +52,9 @@ export function analyzePixels(data, width, height) {
       const lum = 0.299 * r + 0.587 * g + 0.114 * b;
       const lumX = 0.299 * data[j] + 0.587 * data[j + 1] + 0.114 * data[j + 2];
       const lumY = 0.299 * data[k] + 0.587 * data[k + 1] + 0.114 * data[k + 2];
-      if (Math.abs(lum - lumX) > 28 || Math.abs(lum - lumY) > 28) edge += 1;
+      const dLum = Math.max(Math.abs(lum - lumX), Math.abs(lum - lumY));
+      if (dLum > 28) edge += 1;
+      else if (dLum > 8) fine += 1;
       const rg = r - g;
       const yb = 0.5 * (r + g) - b;
       rgSum += rg;
@@ -71,9 +74,11 @@ export function analyzePixels(data, width, height) {
 
   const uniqueRatio = samples === 0 ? 1 : colors.size / samples;
   const edgeRatio = samples === 0 ? 0 : edge / samples;
+  const fineRatio = samples === 0 ? 0 : fine / samples;
   // Quantized palette size, not unique/samples — large photos always look
   // "sparse" if you divide by pixel count.
   const isGraphic = colors.size < 48 && edgeRatio > 0.12;
+  const grainy = !isGraphic && fineRatio >= 0.08;
   const n = samples || 1;
   const rgMean = rgSum / n;
   const ybMean = ybSum / n;
@@ -100,6 +105,8 @@ export function analyzePixels(data, width, height) {
     muted,
     centerBorder,
     flatTone,
+    fineRatio,
+    grainy,
   };
 }
 

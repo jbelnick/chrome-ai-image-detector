@@ -19,6 +19,9 @@ export const FUSE_DEFAULTS = {
   flatToneLift: 0.05,
   flatToneBandMin: 0.5,
   flatToneBandMax: 0.68,
+  grainDrop: 0.12,
+  grainBandMin: 0.65,
+  grainBandMax: 0.78,
   bias: 0,
   temperature: 0.9,
   scorePower: 0.85,
@@ -79,13 +82,24 @@ export function fuseScores({
     reasons.push("flat-tone");
   }
 
-  const calibrated = applyPower(
+  let calibrated = applyPower(
     applyCalibration(score, {
       bias: config.bias,
       temperature: config.temperature,
     }),
     config.scorePower ?? 1,
   );
+
+  const grainDrop = config.grainDrop ?? 0;
+  if (
+    grainDrop > 0 &&
+    graphic?.grainy &&
+    calibrated >= (config.grainBandMin ?? 0.65) &&
+    calibrated < (config.grainBandMax ?? 0.78)
+  ) {
+    calibrated -= grainDrop;
+    reasons.push("photo-grain");
+  }
 
   return {
     score: calibrated,

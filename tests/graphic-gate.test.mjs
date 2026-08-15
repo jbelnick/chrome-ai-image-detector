@@ -53,6 +53,26 @@ describe("graphic-gate", () => {
     assert.ok(analysis.colorfulness >= 72);
   });
 
+  it("flags a noisy photographic field as grainy and a flat field as not", () => {
+    const w = 128;
+    const h = 128;
+    const noisy = new Uint8Array(w * h * 4);
+    let seed = 1;
+    for (let i = 0; i < w * h; i += 1) {
+      seed = (seed * 1664525 + 1013904223) >>> 0;
+      noisy[i * 4] = seed & 255;
+      noisy[i * 4 + 1] = (seed >>> 8) & 255;
+      noisy[i * 4 + 2] = (seed >>> 16) & 255;
+      noisy[i * 4 + 3] = 255;
+    }
+    assert.equal(analyzePixels(noisy, w, h).grainy, true);
+
+    const flat = new Uint8Array(w * h * 4);
+    flat.fill(128);
+    for (let i = 3; i < flat.length; i += 4) flat[i] = 255;
+    assert.equal(analyzePixels(flat, w, h).grainy, false);
+  });
+
   it("flags a uniform field as flat-tone", () => {
     const w = 64;
     const h = 64;
