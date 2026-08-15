@@ -14,11 +14,9 @@ describe("siglip probe", () => {
     assert.equal(Number.isFinite(z), true);
   });
 
-  it("averages the two heads in log-odds space", () => {
-    const mid = blendVisual(0.8, 0.2);
-    assert.ok(mid > 0.45 && mid < 0.55);
-    assert.ok(blendVisual(0.9, 0.9) > 0.85);
-    assert.ok(blendVisual(0.1, 0.1) < 0.15);
+  it("soft-ORs with SigLIP counted twice", () => {
+    assert.ok(Math.abs(blendVisual(0.8, 0.1) - (1 - 0.2 * 0.2 * 0.9)) < 1e-9);
+    assert.ok(blendVisual(0.8, 0.4) > 0.8 + 0.4 - 0.8 * 0.4);
   });
 
   it("builds a 1x3x224x224 SigLIP tensor", () => {

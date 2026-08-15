@@ -1,6 +1,5 @@
 import probe from "./siglip-probe.js";
 import { visualProbabilityFromLogit } from "./preprocess.js";
-import { logit, sigmoid } from "./calibrate.js";
 
 export const SIGLIP = {
   size: 224,
@@ -51,12 +50,12 @@ export function siglipProbability(pooler) {
 }
 
 /**
- * Equal log-odds mean of the two visual heads.
- * Different structure from the kept double-SigLIP soft-OR:
- * averages belief instead of unioning misses.
+ * Soft-OR with SigLIP counted twice: 1-(1-s)^2*(1-c).
+ * Opposite of the discarded double-CF rule.
  */
 export function blendVisual(siglip, commfor) {
-  const a = Number.isFinite(siglip) ? siglip : 0.5;
-  const b = Number.isFinite(commfor) ? commfor : 0.5;
-  return sigmoid((logit(a) + logit(b)) / 2);
+  const a = Number.isFinite(siglip) ? siglip : 0;
+  const b = Number.isFinite(commfor) ? commfor : 0;
+  const missS = 1 - a;
+  return 1 - missS * missS * (1 - b);
 }
