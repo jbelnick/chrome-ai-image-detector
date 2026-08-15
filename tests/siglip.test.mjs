@@ -23,6 +23,8 @@ describe("siglip probe", () => {
     const sureReal = blendVisual(0.10, 0.90);
     assert.ok(Math.abs(sureReal - (1 - 0.9 * 0.9)) < 1e-9);
     assert.ok(sureReal < 0.25);
+    const edge = blendVisual(0.28, 0.90);
+    assert.ok(Math.abs(edge - (1 - 0.72 * 0.72)) < 1e-9);
     const mid = blendVisual(0.40, 0.90);
     assert.ok(mid > 0.40);
   });
