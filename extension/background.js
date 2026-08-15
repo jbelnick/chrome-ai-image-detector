@@ -1,30 +1,34 @@
+import { bytesToBase64, base64ToBytes } from "./lib/transfer-bytes.js";
+
 const OFFSCREEN_URL = "offscreen.html";
+const MAX_CACHE = 256;
+const MAX_INFLIGHT = 2;
 
 let offscreenReady = null;
 const pageStats = new Map();
 const resultCache = new Map();
-const MAX_CACHE = 256;
+let inflight = 0;
+const queue = [];
 
-async function ensureOffscreen() {
-  if (offscreenReady) return offscreenReady;
-  offscreenReady = (async () => {
-    const contexts = await chrome.runtime.getContexts({
-      contextTypes: ["OFFSCREEN_DOCUMENT"],
+function enqueue(fn) {
+  return new Promise((resolve, reject) => {
+    queue.push({ fn, resolve, reject });
+    pump();
+  });
+}
+
+function pump() {
+  if (inflight >= MAX_INFLIGHT) return;
+  const job = queue.shift();
+  if (!job) return;
+  inflight += 1;
+  job
+    .fn()
+    .then(job.resolve, job.reject)
+    .finally(() => {
+      inflight -= 1;
+      pump();
     });
-    if (contexts.length === 0) {
-      await chrome.offscreen.createDocument({
-        url: OFFSCREEN_URL,
-        reasons: ["WORKERS"],
-        justification: "Run on-device ONNX inference away from webpage threads",
-      });
-    }
-  })();
-  try {
-    await offscreenReady;
-  } catch (err) {
-    offscreenReady = null;
-    throw err;
-  }
 }
 
 function sendToOffscreen(message) {
@@ -47,6 +51,43 @@ function sendToOffscreen(message) {
   });
 }
 
+async function pingOffscreen(tries = 40, delayMs = 100) {
+  let last = new Error("offscreen ping timeout");
+  for (let i = 0; i < tries; i += 1) {
+    try {
+      const response = await sendToOffscreen({ type: "ping" });
+      if (response?.ok) return;
+    } catch (err) {
+      last = err;
+    }
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
+  }
+  throw last;
+}
+
+async function ensureOffscreen() {
+  if (offscreenReady) return offscreenReady;
+  offscreenReady = (async () => {
+    const contexts = await chrome.runtime.getContexts({
+      contextTypes: ["OFFSCREEN_DOCUMENT"],
+    });
+    if (contexts.length === 0) {
+      await chrome.offscreen.createDocument({
+        url: OFFSCREEN_URL,
+        reasons: ["WORKERS"],
+        justification: "Run on-device ONNX inference away from webpage threads",
+      });
+    }
+    await pingOffscreen();
+  })();
+  try {
+    await offscreenReady;
+  } catch (err) {
+    offscreenReady = null;
+    throw err;
+  }
+}
+
 async function fetchImageBytes(src) {
   const response = await fetch(src, {
     credentials: "omit",
@@ -57,7 +98,7 @@ async function fetchImageBytes(src) {
   }
   const mime = response.headers.get("content-type") || "application/octet-stream";
   const buffer = await response.arrayBuffer();
-  return { buffer, mime };
+  return { bytesB64: bytesToBase64(buffer), mime };
 }
 
 function bumpStats(tabId, field) {
@@ -66,6 +107,38 @@ function bumpStats(tabId, field) {
   current[field] = (current[field] || 0) + 1;
   pageStats.set(tabId, current);
   chrome.storage.session?.set({ pageStats: Object.fromEntries(pageStats) }).catch(() => {});
+}
+
+async function analyzeImage(message, tabId) {
+  if (resultCache.has(message.src)) {
+    return resultCache.get(message.src);
+  }
+  await ensureOffscreen();
+  let bytesB64 = message.bytesB64;
+  let mime = message.mime || "application/octet-stream";
+  if (!bytesB64) {
+    const fetched = await fetchImageBytes(message.src);
+    bytesB64 = fetched.bytesB64;
+    mime = fetched.mime;
+  } else {
+    base64ToBytes(bytesB64);
+  }
+  const result = await sendToOffscreen({
+    type: "infer",
+    id: message.id,
+    mime,
+    bytesB64,
+  });
+  if (resultCache.size >= MAX_CACHE) {
+    const first = resultCache.keys().next().value;
+    resultCache.delete(first);
+  }
+  resultCache.set(message.src, result);
+  const stored = await chrome.storage.local.get(["threshold"]);
+  const threshold = typeof stored.threshold === "number" ? stored.threshold : 0.65;
+  bumpStats(tabId, "analyzed");
+  if (result.score >= threshold) bumpStats(tabId, "ai");
+  return result;
 }
 
 chrome.tabs?.onRemoved?.addListener((tabId) => {
@@ -85,27 +158,7 @@ chrome.runtime.onInstalled.addListener(async () => {
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message?.type === "analyze") {
     const tabId = sender.tab?.id;
-    (async () => {
-      if (resultCache.has(message.src)) {
-        return resultCache.get(message.src);
-      }
-      await ensureOffscreen();
-      const { buffer, mime } = await fetchImageBytes(message.src);
-      const result = await sendToOffscreen({
-        type: "infer",
-        id: message.id,
-        mime,
-        buffer,
-      });
-      if (resultCache.size >= MAX_CACHE) {
-        const first = resultCache.keys().next().value;
-        resultCache.delete(first);
-      }
-      resultCache.set(message.src, result);
-      bumpStats(tabId, "analyzed");
-      if (result.score >= 0.65) bumpStats(tabId, "ai");
-      return result;
-    })()
+    enqueue(() => analyzeImage(message, tabId))
       .then(sendResponse)
       .catch((err) => {
         bumpStats(tabId, "errors");
@@ -120,7 +173,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 
   if (message?.type === "setup-status") {
-    sendToOffscreen({ type: "status" })
+    (async () => {
+      await ensureOffscreen();
+      return sendToOffscreen({ type: "status" });
+    })()
       .then(sendResponse)
       .catch((err) => sendResponse({ error: String(err.message || err) }));
     return true;

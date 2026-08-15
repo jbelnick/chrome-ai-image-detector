@@ -49,4 +49,26 @@ describe("provenance", () => {
     assert.equal(result.ai, false);
     assert.equal(result.camera, false);
   });
+
+  it("does not treat a bare openai/google token in compressed entropy as provenance", () => {
+    const buf = asciiBuffer("JFIF entropy blob openai google apple samsung noise");
+    const result = scanProvenance(buf);
+    assert.equal(result.ai, false);
+    assert.equal(result.camera, false);
+  });
+
+  it("still flags an explicit generator string such as dall-e", () => {
+    const buf = asciiBuffer("Image Generator: DALL-E 3");
+    const result = scanProvenance(buf);
+    assert.equal(result.ai, true);
+  });
+
+  it("requires EXIF-like context before treating a phone make as camera-native", () => {
+    const without = scanProvenance(asciiBuffer("apple storefront photo"));
+    assert.equal(without.camera, false);
+    const withExif = scanProvenance(asciiBuffer("Exif\0\0Apple iPhone 15 Pro"));
+    assert.equal(withExif.camera, true);
+    assert.equal(withExif.ai, false);
+  });
 });
+

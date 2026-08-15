@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { copyFile, mkdir, readFile, stat, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, readFile, stat } from "node:fs/promises";
 import { createWriteStream } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -72,8 +72,7 @@ async function ensureCommfor() {
   });
   if (!(await verified(dest, spec))) {
     const hash = await sha256File(dest);
-    console.warn(`exported SHA-256 ${hash} (pinned ${spec.sha256})`);
-    await writeFile(join(root, "models", "commfor.sha256"), `${hash}\n`);
+    throw new Error(`${spec.id} SHA-256 mismatch after export: got ${hash}, expected ${spec.sha256}`);
   }
 }
 

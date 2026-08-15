@@ -1,7 +1,7 @@
 .grain-badge {
-  position: absolute;
-  left: 8px;
-  bottom: 8px;
+  position: fixed;
+  left: 0;
+  top: 0;
   z-index: 2147483646;
   padding: 3px 7px;
   border-radius: 999px;

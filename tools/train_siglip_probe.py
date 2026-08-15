@@ -87,18 +87,6 @@ def stream_openfake_val(processor, model, per_class=220):
     return np.stack(xs), np.array(ys), meta
 
 
-def embed_dir(processor, model, folder, label):
-    xs, ys, names = [], [], []
-    for path in sorted(Path(folder).glob("*")):
-        if path.suffix.lower() not in {".jpg", ".jpeg", ".png", ".webp"}:
-            continue
-        img = Image.open(path)
-        xs.append(embed(processor, model, img))
-        ys.append(label)
-        names.append(path.name)
-    return xs, ys, names
-
-
 def main() -> None:
     processor, model = load_encoder()
     cache = DEST / "siglip2-train-features.npz"
@@ -153,33 +141,7 @@ def main() -> None:
     clf = LogisticRegression(max_iter=800, C=best[1], class_weight="balanced")
     clf.fit(x_train_s, y_train)
     print("selected C", best[1], "train acc", float(clf.score(x_train_s, y_train)))
-
-    xa, ya, na = embed_dir(processor, model, "eval/data/ai", 1)
-    xr, yr, nr = embed_dir(processor, model, "eval/data/real", 0)
-    x_test = scaler.transform(np.stack(xa + xr))
-    y_test = np.array(ya + yr)
-    names = na + nr
-    proba = clf.predict_proba(x_test)[:, 1]
-
-    def ba_at(th):
-        pred = proba >= th
-        tpr = ((pred) & (y_test == 1)).sum() / max(1, (y_test == 1).sum())
-        tnr = ((~pred) & (y_test == 0)).sum() / max(1, (y_test == 0).sum())
-        return float((tpr + tnr) / 2), float(tpr), float(tnr)
-
-    print("siglip2 probe @0.50", ba_at(0.5))
-    print("siglip2 probe @0.65", ba_at(0.65))
-    # also report by prefix
-    for prefix in ("cf_", "openfake", "picsum"):
-        idx = [i for i, n in enumerate(names) if n.startswith(prefix)]
-        if not idx:
-            continue
-        p = proba[idx]
-        y = y_test[idx]
-        pred = p >= 0.65
-        tpr = ((pred) & (y == 1)).sum() / max(1, (y == 1).sum())
-        tnr = ((~pred) & (y == 0)).sum() / max(1, (y == 0).sum())
-        print(prefix, "n", len(idx), "mean", float(p.mean()), "ba@0.65", float((tpr + tnr) / 2), "tpr", float(tpr), "tnr", float(tnr))
+    print("probe frozen on OpenFake validation + extra Picsum IDs; eval/data is not read")
 
     payload = {
         "mean": scaler.mean_.tolist(),

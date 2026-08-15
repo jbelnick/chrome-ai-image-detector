@@ -1,4 +1,4 @@
-import { cp, mkdir, readdir, rm } from "node:fs/promises";
+import { cp, mkdir, readdir, rm, stat } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
@@ -74,12 +74,14 @@ if (copied === 0) {
 const modelDstDir = join(root, "extension/models");
 await mkdir(modelDstDir, { recursive: true });
 for (const name of ["commfor-vit-s-384.onnx", "siglip2-vision.onnx"]) {
+  const src = join(root, "models", name);
   try {
-    await cp(join(root, "models", name), join(modelDstDir, name));
-    console.log("copied", name);
+    await stat(src);
   } catch {
-    console.log(`${name} not present yet — run npm run fetch-models`);
+    throw new Error(`missing ${name} — run npm run fetch-models before npm run build`);
   }
+  await cp(src, join(modelDstDir, name));
+  console.log("copied", name);
 }
 
 console.log(`build ok (copied ${copied} onnxruntime files)`);

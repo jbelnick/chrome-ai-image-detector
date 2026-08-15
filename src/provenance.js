@@ -20,10 +20,7 @@ const AI_ASCII = [
   "midjourney",
   "dall-e",
   "dall·e",
-  "dalle",
-  "openai",
   "adobe firefly",
-  "firefly",
   "dreamstudio",
   "leonardo.ai",
   "leonardoai",
@@ -132,7 +129,8 @@ export function scanProvenance(buffer) {
 
   const ai = signals.length > 0;
   let camera = false;
-  if (!ai) {
+  const hasExifContext = haystack.includes("exif") || hasPngTextChunk(bytes, "exif");
+  if (!ai && hasExifContext) {
     for (const make of CAMERA_MAKES) {
       if (haystack.includes(make)) {
         camera = true;

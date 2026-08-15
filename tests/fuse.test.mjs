@@ -23,6 +23,16 @@ describe("fuse", () => {
     assert.ok(result.reasons.includes("camera-exif"));
   });
 
+  it("does not remap a raw 0.33 onto the 0.65 badge cut", () => {
+    const result = fuseScores({
+      visual: 0.33,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false },
+    });
+    assert.ok(Math.abs(result.score - 0.33) < 1e-6);
+    assert.ok(result.score < 0.65);
+  });
+
   it("down-weights charts and UI captures", () => {
     const result = fuseScores({
       visual: 0.8,

@@ -16,9 +16,11 @@ import {
   siglipProbability,
   blendVisual,
 } from "./lib/siglip.js";
+import { base64ToBytes } from "./lib/transfer-bytes.js";
 
 let cfSession = null;
 let slSession = null;
+let activeProvider = "wasm";
 let initPromise = null;
 let fuseConfig = { ...FUSE_DEFAULTS };
 
@@ -50,29 +52,54 @@ async function readModelBuffer(spec) {
   return { buffer, hash };
 }
 
+async function createSession(ort, buffer, preferGpu) {
+  if (preferGpu) {
+    try {
+      const session = await ort.InferenceSession.create(buffer, {
+        executionProviders: ["webgpu"],
+      });
+      return { session, provider: "webgpu" };
+    } catch (err) {
+      console.warn("webgpu session failed, falling back to wasm", err);
+    }
+  }
+  const session = await ort.InferenceSession.create(buffer, {
+    executionProviders: ["wasm"],
+  });
+  return { session, provider: "wasm" };
+}
+
 async function createSessions() {
   const ort = globalThis.ort;
   if (!ort) throw new Error("onnxruntime-web failed to load");
   ort.env.wasm.wasmPaths = chrome.runtime.getURL("vendor/ort/");
   ort.env.wasm.numThreads = 1;
-  const providers = [];
-  if (navigator.gpu) providers.push("webgpu");
-  providers.push("wasm");
+  const preferGpu = Boolean(navigator.gpu);
 
   const cf = await readModelBuffer(MODELS.commfor);
   const sl = await readModelBuffer(MODELS.siglip2);
-  cfSession = await ort.InferenceSession.create(cf.buffer, { executionProviders: providers });
-  slSession = await ort.InferenceSession.create(sl.buffer, { executionProviders: providers });
+  const cfCreated = await createSession(ort, cf.buffer, preferGpu);
+  const slCreated = await createSession(ort, sl.buffer, preferGpu);
+  cfSession = cfCreated.session;
+  slSession = slCreated.session;
+  activeProvider =
+    cfCreated.provider === slCreated.provider
+      ? cfCreated.provider
+      : `${cfCreated.provider}+${slCreated.provider}`;
   await chrome.storage.local.set({
     setupComplete: true,
     modelSha256: { commfor: cf.hash, siglip2: sl.hash },
     modelId: `${MODELS.siglip2.id}+${MODELS.commfor.id}`,
+    executionProvider: activeProvider,
   });
-  return { hashes: { commfor: cf.hash, siglip2: sl.hash }, provider: providers[0] };
+  return {
+    hashes: { commfor: cf.hash, siglip2: sl.hash },
+    provider: activeProvider,
+  };
 }
 
 async function initModel() {
-  if (cfSession && slSession) return { ready: true };
+  if (cfSession && slSession) return { ready: true, provider: activeProvider };
   if (!initPromise) {
     initPromise = (async () => {
       await loadFuseConfig();
@@ -134,6 +161,7 @@ async function inferBytes(bytes, mime) {
       reasons: fused.reasons,
       provenance: provenance.signals,
       graphic: graphic.isGraphic,
+      provider: activeProvider,
     };
   } finally {
     bitmap.close?.();
@@ -141,6 +169,10 @@ async function inferBytes(bytes, mime) {
 }
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+  if (message?.type === "ping") {
+    sendResponse({ ok: true });
+    return false;
+  }
   if (message?.type === "init-model") {
     initModel()
       .then((info) => sendResponse({ ok: true, ...info }))
@@ -148,15 +180,21 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     return true;
   }
   if (message?.type === "status") {
-    sendResponse({ ready: Boolean(cfSession && slSession), modelId: MODELS.siglip2.id });
+    sendResponse({
+      ready: Boolean(cfSession && slSession),
+      modelId: `${MODELS.siglip2.id}+${MODELS.commfor.id}`,
+      provider: activeProvider,
+    });
     return false;
   }
   if (message?.type === "infer") {
-    if (!message.buffer) {
-      sendResponse({ error: "missing image buffer" });
+    let bytes;
+    try {
+      bytes = base64ToBytes(message.bytesB64);
+    } catch (err) {
+      sendResponse({ error: String(err.message || err) });
       return false;
     }
-    const bytes = new Uint8Array(message.buffer);
     inferBytes(bytes, message.mime)
       .then((result) => sendResponse(result))
       .catch((err) => sendResponse({ error: String(err.message || err) }));

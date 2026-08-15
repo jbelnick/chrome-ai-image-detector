@@ -21,8 +21,9 @@ import { imageDataToSiglipTensor, siglipProbability, blendVisual, SIGLIP } from 
 import { scanProvenance } from "../src/provenance.js";
 import { analyzePixels } from "../src/graphic-gate.js";
 import { fuseScores, FUSE_DEFAULTS } from "../src/fuse.js";
-import { applyCalibration, bestRawThreshold, biasForTarget } from "../src/calibrate.js";
+import { bestRawThreshold } from "../src/calibrate.js";
 import { summarize } from "../src/metrics.js";
+import { isOfficialProxy, proxyKind } from "../src/eval-set.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const dataDir = join(root, "eval/data");
@@ -161,81 +162,96 @@ async function main() {
       visual,
       provenance,
       graphic,
-      config: { ...FUSE_DEFAULTS, bias: 0, temperature: 1 },
+      config: FUSE_DEFAULTS,
     });
     scored.push({
       ...row,
       visual,
       siglip,
       commfor,
-      score: fused.fusedBeforeCalibration,
+      score: fused.score,
       reasons: fused.reasons,
+      kind: proxyKind(row.name),
     });
     if ((index + 1) % 25 === 0 || index === files.length - 1) {
       console.error(`scored ${index + 1}/${files.length}`);
     }
   }
 
-  const shuffled = shuffle(scored, 20260815);
+  const officialRows = scored.filter((row) => isOfficialProxy(row.name));
+  const easyReal = scored.filter((row) => row.kind === "easy-real");
+  const excluded = scored.filter((row) => row.kind === "excluded-metadata-extra");
+  const openfakeAi = officialRows.filter((row) => row.label === 1).length;
+  const openfakeReal = officialRows.filter((row) => row.label === 0).length;
+  if (openfakeAi < 100 || openfakeReal < 100) {
+    console.error(
+      `OpenFake proxy too small: ai=${openfakeAi} real=${openfakeReal}. Run npm run eval:download.`,
+    );
+    process.exit(2);
+  }
+
+  const official = summarize(
+    officialRows.map((r) => ({ label: r.label, score: r.score })),
+    EVAL_THRESHOLD,
+  );
+  const mix = summarize(
+    scored
+      .filter((row) => row.kind !== "excluded-metadata-extra")
+      .map((r) => ({ label: r.label, score: r.score })),
+    EVAL_THRESHOLD,
+  );
+
+  const shuffled = shuffle(officialRows, 20260815);
   const splitAt = Math.max(20, Math.floor(shuffled.length * 0.3));
-  const calib = shuffled.slice(0, splitAt);
-  const test = shuffled.slice(splitAt);
-
-  const best = bestRawThreshold(calib.map((r) => ({ label: r.label, score: r.score })));
-  const bias = biasForTarget(best.threshold, EVAL_THRESHOLD);
-  const calibratedTest = test.map((row) => ({
-    ...row,
-    score: applyCalibration(row.score, { bias, temperature: 1 }),
-  }));
-
-  const rawTest = summarize(
-    test.map((r) => ({ label: r.label, score: r.score })),
-    EVAL_THRESHOLD,
-  );
-  const calTest = summarize(
-    calibratedTest.map((r) => ({ label: r.label, score: r.score })),
-    EVAL_THRESHOLD,
-  );
+  const explore = shuffled.slice(0, splitAt);
+  const exploreBest = bestRawThreshold(explore.map((r) => ({ label: r.label, score: r.score })));
 
   const report = {
     models: [MODELS.commfor.id, MODELS.siglip2.id],
     hashes: { commfor: cfSpec.hash, siglip2: slSpec.hash },
     threshold: EVAL_THRESHOLD,
+    fuse: FUSE_DEFAULTS,
     nTotal: scored.length,
-    nCalib: calib.length,
-    nTest: test.length,
-    calibBestRawThreshold: best,
-    fittedBias: bias,
-    uncalibratedTest: rawTest,
-    calibratedTest: calTest,
-    note: "Calibration split is unused for the reported calibratedTest number. OpenFake core/test images were not used to train the SigLIP2 probe.",
+    nOfficial: officialRows.length,
+    nEasyReal: easyReal.length,
+    nExcludedMetadataExtras: excluded.length,
+    officialOpenFake: official,
+    mixIncludingEasyReal: mix,
+    exploratoryBestRawOnOfficialSubset: exploreBest,
+    note:
+      "OFFICIAL number is shipped FUSE_DEFAULTS (bias=0) at threshold 0.65 on OpenFake core/test only. " +
+      "Picsum is easy-real padding and is not the claim. CF DALL·E extras are excluded. " +
+      "A calib-split raw-threshold search is printed as exploratory only and is not shipped. " +
+      "Eval decode uses sharp + onnxruntime-node CPU; the extension uses canvas drawImage + WebGPU/WASM.",
   };
 
   await mkdir(join(root, "eval/results"), { recursive: true });
   await writeFile(join(root, "eval/results/latest.json"), JSON.stringify(report, null, 2));
-  await writeFile(
-    join(root, "eval/results/fuse.json"),
-    JSON.stringify({ ...FUSE_DEFAULTS, bias, temperature: 1 }, null, 2),
-  );
+  await writeFile(join(root, "eval/results/fuse.json"), JSON.stringify(FUSE_DEFAULTS, null, 2));
 
   const pct = (x) => `${(x * 100).toFixed(2)}%`;
   console.log("");
-  console.log("Grain eval — same ONNX + fusion path as the extension");
+  console.log("Grain eval — same ONNX + shipped fusion as the extension");
   console.log(`Models: ${MODELS.siglip2.id} + ${MODELS.commfor.id}`);
-  console.log(`Images: ${scored.length}  calib=${calib.length}  test=${test.length}`);
-  console.log(`Calib-optimal raw threshold: ${best.threshold.toFixed(2)} (BA ${pct(best.balancedAccuracy)})`);
-  console.log(`Fitted bias so that raw ${best.threshold.toFixed(2)} → ${EVAL_THRESHOLD}`);
+  console.log(`Fuse bias=${FUSE_DEFAULTS.bias} temperature=${FUSE_DEFAULTS.temperature}`);
+  console.log(
+    `Images: ${scored.length}  official(OpenFake)=${officialRows.length}  easy-real=${easyReal.length}  excluded-cf=${excluded.length}`,
+  );
   console.log("");
-  console.log(`UNCALIBRATED test @ ${EVAL_THRESHOLD}:`);
-  console.log(`  balanced accuracy  ${pct(rawTest.balancedAccuracy)}`);
-  console.log(`  TPR                ${pct(rawTest.tpr)}`);
-  console.log(`  TNR                ${pct(rawTest.tnr)}`);
+  console.log(`OFFICIAL OpenFake core/test @ ${EVAL_THRESHOLD} (shipped path, reported proxy):`);
+  console.log(`  balanced accuracy  ${pct(official.balancedAccuracy)}`);
+  console.log(`  TPR                ${pct(official.tpr)}`);
+  console.log(`  TNR                ${pct(official.tnr)}`);
+  console.log(`  n                  ${official.n} (AI ${official.nAi} / real ${official.nReal})`);
   console.log("");
-  console.log(`CALIBRATED test @ ${EVAL_THRESHOLD}  (reported proxy score):`);
-  console.log(`  balanced accuracy  ${pct(calTest.balancedAccuracy)}`);
-  console.log(`  TPR                ${pct(calTest.tpr)}`);
-  console.log(`  TNR                ${pct(calTest.tnr)}`);
-  console.log(`  n                  ${calTest.n} (AI ${calTest.nAi} / real ${calTest.nReal})`);
+  console.log(`MIX including Picsum easy-real (not the claim) @ ${EVAL_THRESHOLD}:`);
+  console.log(`  balanced accuracy  ${pct(mix.balancedAccuracy)}`);
+  console.log(`  TPR                ${pct(mix.tpr)}`);
+  console.log(`  TNR                ${pct(mix.tnr)}`);
+  console.log("");
+  console.log(
+    `EXPLORATORY only — best raw cut on a 30% OpenFake subset: ${exploreBest.threshold.toFixed(2)} (BA ${pct(exploreBest.balancedAccuracy)}). Not shipped.`,
+  );
   console.log("");
   console.log("Wrote eval/results/latest.json");
 }

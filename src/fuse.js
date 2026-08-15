@@ -2,17 +2,15 @@ import { applyCalibration } from "./calibrate.js";
 import { graphicScale } from "./graphic-gate.js";
 
 /**
- * Default fusion / calibration. `bias` is fitted on a held-out
- * calibration split so the 0.65 operating point is well placed.
- * Do not tune these numbers against the reported proxy test set.
+ * Default fusion. Bias stays at 0 so the badge number *is* the fused
+ * score and `score >= 0.65` is a real 0.65 cut — not a remapped raw
+ * threshold. Do not copy a calib-split bias into this object.
  */
 export const FUSE_DEFAULTS = {
   provenanceAiScore: 0.93,
   cameraRealScale: 0.88,
   graphicScaleWhenFlagged: 0.72,
-  // Fit on the 30% calib split (seed 20260815), never on the reported test split.
-  // Maps raw 0.33 → displayed 0.65. See eval/results/fuse.json after `npm run eval`.
-  bias: -1.3272242663307092,
+  bias: 0,
   temperature: 1,
 };
 
