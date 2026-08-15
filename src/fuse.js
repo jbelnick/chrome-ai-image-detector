@@ -16,6 +16,9 @@ export const FUSE_DEFAULTS = {
   mutedLift: 0.05,
   mutedBandMin: 0.5,
   mutedBandMax: 0.68,
+  flatToneLift: 0.05,
+  flatToneBandMin: 0.5,
+  flatToneBandMax: 0.68,
   bias: 0,
   temperature: 0.9,
   scorePower: 0.85,
@@ -63,6 +66,17 @@ export function fuseScores({
   ) {
     score = Math.min(0.92, score + mutedLift);
     reasons.push("muted-color");
+  }
+
+  const flatToneLift = config.flatToneLift ?? 0;
+  if (
+    flatToneLift > 0 &&
+    graphic?.flatTone &&
+    score >= (config.flatToneBandMin ?? 0.5) &&
+    score < (config.flatToneBandMax ?? 0.68)
+  ) {
+    score = Math.min(0.92, score + flatToneLift);
+    reasons.push("flat-tone");
   }
 
   const calibrated = applyPower(

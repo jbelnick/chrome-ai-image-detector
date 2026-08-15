@@ -12,6 +12,8 @@ export function quantizeChannel(value, bins = 16) {
 export const TEXTURE = {
   vividColorfulness: 72,
   mutedColorfulness: 28,
+  flatToneLo: 0.92,
+  flatToneHi: 1.08,
 };
 
 export function analyzePixels(data, width, height) {
@@ -23,7 +25,15 @@ export function analyzePixels(data, width, height) {
   let ybSum = 0;
   let rgSq = 0;
   let ybSq = 0;
+  let centerLum = 0;
+  let centerN = 0;
+  let borderLum = 0;
+  let borderN = 0;
   const stride = Math.max(1, Math.floor(Math.min(width, height) / 96));
+  const x0 = width * 0.25;
+  const x1 = width * 0.75;
+  const y0 = height * 0.25;
+  const y1 = height * 0.75;
 
   for (let y = 0; y < height - stride; y += stride) {
     for (let x = 0; x < width - stride; x += stride) {
@@ -48,6 +58,13 @@ export function analyzePixels(data, width, height) {
       ybSum += yb;
       rgSq += rg * rg;
       ybSq += yb * yb;
+      if (x >= x0 && x < x1 && y >= y0 && y < y1) {
+        centerLum += lum;
+        centerN += 1;
+      } else {
+        borderLum += lum;
+        borderN += 1;
+      }
       samples += 1;
     }
   }
@@ -67,6 +84,11 @@ export function analyzePixels(data, width, height) {
     0.3 * Math.sqrt(rgMean * rgMean + ybMean * ybMean);
   const vivid = colorfulness >= TEXTURE.vividColorfulness;
   const muted = colorfulness <= TEXTURE.mutedColorfulness;
+  const centerMean = centerLum / (centerN || 1);
+  const borderMean = borderLum / (borderN || 1);
+  const centerBorder = centerMean / (borderMean + 1e-3);
+  const flatTone =
+    centerBorder >= TEXTURE.flatToneLo && centerBorder <= TEXTURE.flatToneHi;
   return {
     uniqueRatio,
     edgeRatio,
@@ -76,6 +98,8 @@ export function analyzePixels(data, width, height) {
     colorfulness,
     vivid,
     muted,
+    centerBorder,
+    flatTone,
   };
 }
 
