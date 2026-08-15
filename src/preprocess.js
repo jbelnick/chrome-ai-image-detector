@@ -1,8 +1,8 @@
 /**
  * Community Forensics test-time preprocessing:
  * resize shorter edge to 440, center-crop 384, mean-center, NCHW.
- * Experiment: ImageNet mean only — std is identity so channel gain
- * is not forced to the ImageNet training recipe.
+ * Experiment: per-channel min-max stretch before mean-only ImageNet
+ * so generator exposure/grade is normalized without instance-norm.
  */
 
 export const PREPROCESS = {
@@ -13,6 +13,7 @@ export const PREPROCESS = {
   // centering, drops the per-channel gain that can hide generator
   // color-grade differences.
   std: [1, 1, 1],
+  minmax: true,
 };
 
 export function scaledSize(width, height, shortEdge = PREPROCESS.resizeShortEdge) {
@@ -48,17 +49,44 @@ export function imageDataToTensor(
   data,
   width,
   height,
-  { mean = PREPROCESS.mean, std = PREPROCESS.std } = {},
+  { mean = PREPROCESS.mean, std = PREPROCESS.std, minmax = PREPROCESS.minmax } = {},
 ) {
   if (width !== PREPROCESS.crop || height !== PREPROCESS.crop) {
     throw new Error(`expected ${PREPROCESS.crop}x${PREPROCESS.crop} crop, got ${width}x${height}`);
   }
   const plane = width * height;
   const tensor = new Float32Array(3 * plane);
+  let rMin = 1;
+  let rMax = 0;
+  let gMin = 1;
+  let gMax = 0;
+  let bMin = 1;
+  let bMax = 0;
+  if (minmax) {
+    for (let i = 0; i < plane; i += 1) {
+      const r = data[i * 4] / 255;
+      const g = data[i * 4 + 1] / 255;
+      const b = data[i * 4 + 2] / 255;
+      if (r < rMin) rMin = r;
+      if (r > rMax) rMax = r;
+      if (g < gMin) gMin = g;
+      if (g > gMax) gMax = g;
+      if (b < bMin) bMin = b;
+      if (b > bMax) bMax = b;
+    }
+  }
+  const rSpan = Math.max(1e-3, rMax - rMin);
+  const gSpan = Math.max(1e-3, gMax - gMin);
+  const bSpan = Math.max(1e-3, bMax - bMin);
   for (let i = 0; i < plane; i += 1) {
-    const r = data[i * 4] / 255;
-    const g = data[i * 4 + 1] / 255;
-    const b = data[i * 4 + 2] / 255;
+    let r = data[i * 4] / 255;
+    let g = data[i * 4 + 1] / 255;
+    let b = data[i * 4 + 2] / 255;
+    if (minmax) {
+      r = (r - rMin) / rSpan;
+      g = (g - gMin) / gSpan;
+      b = (b - bMin) / bSpan;
+    }
     tensor[i] = (r - mean[0]) / std[0];
     tensor[plane + i] = (g - mean[1]) / std[1];
     tensor[2 * plane + i] = (b - mean[2]) / std[2];
