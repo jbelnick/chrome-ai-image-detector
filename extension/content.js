@@ -68,6 +68,20 @@ function resolveUrl(url, img) {
   }
 }
 
+function resourceKey(url) {
+  if (!url) return "";
+  try {
+    const parsed = new URL(url);
+    return `${parsed.origin}${parsed.pathname}`;
+  } catch {
+    return String(url).split("?")[0];
+  }
+}
+
+function sameResource(a, b) {
+  return Boolean(a && b && resourceKey(a) === resourceKey(b));
+}
+
 function widthHint(candidate, img) {
   if (candidate.kind === "w" && Number.isFinite(candidate.descriptor)) {
     return candidate.descriptor;
@@ -86,10 +100,25 @@ function sourceOf(img) {
   const srcset = img.srcset || img.getAttribute?.("srcset") || "";
   const candidates = parseSrcset(srcset);
   if (img.src) candidates.push({ url: img.src, descriptor: null, kind: null });
-  if (natural > 0) {
-    const match = candidates.find((c) => widthHint(c, img) === natural);
-    if (match?.url) return resolveUrl(match.url, img);
+  const resolved = candidates.map((c) => ({
+    ...c,
+    href: resolveUrl(c.url, img),
+    hint: widthHint(c, img),
+  }));
+  const current = img.currentSrc ? resolveUrl(img.currentSrc, img) : "";
+  const currentCand = current ? resolved.find((c) => sameResource(c.href, current)) : null;
+  const naturalCand = natural > 0 ? resolved.find((c) => c.hint === natural) : null;
+
+  // Wikipedia 2x thumbs report density-corrected naturalWidth (500px @ 2x → 250).
+  // Matching that against the 1x src's "250px-" filename scores the wrong bytes.
+  // Keep a larger naturalWidth hit (Charlesworth orig 470 vs 250px currentSrc).
+  if (naturalCand?.href) {
+    const currentHint = currentCand?.hint;
+    if (currentHint == null || naturalCand.hint >= currentHint) {
+      return naturalCand.href;
+    }
   }
+  if (currentCand?.href) return currentCand.href;
   const fallback = img.currentSrc || img.src;
   return fallback ? resolveUrl(fallback, img) : fallback;
 }
