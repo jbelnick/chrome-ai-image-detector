@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Grain</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <div class="mark" aria-hidden="true"></div>
+      <div>
+        <h1>Grain</h1>
+        <p class="tag">On-device AI image detector</p>
+      </div>
+    </header>
+    <section>
+      <div class="row">
+        <span>Engine</span>
+        <strong id="status">Checking…</strong>
+      </div>
+      <div class="row">
+        <span>This page</span>
+        <strong id="stats">—</strong>
+      </div>
+    </section>
+    <section>
+      <label for="threshold">Flag threshold <span id="thresholdLabel">65%</span></label>
+      <input id="threshold" type="range" min="50" max="90" value="65" />
+      <p class="hint">
+        Eval and the private benchmark use a fixed 65% cut. This slider only
+        changes badge coloring in your browser.
+      </p>
+    </section>
+    <footer>
+      <a id="setup" href="setup.html" target="_blank" rel="noreferrer">Model setup</a>
+      <span>Inference never leaves this device.</span>
+    </footer>
+    <script src="popup.js" type="module"></script>
+  </body>
+</html>
