@@ -701,7 +701,43 @@ This is **not** Kenny's private maintainer bench. It is **not** a KEEP scalar un
 
 Categories (minimum 10 each, public/legal sources only): `historic_scan_bw`, `historic_scan_color`, `wiki_web_real`, `phone_web_real`, `social_reddit_real`, `social_reddit_ai`, `gen_holdout_ai`, `gen_holdout_real`, `screenshot_ui`, `compressed_thumb`, `ai_photoreal`, `ai_illustrated`.
 
-Sample chrome-path numbers belong in the PR / `eval/results/chrome-scenarios.json` after a harness run — copied from the printout, not invented.
+Sample chrome-path run on KEEP detector `6e78751` (this branch, eval-only — detector not retuned). Command: `npm run eval:chrome:scenarios`. Date: 2026-08-16. Backend: wasm (UNVERIFIED software adapter). Finished 146/146, EXIT:0. Copied from the harness printout — not invented.
+
+```
+Grain Chrome SCENARIO holdout — diagnostic, not the KEEP scalar
+Models: siglip2-vision-base-224 + commfor-vit-s-384
+Fuse bias=0 temperature=0.9
+AI iff score >= 0.65
+Backend: wasm
+WebGPU: UNVERIFIED
+GPU adapter: {"vendor":"google","architecture":"swiftshader","device":"0xc0de"}
+
+Per-category @ 0.65 (diagnostic — not a KEEP ratchet):
+category                  n  AI real      TPR      TNR       BA  TP/FN/TN/FP
+historic_scan_bw         12   0   12      n/a   41.67%   20.83%  0/0/5/7
+historic_scan_color      12   0   12      n/a   83.33%   41.67%  0/0/10/2
+wiki_web_real            12   0   12      n/a   66.67%   33.33%  0/0/8/4
+phone_web_real           12   0   12      n/a  100.00%   50.00%  0/0/12/0
+social_reddit_real       12   0   12      n/a   91.67%   45.83%  0/0/11/1
+social_reddit_ai         12  12    0   75.00%      n/a   37.50%  9/3/0/0
+gen_holdout_ai           12  12    0  100.00%      n/a   50.00%  12/0/0/0
+gen_holdout_real         12   0   12      n/a   91.67%   45.83%  0/0/11/1
+screenshot_ui            14   2   12  100.00%   41.67%   70.83%  2/0/5/7
+compressed_thumb         12   4    8   25.00%   75.00%   50.00%  1/3/6/2
+ai_photoreal             12  12    0   66.67%      n/a   33.33%  8/4/0/0
+ai_illustrated           12  12    0   66.67%      n/a   33.33%  8/4/0/0
+
+OVERALL scenario holdout @ 0.65 (not the 358 scalar, not Kenny's bench):
+  balanced accuracy  73.99%
+  TPR                74.07%
+  TNR                73.91%
+  n                  146 (AI 54 / real 92)
+  TP/FN/TN/FP        40 / 14 / 68 / 24
+```
+
+Charlesworth (`historic_scan_bw_00`, `Mrs_Winifred_Charlesworth.jpg`) scored **0.993** on this chrome-path dump — the live AI 99% miss is in the suite. Historic B&W TNR is 41.67% (7 FP / 12). Single-class slices print `n/a` for the missing rate; their BA column is (available rate + 0) / 2 and is not a KEEP number.
+
+This is still **not** Kenny's private bench and **not** a KEEP scalar.
 
 ## Rules checklist
 

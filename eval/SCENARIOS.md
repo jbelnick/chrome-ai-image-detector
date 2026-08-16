@@ -43,6 +43,10 @@ Images land under `eval/data/scenarios/` and are gitignored. The committed sourc
 
 If a category cannot reach 10 after an honest search, the downloader prints **UNVERIFIED** and why. Files are not invented.
 
+## Sample chrome-path dump (not a KEEP scalar)
+
+KEEP detector `6e78751`, this branch, 2026-08-16. `npm run eval:chrome:scenarios`. Backend wasm / WebGPU UNVERIFIED. Copied from the harness — not invented. Overall BA 73.99% (TPR 74.07% / TNR 73.91%), n=146 (AI 54 / real 92), TP/FN/TN/FP 40/14/68/24. `historic_scan_bw` TNR 41.67% (7 FP). Charlesworth `historic_scan_bw_00` scored 0.993. Full per-category table is in [CLAIM.md](../CLAIM.md).
+
 ## Isolation
 
 No `createClaim`. No on-chain transaction. No detector image-content hashes. SHA of model weights is unchanged and is not this suite's job.
