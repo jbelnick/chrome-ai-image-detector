@@ -667,6 +667,30 @@ webgpu:      UNVERIFIED
 
 Versus KEEP `5316788` on the same mix: TPR +1, TNR held, net +1, BA 0.907821 → 0.910615. Secondary 360 0.888889 → 0.891667 (TPR +2, TNR −1; official FP `openfake_real_0161` after the muted grain skip). Broader TNR held.
 
+## Current broader-proxy best (`6e78751`)
+
+Skip the photo-grain drop when a vivid colorfulness lift already fired. Flips leftover broader FN `ofhold_ai_0056`. Fuse bias stays 0. Command: `npm run eval:chrome`. Date: 2026-08-16. Finished 718/718 with no stall, EXIT:0.
+
+```
+SCALAR broader-proxy (keep/revert)
+bal_acc_065: 0.913408
+tpr_065:     0.871508
+tnr_065:     0.955307
+tp/fn/tn/fp: 156 / 23 / 171 / 8
+n:           358
+
+SECONDARY official-360 (not the ratchet)
+bal_acc_065: 0.888889
+tpr_065:     0.827778
+tnr_065:     0.950000
+tp/fn/tn/fp: 149 / 31 / 171 / 9
+n:           360
+backend:     wasm
+webgpu:      UNVERIFIED
+```
+
+Versus KEEP `92afcb1` on the same mix: TPR +1, TNR held, net +1, BA 0.910615 → 0.913408. Secondary 360 0.891667 → 0.888889 (TNR −1; official FP `openfake_real_0020` after the vivid grain skip). Broader TNR held.
+
 ## Rules checklist
 
 - [x] No cloud inference
