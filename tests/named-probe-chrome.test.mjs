@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { REQUIRED_PROBE_NAMES } from "../eval/chrome/run-named-probe.mjs";
+import { fuseScores, FUSE_DEFAULTS } from "../src/fuse.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const dumpPath = join(root, "eval/chrome/named-probe-chrome.json");
@@ -60,5 +61,31 @@ describe("chrome-path named-probe dump", () => {
       assert.equal(row.graphic.uiCapture, true, `${name} should be uiCapture`);
       assert.ok(row.reasons.includes("graphic-gate"), `${name} should trip graphic-gate`);
     }
+  });
+
+  it("re-fuses published chrome visuals: Charlesworth stays, uiCapture is scaled", () => {
+    assert.equal(FUSE_DEFAULTS.graphicScaleWhenFlagged, 0.72);
+    for (const name of [
+      "Mrs_Winifred_Charlesworth.jpg",
+      "250px-Mrs_Winifred_Charlesworth.jpg",
+    ]) {
+      const row = byName.get(name);
+      const fused = fuseScores({
+        visual: row.visual,
+        provenance: { ai: false, camera: false },
+        graphic: row.graphic,
+      });
+      assert.ok(Math.abs(fused.score - row.score) < 1e-9, `${name} must stay the chrome-path freeze`);
+      assert.equal(fused.reasons.includes("graphic-gate"), false);
+    }
+    const blender = byName.get("Blender_2.92_UI.png");
+    const scaled = fuseScores({
+      visual: blender.visual,
+      provenance: { ai: false, camera: false },
+      graphic: blender.graphic,
+    });
+    assert.ok(scaled.fusedBeforeCalibration < blender.visual);
+    assert.ok(scaled.reasons.includes("graphic-gate"));
+    assert.ok(scaled.score < blender.score);
   });
 });
