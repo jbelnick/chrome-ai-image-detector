@@ -92,7 +92,11 @@ export function analyzePixels(data, width, height) {
   // fire. scanGrain stays on so muted-scan still applies.
   const paletteGraphic = colors.size < 48 && edgeRatio > 0.12;
   const filmScan = paletteGraphic && muted && fineRatio >= 0.4;
-  const isGraphic = paletteGraphic && !filmScan;
+  // Ordinary screenshots / charts still have 50–160 12-bin colors
+  // after chrome and anti-aliasing. They are flat (low mid-delta).
+  // Film stays on scanGrain (fineRatio >= 0.40).
+  const uiCapture = !filmScan && colors.size < 200 && fineRatio < 0.2;
+  const isGraphic = (paletteGraphic && !filmScan) || uiCapture;
   const grainy = !isGraphic && fineRatio >= 0.08;
   // Stronger luma-delta density than ordinary photo-grain. Used for a
   // high-band drop on leftover web-real FPs that sit above 0.78.
@@ -127,6 +131,7 @@ export function analyzePixels(data, width, height) {
     flatFine,
     mutedFlatFine,
     scanGrain,
+    uiCapture,
   };
 }
 
