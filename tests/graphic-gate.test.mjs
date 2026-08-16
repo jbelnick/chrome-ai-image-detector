@@ -142,7 +142,7 @@ describe("graphic-gate", () => {
     const analysis = analyzePixels(data, w, h);
     assert.equal(analysis.isGraphic, false);
     assert.equal(analysis.edgeDark, true);
-    assert.ok(analysis.edgeRatio >= 0.68);
+    assert.ok(analysis.edgeRatio >= 0.64);
     assert.ok(analysis.centerBorder <= 0.81);
 
     const flat = new Uint8Array(w * h * 4);

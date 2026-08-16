@@ -14,7 +14,7 @@ export const TEXTURE = {
   mutedColorfulness: 28,
   flatToneLo: 0.92,
   flatToneHi: 1.08,
-  highEdgeLo: 0.68,
+  highEdgeLo: 0.64,
   darkCenterHi: 0.81,
 };
 
