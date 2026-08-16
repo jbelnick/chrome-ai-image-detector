@@ -76,6 +76,16 @@ describe("fuse", () => {
     assert.ok(Math.abs(toneOnly.fusedBeforeCalibration - 0.2) < 1e-9);
   });
 
+  it("does not apply photo-grain when muted and flat-tone already describe the crop", () => {
+    const skipped = fuseScores({
+      visual: 0.7,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, grainy: true, muted: true, flatTone: true },
+    });
+    assert.equal(skipped.reasons.includes("photo-grain"), false);
+    assert.ok(skipped.score >= 0.65);
+  });
+
   it("drops a grainy just-over-cut visual without inventing a real verdict from grain alone", () => {
     const dropped = fuseScores({
       visual: 0.70,
