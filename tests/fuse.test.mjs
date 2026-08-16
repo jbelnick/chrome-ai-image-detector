@@ -76,6 +76,26 @@ describe("fuse", () => {
     assert.ok(Math.abs(toneOnly.fusedBeforeCalibration - 0.2) < 1e-9);
   });
 
+  it("lifts a graphic muted mid-range visual without inventing a verdict from the combo alone", () => {
+    const lifted = fuseScores({
+      visual: 0.511,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: true, muted: true },
+    });
+    assert.ok(lifted.reasons.includes("graphic-gate"));
+    assert.ok(lifted.reasons.includes("muted-color"));
+    assert.ok(lifted.reasons.includes("graphic-muted"));
+    assert.ok(lifted.score >= 0.65);
+
+    const graphicOnly = fuseScores({
+      visual: 0.511,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: true, muted: false },
+    });
+    assert.equal(graphicOnly.reasons.includes("graphic-muted"), false);
+    assert.ok(graphicOnly.score < 0.65);
+  });
+
   it("skips photo-grain after a vivid colorfulness lift", () => {
     const skipped = fuseScores({
       visual: 0.629,
