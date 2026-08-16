@@ -7,6 +7,7 @@
 import { readFile, appendFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { formatDecodeDelta, recordedDecodeDelta } from "../eval/decode-delta.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const latest = JSON.parse(await readFile(join(root, "eval/results/chrome.json"), "utf8"));
@@ -36,6 +37,8 @@ const lines = [
   `n:           ${official.n}`,
   `backend:     ${latest.backend || "?"}`,
   `webgpu:      ${latest.webgpu || "?"}`,
+  "",
+  formatDecodeDelta(latest.decodeDelta || recordedDecodeDelta()),
 ].join("\n");
 console.log(lines);
 await appendFile(join(root, "autoresearch/run.log"), `\nchrome-path broader-proxy\n${lines}\n`);

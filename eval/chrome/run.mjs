@@ -12,16 +12,23 @@
  *   npm run eval:chrome
  *
  * Does not retune fusion. Does not invent scores.
+ * node vs chrome is decode-delta (eval/DECODE.md), never a fuse target.
  */
 import { createServer } from "node:http";
 import { spawn } from "node:child_process";
 import { createReadStream } from "node:fs";
-import { mkdir, stat, writeFile } from "node:fs/promises";
+import { mkdir, stat, writeFile, readFile } from "node:fs/promises";
 import { extname, join, normalize, relative, resolve } from "node:path";
 import { tmpdir } from "node:os";
 import { MODELS, EVAL_THRESHOLD } from "../../src/model-config.js";
 import { FUSE_DEFAULTS } from "../../src/fuse.js";
+import { DECODE_PATHS } from "../../src/preprocess.js";
 import { summarize } from "../../src/metrics.js";
+import {
+  computeDecodeDelta,
+  formatDecodeDelta,
+  recordedDecodeDelta,
+} from "../decode-delta.mjs";
 import {
   assertBroaderSet,
   assertOfficialSet,
@@ -33,12 +40,6 @@ import {
 } from "./list.mjs";
 
 const root = repoRoot();
-const NODE_REF = {
-  commit: "1e19a9f",
-  bal_acc_065: 0.872222,
-  tpr_065: 0.9,
-  tnr_065: 0.844444,
-};
 
 const MIME = {
   ".html": "text/html; charset=utf-8",
@@ -317,6 +318,7 @@ function printReport({ broader, official, payload }) {
   console.log("");
   console.log(`backend:     ${payload.provider}`);
   console.log(`webgpu:      ${payload.webgpu}`);
+  console.log(`decode:      ${DECODE_PATHS.chrome}  (source of truth)`);
   if (officialSummary.balancedAccuracy < 0.85 && broaderSummary.balancedAccuracy > officialSummary.balancedAccuracy) {
     console.log(
       "NOTE: this KEEP-candidate lifts the broader proxy relative to a cratered 360. Call that out; do not hide it.",
@@ -388,8 +390,26 @@ async function main() {
       throw new Error(`scored ${payload.rows.length}, expected ${scored.length}`);
     }
     const { broaderSummary, officialSummary } = printReport({ broader, official, payload });
+    const recorded = recordedDecodeDelta();
+    let liveDecodeDelta = null;
+    try {
+      const nodeReport = JSON.parse(await readFile(join(root, "eval/results/latest.json"), "utf8"));
+      liveDecodeDelta = computeDecodeDelta(officialSummary, nodeReport.officialOpenFake, {
+        label: "live chrome.json vs latest.json official-360 — confirm same commit before citing",
+      });
+    } catch {
+      /* latest.json is optional; recorded pair still prints */
+    }
+    console.log("");
+    console.log(formatDecodeDelta(recorded));
+    if (liveDecodeDelta) {
+      console.log("");
+      console.log(formatDecodeDelta(liveDecodeDelta));
+    }
     const report = {
       path: "chrome-ort-web",
+      decode: DECODE_PATHS.chrome,
+      sourceOfTruth: DECODE_PATHS.sourceOfTruth,
       backend: payload.provider,
       webgpu: payload.webgpu,
       gpu: payload.gpu,
@@ -401,7 +421,8 @@ async function main() {
       officialOpenFake: officialSummary,
       broaderProxy: broaderSummary,
       scalar: "broaderProxy",
-      nodeReference: NODE_REF,
+      decodeDelta: recorded,
+      liveDecodeDelta,
       rows: payload.rows,
       note:
         "SCALAR is broaderProxy (OpenFake reddit/test + core/test holdout past the 360 prefix + web recompress). " +
@@ -409,6 +430,7 @@ async function main() {
         "Decode is createImageBitmap + OffscreenCanvas (extension path). " +
         "Inference is onnxruntime-web, WebGPU session first, WASM if that throws. " +
         "Picsum easy-real padding and CF extras are not scored. Fuse bias stays 0. " +
+        "node vs chrome is decode-delta — see eval/DECODE.md. Do not paper over in FUSE_DEFAULTS. " +
         "This is not Kenny's private maintainer bench.",
     };
     await mkdir(join(root, "eval/results"), { recursive: true });

@@ -126,7 +126,7 @@ backend:     wasm
 webgpu:      UNVERIFIED
 ```
 
-Balanced accuracy matches Node at **0.872222**. The confusion matrix moved: Chrome WASM is 157/23/157/23 vs Node 162/18/152/28 (TPR down 5, TNR up 5). Decode difference (`createImageBitmap` / `OffscreenCanvas` vs `sharp`) is enough to flip 10 decisions; fusion was not changed.
+Balanced accuracy matches Node at **0.872222**. The confusion matrix moved: Chrome WASM is 157/23/157/23 vs Node 162/18/152/28 (TPR down 5, TNR up 5). That gap is **decode-delta** (`createImageBitmap` / `OffscreenCanvas` vs `sharp`) — 10 decision flips; fusion was not changed. See `eval/DECODE.md`. Do not paper it over in `FUSE_DEFAULTS`.
 
 ## Mac hardware WebGPU (same 360, verified)
 
