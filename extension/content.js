@@ -38,8 +38,66 @@ chrome.storage.onChanged.addListener((changes, area) => {
   }
 });
 
+function parseSrcset(srcset) {
+  if (!srcset || typeof srcset !== "string") return [];
+  return srcset
+    .split(",")
+    .map((part) => {
+      const trimmed = part.trim();
+      if (!trimmed) return null;
+      const match = trimmed.match(/^(.*?)\s+(\d+(?:\.\d+)?)([wx])$/i);
+      if (match) {
+        return {
+          url: match[1].trim(),
+          descriptor: Number(match[2]),
+          kind: match[3].toLowerCase(),
+        };
+      }
+      return { url: trimmed, descriptor: null, kind: null };
+    })
+    .filter(Boolean);
+}
+
+function resolveUrl(url, img) {
+  if (!url) return url;
+  try {
+    const base = img?.baseURI || (typeof location !== "undefined" ? location.href : undefined);
+    return new URL(url, base).href;
+  } catch {
+    return url;
+  }
+}
+
+function widthHint(candidate, img) {
+  if (candidate.kind === "w" && Number.isFinite(candidate.descriptor)) {
+    return candidate.descriptor;
+  }
+  const fromName = String(candidate.url).match(/\/(\d+)px-[^/?#]+/i);
+  if (fromName) return Number(fromName[1]);
+  const fileW = Number(img?.dataset?.fileWidth || img?.getAttribute?.("data-file-width"));
+  if (fileW > 0 && !/\/thumb\//i.test(candidate.url) && !/\/\d+px-/i.test(candidate.url)) {
+    return fileW;
+  }
+  return null;
+}
+
 function sourceOf(img) {
-  return img.currentSrc || img.src;
+  const natural = Number(img.naturalWidth);
+  const srcset = img.srcset || img.getAttribute?.("srcset") || "";
+  const candidates = parseSrcset(srcset);
+  if (img.src) candidates.push({ url: img.src, descriptor: null, kind: null });
+  if (natural > 0) {
+    const match = candidates.find((c) => widthHint(c, img) === natural);
+    if (match?.url) return resolveUrl(match.url, img);
+  }
+  const fallback = img.currentSrc || img.src;
+  return fallback ? resolveUrl(fallback, img) : fallback;
+}
+
+function applyResultMeta(target, result) {
+  if (!target?.dataset) return;
+  if (result?.score != null) target.dataset.grainScore = String(result.score);
+  if (result?.sha256) target.dataset.grainSha256 = result.sha256;
 }
 
 function isSvg(img) {
@@ -89,8 +147,8 @@ function paintBadge(img, result) {
     document.documentElement.appendChild(badge);
     badges.set(img, badge);
   }
-  badge.dataset.grainScore = String(result.score);
-  img.dataset.grainScore = String(result.score);
+  applyResultMeta(badge, result);
+  applyResultMeta(img, result);
   img.dataset.grainVerdict = result.score >= threshold ? "ai" : "real";
   refreshBadge(badge);
   placeBadge(img, badge);
@@ -232,4 +290,11 @@ mo.observe(document.documentElement, {
 
 window.addEventListener("scroll", repositionAll, { passive: true, capture: true });
 window.addEventListener("resize", repositionAll, { passive: true });
+
+globalThis.__GRAIN_CONTENT__ = {
+  parseSrcset,
+  sourceOf,
+  applyResultMeta,
+  resolveUrl,
+};
 })();
