@@ -56,13 +56,24 @@ export function siglipProbability(pooler) {
  * Broader-proxy family 1: when SigLIP is sure-real, ignore CF.
  * Web-JPEG reals often get a high CF score and a low SigLIP score;
  * letting CF dominate those disagreements is the 49-FP pattern.
+ *
+ * UI-capture sure-real CF: when graphic.uiCapture and CF < 0.01,
+ * ignore SigLIP (double-CF, the mirror of family 1). Soft-OR
+ * otherwise lets SigLIP dominate: 1-(1-s)^2*(1-c) ≈ 1-(1-s)^2
+ * even when Community Forensics is already sure-real. Film scans
+ * are not uiCapture, so Charlesworth (CF 0.225 / thumb film) does
+ * not take this branch.
  */
-export function blendVisual(siglip, commfor) {
+export function blendVisual(siglip, commfor, graphic) {
   const a = Number.isFinite(siglip) ? siglip : 0;
   const b = Number.isFinite(commfor) ? commfor : 0;
   const missS = 1 - a;
+  const missC = 1 - b;
   if (a < 0.25) {
     return 1 - missS * missS;
   }
-  return 1 - missS * missS * (1 - b);
+  if (graphic?.uiCapture && b < 0.01) {
+    return 1 - missC * missC;
+  }
+  return 1 - missS * missS * missC;
 }

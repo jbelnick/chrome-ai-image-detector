@@ -160,7 +160,7 @@ async function inferBytes(cfSession, slSession, bytes, mime) {
       Number(cfOut[MODELS.commfor.outputName].data[0]),
     );
     const siglip = siglipProbability(slOut[MODELS.siglip2.outputName].data);
-    const visual = blendVisual(siglip, commfor);
+    const visual = blendVisual(siglip, commfor, graphic);
     const fused = fuseScores({ visual, provenance, graphic, config: fuseConfig });
     return {
       score: fused.score,
