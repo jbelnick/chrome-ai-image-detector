@@ -107,6 +107,12 @@ export function analyzePixels(data, width, height) {
   // (tiny 12-bin palette) and then hides every grain flag. Require
   // isGraphic so muted grainy AI that is not graphic-gated is spared.
   const scanGrain = isGraphic && muted && fineRatio >= 0.4;
+  // Ordinary screenshots / charts / diagrams are often NOT isGraphic:
+  // a 12-bin palette still has 80–150 colors once UI chrome, icons,
+  // and anti-aliasing are counted. They are flat (low mid-delta) and
+  // limited relative to photos or painterly illustrations. Film scans
+  // stay on scanGrain (fineRatio >= 0.40). Do not require isGraphic.
+  const uiCapture = !scanGrain && colors.size < 200 && fineRatio < 0.2;
   return {
     uniqueRatio,
     edgeRatio,
@@ -125,6 +131,7 @@ export function analyzePixels(data, width, height) {
     flatFine,
     mutedFlatFine,
     scanGrain,
+    uiCapture,
   };
 }
 

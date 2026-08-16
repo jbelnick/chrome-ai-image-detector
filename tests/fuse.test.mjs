@@ -373,6 +373,44 @@ describe("fuse", () => {
     assert.ok(mutedNotGraphic.score >= 0.65);
   });
 
+  it("drops a ui-capture visual without inventing a real verdict from flat UI alone", () => {
+    const dropped = fuseScores({
+      visual: 0.97,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, uiCapture: true, scanGrain: false },
+    });
+    assert.ok(dropped.score < 0.65);
+    assert.ok(dropped.reasons.includes("ui-capture"));
+
+    const uiOnly = fuseScores({
+      visual: 0.2,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, uiCapture: true, scanGrain: false },
+    });
+    assert.ok(Math.abs(uiOnly.fusedBeforeCalibration - 0.2) < 1e-9);
+    assert.equal(uiOnly.reasons.includes("ui-capture"), false);
+
+    const filmScan = fuseScores({
+      visual: 0.97,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: true, muted: true, scanGrain: true, uiCapture: false },
+    });
+    assert.equal(filmScan.reasons.includes("ui-capture"), false);
+    assert.ok(filmScan.reasons.includes("muted-scan"));
+  });
+
+  it("does not lift a mid-range ui-capture into an AI verdict", () => {
+    const result = fuseScores({
+      visual: 0.52,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, uiCapture: true, muted: true, flatTone: true, vivid: true },
+    });
+    assert.equal(result.reasons.includes("muted-color"), false);
+    assert.equal(result.reasons.includes("flat-tone"), false);
+    assert.equal(result.reasons.includes("colorfulness"), false);
+    assert.ok(Math.abs(result.fusedBeforeCalibration - 0.52) < 1e-9);
+  });
+
   it("lifts a muted mid-range visual without inventing a verdict from low colorfulness alone", () => {
     const lifted = fuseScores({
       visual: 0.56,

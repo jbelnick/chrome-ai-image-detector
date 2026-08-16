@@ -150,6 +150,31 @@ describe("graphic-gate", () => {
     assert.ok(analysis.fineRatio >= 0.4);
     assert.equal(analysis.isGraphic, true);
     assert.equal(analysis.scanGrain, true);
+    assert.equal(analysis.uiCapture, false);
+  });
+
+  it("flags a flat limited-palette UI field as ui-capture without calling it a film scan", () => {
+    const w = 128;
+    const h = 128;
+    const data = new Uint8Array(w * h * 4);
+    for (let y = 0; y < h; y += 1) {
+      for (let x = 0; x < w; x += 1) {
+        const i = (y * w + x) * 4;
+        const chrome = x < 10 || y < 18;
+        const r = chrome ? 40 : 230;
+        const g = chrome ? 80 : 230;
+        const b = chrome ? 160 : 235;
+        data[i] = r;
+        data[i + 1] = g;
+        data[i + 2] = b;
+        data[i + 3] = 255;
+      }
+    }
+    const analysis = analyzePixels(data, w, h);
+    assert.ok(analysis.uniqueColors < 200);
+    assert.ok(analysis.fineRatio < 0.2);
+    assert.equal(analysis.scanGrain, false);
+    assert.equal(analysis.uiCapture, true);
   });
 
   it("flags a uniform field as flat-tone", () => {
