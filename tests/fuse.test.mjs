@@ -281,6 +281,24 @@ describe("fuse", () => {
     assert.equal(mutedOnly.reasons.includes("muted-upper"), false);
   });
 
+  it("drops a muted strong-grain tail without inventing a real verdict from that combo alone", () => {
+    const dropped = fuseScores({
+      visual: 0.908,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, muted: true, strongGrain: true },
+    });
+    assert.ok(dropped.score < 0.65);
+    assert.ok(dropped.reasons.includes("muted-strong-tail"));
+
+    const comboOnly = fuseScores({
+      visual: 0.2,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, muted: true, strongGrain: true },
+    });
+    assert.ok(Math.abs(comboOnly.fusedBeforeCalibration - 0.2) < 1e-9);
+    assert.equal(comboOnly.reasons.includes("muted-strong-tail"), false);
+  });
+
   it("lifts a muted mid-range visual without inventing a verdict from low colorfulness alone", () => {
     const lifted = fuseScores({
       visual: 0.56,
