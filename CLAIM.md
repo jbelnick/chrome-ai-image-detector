@@ -451,6 +451,30 @@ webgpu:      UNVERIFIED
 
 Versus KEEP `ccad982` on the same mix: TPR held, TNR +1, net +1, BA 0.882682 → 0.885475. Secondary 360 held 0.888889.
 
+## Current broader-proxy best (`909c0c4`)
+
+Muted-fine high-band drop (0.28) when `analyzePixels` flags muted and `fineRatio >= 0.32` and the calibrated score is in `[0.88, 0.93)`. Flips leftover web-real FP `ofreddit_real_0018`. Fuse bias stays 0. Command: `npm run eval:chrome`. Date: 2026-08-16. Finished 718/718 with no stall, EXIT:0.
+
+```
+SCALAR broader-proxy (keep/revert)
+bal_acc_065: 0.888268
+tpr_065:     0.854749
+tnr_065:     0.921788
+tp/fn/tn/fp: 153 / 26 / 165 / 14
+n:           358
+
+SECONDARY official-360 (not the ratchet)
+bal_acc_065: 0.888889
+tpr_065:     0.816667
+tnr_065:     0.961111
+tp/fn/tn/fp: 147 / 33 / 173 / 7
+n:           360
+backend:     wasm
+webgpu:      UNVERIFIED
+```
+
+Versus KEEP `76b1234` on the same mix: TPR held, TNR +1, net +1, BA 0.885475 → 0.888268. Secondary 360 held 0.888889.
+
 ## Rules checklist
 
 - [x] No cloud inference
