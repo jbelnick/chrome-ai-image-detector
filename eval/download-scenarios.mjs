@@ -36,7 +36,7 @@ async function exists(path) {
   }
 }
 
-async function fetchOk(url, { tries = 4 } = {}) {
+async function fetchOk(url, { tries = 8 } = {}) {
   let last;
   for (let i = 0; i < tries; i += 1) {
     try {
@@ -46,10 +46,15 @@ async function fetchOk(url, { tries = 4 } = {}) {
       });
       if (res.ok) return res;
       last = new Error(`${url} ${res.status}`);
+      if (res.status === 429 || res.status === 503) {
+        const retryAfter = Number(res.headers.get("retry-after")) || 2 ** i;
+        await new Promise((r) => setTimeout(r, Math.min(30_000, retryAfter * 1000)));
+        continue;
+      }
     } catch (err) {
       last = err;
     }
-    await new Promise((r) => setTimeout(r, 400 * (i + 1)));
+    await new Promise((r) => setTimeout(r, 500 * (i + 1)));
   }
   throw last;
 }
@@ -161,6 +166,7 @@ async function main() {
     try {
       const r = await downloadCommons(img);
       console.log(`  commons ${img.id}${r.skipped ? " (exists)" : ""}`);
+      if (!r.skipped) await new Promise((r) => setTimeout(r, 350));
     } catch (err) {
       console.error(`  FAIL commons ${img.id}: ${err.message || err}`);
       unverified.push({
@@ -185,9 +191,20 @@ async function main() {
     }
   }
 
-  const pyCode = await runPython();
-  if (pyCode !== 0) {
-    console.error("OpenFake helper exited", pyCode);
+  const openfakeJobs = images.filter(
+    (img) => img.download?.kind === "openfake" || img.download?.kind === "openfake-filter",
+  );
+  let needOpenfake = 0;
+  for (const img of openfakeJobs) {
+    if (!(await exists(join(dataDir, img.path)))) needOpenfake += 1;
+  }
+  if (needOpenfake === 0) {
+    console.log("OpenFake files already on disk — skipping stream");
+  } else {
+    const pyCode = await runPython();
+    if (pyCode !== 0) {
+      console.error("OpenFake helper exited", pyCode, "(continuing if files already landed)");
+    }
   }
   const metaPath = join(dataDir, "scenarios/openfake-meta.json");
   if (await exists(metaPath)) {
