@@ -14,6 +14,9 @@ export const TEXTURE = {
   mutedColorfulness: 28,
   flatToneLo: 0.92,
   flatToneHi: 1.08,
+  // Center much brighter than the surround. Leftover web-real FPs
+  // with a lit subject on a dark field sit well above flat-tone.
+  centerBrightLo: 1.8,
 };
 
 export function analyzePixels(data, width, height) {
@@ -103,6 +106,11 @@ export function analyzePixels(data, width, height) {
   // Flat illumination plus denser mid-delta luma than typical flat photos.
   const flatFine = flatTone && !isGraphic && fineRatio >= 0.34;
   const mutedFlatFine = muted && flatTone && !isGraphic && fineRatio >= 0.3;
+  // Muted photo whose center is much brighter than the border.
+  // Used for an extreme-tail drop on leftover web-real FPs that
+  // sit above every existing muted window.
+  const centerBright = !isGraphic && centerBorder >= TEXTURE.centerBrightLo;
+  const mutedCenterBright = muted && centerBright;
   return {
     uniqueRatio,
     edgeRatio,
@@ -120,6 +128,8 @@ export function analyzePixels(data, width, height) {
     mutedFine,
     flatFine,
     mutedFlatFine,
+    centerBright,
+    mutedCenterBright,
   };
 }
 

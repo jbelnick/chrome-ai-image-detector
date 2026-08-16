@@ -55,6 +55,9 @@ export const FUSE_DEFAULTS = {
   mutedStrongTailDrop: 0.04,
   mutedStrongTailBandMin: 0.68,
   mutedStrongTailBandMax: 0.694,
+  mutedBrightDrop: 0.35,
+  mutedBrightBandMin: 0.993,
+  mutedBrightBandMax: 0.998,
   bias: 0,
   temperature: 0.9,
   scorePower: 0.85,
@@ -258,6 +261,17 @@ export function fuseScores({
   ) {
     calibrated -= mutedStrongTailDrop;
     reasons.push("muted-strong-tail");
+  }
+
+  const mutedBrightDrop = config.mutedBrightDrop ?? 0;
+  if (
+    mutedBrightDrop > 0 &&
+    graphic?.mutedCenterBright &&
+    calibrated >= (config.mutedBrightBandMin ?? 0.993) &&
+    calibrated < (config.mutedBrightBandMax ?? 0.998)
+  ) {
+    calibrated -= mutedBrightDrop;
+    reasons.push("muted-center-bright");
   }
 
   return {
