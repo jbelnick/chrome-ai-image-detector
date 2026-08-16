@@ -1,0 +1,44 @@
+{
+  "title": "PR 12 diagnostic holdout — grade only",
+  "note": "Copied from PR 12 / CLAIM scenario print. Not invented. Not a KEEP scalar. Do not train. Do not fit the SigLIP probe. Do not add these 146 images into the 358 mix.",
+  "pr": 12,
+  "branch": "cursor/eval-scenario-holdout-ecaa",
+  "command": "npm run eval:chrome:scenarios",
+  "date": "2026-08-16",
+  "detector": "6e78751",
+  "backend": "wasm",
+  "webgpu": "UNVERIFIED",
+  "threshold": 0.65,
+  "n": 146,
+  "nAi": 54,
+  "nReal": 92,
+  "overall": {
+    "balancedAccuracy": 0.7399,
+    "tpr": 0.7407,
+    "tnr": 0.7391,
+    "tp": 40,
+    "fn": 14,
+    "tn": 68,
+    "fp": 24
+  },
+  "byCategory": [
+    { "category": "historic_scan_bw", "n": 12, "nAi": 0, "nReal": 12, "tpr": null, "tnr": 0.4167, "balancedAccuracy": 0.2083, "tp": 0, "fn": 0, "tn": 5, "fp": 7 },
+    { "category": "historic_scan_color", "n": 12, "nAi": 0, "nReal": 12, "tpr": null, "tnr": 0.8333, "balancedAccuracy": 0.4167, "tp": 0, "fn": 0, "tn": 10, "fp": 2 },
+    { "category": "wiki_web_real", "n": 12, "nAi": 0, "nReal": 12, "tpr": null, "tnr": 0.6667, "balancedAccuracy": 0.3333, "tp": 0, "fn": 0, "tn": 8, "fp": 4 },
+    { "category": "phone_web_real", "n": 12, "nAi": 0, "nReal": 12, "tpr": null, "tnr": 1.0, "balancedAccuracy": 0.5, "tp": 0, "fn": 0, "tn": 12, "fp": 0 },
+    { "category": "social_reddit_real", "n": 12, "nAi": 0, "nReal": 12, "tpr": null, "tnr": 0.9167, "balancedAccuracy": 0.4583, "tp": 0, "fn": 0, "tn": 11, "fp": 1 },
+    { "category": "social_reddit_ai", "n": 12, "nAi": 12, "nReal": 0, "tpr": 0.75, "tnr": null, "balancedAccuracy": 0.375, "tp": 9, "fn": 3, "tn": 0, "fp": 0 },
+    { "category": "gen_holdout_ai", "n": 12, "nAi": 12, "nReal": 0, "tpr": 1.0, "tnr": null, "balancedAccuracy": 0.5, "tp": 12, "fn": 0, "tn": 0, "fp": 0 },
+    { "category": "gen_holdout_real", "n": 12, "nAi": 0, "nReal": 12, "tpr": null, "tnr": 0.9167, "balancedAccuracy": 0.4583, "tp": 0, "fn": 0, "tn": 11, "fp": 1 },
+    { "category": "screenshot_ui", "n": 14, "nAi": 2, "nReal": 12, "tpr": 1.0, "tnr": 0.4167, "balancedAccuracy": 0.7083, "tp": 2, "fn": 0, "tn": 5, "fp": 7 },
+    { "category": "compressed_thumb", "n": 12, "nAi": 4, "nReal": 8, "tpr": 0.25, "tnr": 0.75, "balancedAccuracy": 0.5, "tp": 1, "fn": 3, "tn": 6, "fp": 2 },
+    { "category": "ai_photoreal", "n": 12, "nAi": 12, "nReal": 0, "tpr": 0.6667, "tnr": null, "balancedAccuracy": 0.3333, "tp": 8, "fn": 4, "tn": 0, "fp": 0 },
+    { "category": "ai_illustrated", "n": 12, "nAi": 12, "nReal": 0, "tpr": 0.6667, "tnr": null, "balancedAccuracy": 0.3333, "tp": 8, "fn": 4, "tn": 0, "fp": 0 }
+  ],
+  "named": {
+    "historic_scan_bw_00": {
+      "notes": "Charlesworth on KEEP 6e78751 (no muted-scan). Copied from PR 12.",
+      "score": 0.993
+    }
+  }
+}
