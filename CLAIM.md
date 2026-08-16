@@ -643,6 +643,30 @@ webgpu:      UNVERIFIED
 
 Versus KEEP `cafa158` on the same mix: TPR +1, TNR held, net +1, BA 0.905028 → 0.907821. Secondary 360 held 0.888889.
 
+## Current broader-proxy best (`bc8565d`) — ofhold JPEG mid-Q lane
+
+JPEG mid-Q near-cut lift (0.035) when luminance DQT estimates q in [68, 76], `analyzePixels` flags grainy, and the calibrated score is in [0.620, 0.632). Flips leftover holdout FNs `ofhold_ai_0004` (0.625 → 0.660) and `ofhold_ai_0050` (0.627 → 0.662) without the family 19 photo-grain skip. Fuse bias stays 0. Command: `npm run eval:chrome`. Date: 2026-08-16. Finished 718/718 with no stall, EXIT:0.
+
+```
+SCALAR broader-proxy (keep/revert)
+bal_acc_065: 0.913408
+tpr_065:     0.871508
+tnr_065:     0.955307
+tp/fn/tn/fp: 156 / 23 / 171 / 8
+n:           358
+
+SECONDARY official-360 (not the ratchet)
+bal_acc_065: 0.888889
+tpr_065:     0.816667
+tnr_065:     0.961111
+tp/fn/tn/fp: 147 / 33 / 173 / 7
+n:           360
+backend:     wasm
+webgpu:      UNVERIFIED
+```
+
+Versus official-builder family 19 KEEP `92afcb1` on the same mix (0.910615, TPR 0.865922 / TNR 0.955307, 155/24/171/8): TPR +1, TNR held, net +1, BA 0.910615 → 0.913408. Secondary 360 0.888889 vs family 19's 0.891667 — called out, not hidden, not a crater (same 147/33/173/7 as KEEP `5316788`).
+
 ## Rules checklist
 
 - [x] No cloud inference
