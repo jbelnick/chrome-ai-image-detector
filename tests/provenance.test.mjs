@@ -100,6 +100,30 @@ function jpegWithSegments(segments) {
   return out;
 }
 
+function pngChunk(type, payload) {
+  const typeBytes = new TextEncoder().encode(type);
+  const length = new Uint8Array(4);
+  new DataView(length.buffer).setUint32(0, payload.length);
+  const crc = new Uint8Array(4);
+  const out = new Uint8Array(12 + payload.length);
+  out.set(length, 0);
+  out.set(typeBytes, 4);
+  out.set(payload, 8);
+  out.set(crc, 8 + payload.length);
+  return out;
+}
+
+function pngWithIdat(payload) {
+  const sig = Uint8Array.from([137, 80, 78, 71, 13, 10, 26, 10]);
+  const idat = pngChunk("IDAT", payload);
+  const iend = pngChunk("IEND", new Uint8Array(0));
+  const out = new Uint8Array(sig.length + idat.length + iend.length);
+  out.set(sig, 0);
+  out.set(idat, sig.length);
+  out.set(iend, sig.length + idat.length);
+  return out;
+}
+
 function pngWithText(keyword, value) {
   const sig = Uint8Array.from([137, 80, 78, 71, 13, 10, 26, 10]);
   const payload = new TextEncoder().encode(`${keyword}\0${value}`);
@@ -245,6 +269,14 @@ describe("provenance", () => {
     assert.equal(result.ai, false);
     assert.equal(result.camera, true);
     assert.ok(result.signals.includes("camera:sony"));
+  });
+
+  it("does not treat sdxl or a phone make in PNG IDAT as provenance", () => {
+    const idat = new TextEncoder().encode("entropy blob sdxl apple samsung noise");
+    const png = pngWithIdat(idat);
+    const result = scanProvenance(png);
+    assert.equal(result.ai, false);
+    assert.equal(result.camera, false);
   });
 
   it("does not treat Dulmen artist-only Exif as camera-real", () => {

@@ -15,22 +15,32 @@ describe("fuse", () => {
     assert.ok(result.score >= FUSE_DEFAULTS.provenanceAiScore ** (FUSE_DEFAULTS.scorePower ?? 1) - 1e-6);
   });
 
-  it("pulls a confused visual down when camera EXIF is present", () => {
-    assert.ok(FUSE_DEFAULTS.cameraRealScale < 1);
-    assert.equal(FUSE_DEFAULTS.cameraRealScale, 0.72);
+  it("records camera EXIF without changing the visual score when scale is 1", () => {
+    assert.equal(FUSE_DEFAULTS.cameraRealScale, 1);
     const result = fuseScores({
       visual: 0.4,
       provenance: { ai: false, camera: true },
       graphic: { isGraphic: false },
     });
-    assert.ok(Math.abs(result.fusedBeforeCalibration - 0.4 * FUSE_DEFAULTS.cameraRealScale) < 1e-9);
-    assert.ok(result.fusedBeforeCalibration < 0.4);
-    assert.ok(result.score < fuseScores({
-      visual: 0.4,
-      provenance: { ai: false, camera: false },
-      graphic: { isGraphic: false },
-    }).score);
+    assert.ok(Math.abs(result.fusedBeforeCalibration - 0.4) < 1e-9);
     assert.ok(result.reasons.includes("camera-exif"));
+  });
+
+  it("does not move a 0.65 badge when cameraRealScale is 1", () => {
+    const confused = fuseScores({
+      visual: 0.7,
+      provenance: { ai: false, camera: true },
+      graphic: { isGraphic: false },
+    });
+    const gray = fuseScores({
+      visual: 0.5,
+      provenance: { ai: false, camera: true },
+      graphic: { isGraphic: false },
+    });
+    assert.ok(confused.score >= 0.65);
+    assert.ok(gray.score < 0.65);
+    assert.equal(confused.reasons.includes("camera-exif"), false);
+    assert.ok(Math.abs(gray.fusedBeforeCalibration - 0.5) < 1e-9);
   });
 
   it("does not apply camera scale when visual is already above the confused band", () => {

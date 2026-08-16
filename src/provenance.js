@@ -232,39 +232,22 @@ function cameraMakeFromJpeg(bytes) {
   return found;
 }
 
-function pngExifChunks(bytes) {
-  if (bytes.length < 16) return [];
-  const sig = [137, 80, 78, 71, 13, 10, 26, 10];
-  for (let i = 0; i < 8; i += 1) {
-    if (bytes[i] !== sig[i]) return [];
-  }
-  const chunks = [];
-  let offset = 8;
-  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-  while (offset + 12 <= bytes.length) {
-    const length = view.getUint32(offset);
-    const type = String.fromCharCode(
-      bytes[offset + 4],
-      bytes[offset + 5],
-      bytes[offset + 6],
-      bytes[offset + 7],
-    );
-    const dataStart = offset + 8;
-    const dataEnd = dataStart + length;
-    if (dataEnd + 4 > bytes.length) break;
-    if (type === "eXIf") chunks.push(bytes.subarray(dataStart, dataEnd));
-    offset = dataEnd + 4;
-  }
-  return chunks;
-}
+const PNG_META_TYPES = new Set(["tEXt", "eXIf"]);
 
-function hasPngTextChunk(bytes, needle) {
-  // PNG: 8-byte signature, then chunks: len(4) type(4) data len crc(4)
-  if (bytes.length < 16) return false;
+function isPng(bytes) {
+  if (bytes.length < 8) return false;
   const sig = [137, 80, 78, 71, 13, 10, 26, 10];
   for (let i = 0; i < 8; i += 1) {
     if (bytes[i] !== sig[i]) return false;
   }
+  return true;
+}
+
+/**
+ * PNG eXIf / tEXt only. IDAT compressed pixels are not provenance.
+ */
+function forEachPngMetaChunk(bytes, visit) {
+  if (!isPng(bytes)) return false;
   let offset = 8;
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   while (offset + 12 <= bytes.length) {
@@ -278,24 +261,60 @@ function hasPngTextChunk(bytes, needle) {
     const dataStart = offset + 8;
     const dataEnd = dataStart + length;
     if (dataEnd + 4 > bytes.length) break;
-    if (type === "tEXt" || type === "iTXt" || type === "zTXt" || type === "eXIf") {
-      let chunk = "";
-      for (let i = dataStart; i < dataEnd; i += 1) {
-        const b = bytes[i];
-        if (b >= 32 && b <= 126) chunk += String.fromCharCode(b);
-        else chunk += " ";
-      }
-      if (chunk.toLowerCase().includes(needle)) return true;
-    }
+    if (PNG_META_TYPES.has(type)) visit(type, bytes.subarray(dataStart, dataEnd));
     offset = dataEnd + 4;
   }
-  return false;
+  return true;
+}
+
+function pngMetadataBytes(bytes) {
+  const chunks = [];
+  if (!forEachPngMetaChunk(bytes, (_type, data) => chunks.push(data))) return null;
+  const total = chunks.reduce((n, c) => n + c.length, 0);
+  const out = new Uint8Array(total);
+  let o = 0;
+  for (const c of chunks) {
+    out.set(c, o);
+    o += c.length;
+  }
+  return out;
+}
+
+function hasPngTextChunk(bytes, needle) {
+  let hit = false;
+  forEachPngMetaChunk(bytes, (_type, data) => {
+    if (hit) return;
+    let chunk = "";
+    for (let i = 0; i < data.length; i += 1) {
+      const b = data[i];
+      if (b >= 32 && b <= 126) chunk += String.fromCharCode(b);
+      else chunk += " ";
+    }
+    if (chunk.toLowerCase().includes(needle)) hit = true;
+  });
+  return hit;
+}
+
+function cameraMakeFromPng(bytes) {
+  let found = null;
+  forEachPngMetaChunk(bytes, (type, data) => {
+    if (found) return;
+    if (type === "eXIf") found = cameraMakeFromTiff(data);
+  });
+  if (found) return found;
+  const meta = pngMetadataBytes(bytes);
+  if (!meta || meta.length === 0) return null;
+  const hay = bytesToAsciiHaystack(meta);
+  if (!hay.includes("exif")) return null;
+  return matchCameraMake(hay);
 }
 
 export function scanProvenance(buffer) {
   const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
   const jpegMeta = jpegMetadataBytes(bytes);
-  const scanBytes = jpegMeta || bytes;
+  const pngMeta = jpegMeta ? null : pngMetadataBytes(bytes);
+  // JPEG: APP/COM. PNG: eXIf/tEXt. Never IDAT or JPEG entropy after SOS.
+  const scanBytes = jpegMeta || pngMeta || bytes;
   const haystack = bytesToAsciiHaystack(scanBytes);
   const signals = [];
 
@@ -316,17 +335,12 @@ export function scanProvenance(buffer) {
   if (!ai) {
     let cameraMake = null;
     if (jpegMeta) {
-      // JPEG: IFD/XMP Make|Model only. Stub Exif and ICC "Apple" are not camera.
       cameraMake = cameraMakeFromJpeg(bytes);
+    } else if (pngMeta) {
+      cameraMake = cameraMakeFromPng(bytes);
     } else {
-      for (const tiff of pngExifChunks(bytes)) {
-        cameraMake = cameraMakeFromTiff(tiff);
-        if (cameraMake) break;
-      }
-      if (!cameraMake) {
-        const hasExifContext = haystack.includes("exif") || hasPngTextChunk(bytes, "exif");
-        if (hasExifContext) cameraMake = matchCameraMake(haystack);
-      }
+      const hasExifContext = haystack.includes("exif");
+      if (hasExifContext) cameraMake = matchCameraMake(haystack);
     }
     if (cameraMake) {
       camera = true;
