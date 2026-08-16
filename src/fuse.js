@@ -127,7 +127,6 @@ export function fuseScores({
   if (
     grainDrop > 0 &&
     graphic?.grainy &&
-    !(graphic?.muted && graphic?.flatTone) &&
     calibrated >= (config.grainBandMin ?? 0.65) &&
     calibrated < (config.grainBandMax ?? 0.78)
   ) {
