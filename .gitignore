@@ -1,0 +1,17 @@
+node_modules/
+models/*.bin
+models/siglip2-vision.onnx
+eval/data/
+eval/results/
+eval/.cache/
+extension/vendor/
+extension/lib/
+extension/models/
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+*.log
+.cache/
+autoresearch/results.tsv
+autoresearch/run.log
