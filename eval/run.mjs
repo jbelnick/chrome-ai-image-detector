@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 /**
- * Eval harness: same preprocess, fusion, and ONNX weights as the extension.
- * Prints balanced accuracy at the required 0.65 cut.
+ * Node-proxy eval (sharp + onnxruntime-node). Chrome-path is truth.
+ * Same fusion / ONNX as the extension after decode.
+ * node vs chrome is decode-delta — see eval/DECODE.md.
+ * Do not paper over in FUSE_DEFAULTS.
  */
 import { createHash } from "node:crypto";
 import { readdir, readFile, writeFile, mkdir } from "node:fs/promises";
@@ -12,18 +14,26 @@ import * as ort from "onnxruntime-node";
 import { MODELS, EVAL_THRESHOLD } from "../src/model-config.js";
 import {
   PREPROCESS,
+  NODE_SHARP_RESAMPLE,
+  DECODE_PATHS,
   scaledSize,
   centerCropBox,
   imageDataToTensor,
   visualProbabilityFromLogit,
 } from "../src/preprocess.js";
-import { imageDataToSiglipTensor, siglipProbability, blendVisual, SIGLIP } from "../src/siglip.js";
+import { imageDataToSiglipTensor, siglipProbability, SIGLIP } from "../src/siglip.js";
 import { scanProvenance } from "../src/provenance.js";
 import { analyzePixels } from "../src/graphic-gate.js";
-import { fuseScores, FUSE_DEFAULTS } from "../src/fuse.js";
+import { FUSE_DEFAULTS } from "../src/fuse.js";
+import { scoreFromModels } from "../src/score-image.js";
 import { bestRawThreshold } from "../src/calibrate.js";
 import { summarize } from "../src/metrics.js";
 import { isOfficialProxy, proxyKind } from "../src/eval-set.js";
+import {
+  computeDecodeDelta,
+  formatDecodeDelta,
+  recordedDecodeDelta,
+} from "./decode-delta.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const dataDir = join(root, "eval/data");
@@ -89,7 +99,7 @@ async function decodeBoth(path) {
   const scaled = scaledSize(meta.width, meta.height);
   const resized = await sharp(file)
     .rotate()
-    .resize(scaled.width, scaled.height, { kernel: "cubic", fit: "fill" })
+    .resize(scaled.width, scaled.height, NODE_SHARP_RESAMPLE.commfor)
     .removeAlpha()
     .raw()
     .toBuffer({ resolveWithObject: true });
@@ -104,7 +114,7 @@ async function decodeBoth(path) {
 
   const siglipRaw = await sharp(file)
     .rotate()
-    .resize(SIGLIP.size, SIGLIP.size, { kernel: "lanczos3", fit: "fill" })
+    .resize(SIGLIP.size, SIGLIP.size, NODE_SHARP_RESAMPLE.siglip)
     .removeAlpha()
     .raw()
     .toBuffer();
@@ -157,20 +167,20 @@ async function main() {
     });
     const commfor = visualProbabilityFromLogit(Number(cfOut[MODELS.commfor.outputName].data[0]));
     const siglip = siglipProbability(slOut[MODELS.siglip2.outputName].data);
-    const visual = blendVisual(siglip, commfor);
-    const fused = fuseScores({
-      visual,
+    const result = scoreFromModels({
+      siglip,
+      commfor,
       provenance,
       graphic,
       config: FUSE_DEFAULTS,
     });
     scored.push({
       ...row,
-      visual,
+      visual: result.visual,
       siglip,
       commfor,
-      score: fused.score,
-      reasons: fused.reasons,
+      score: result.score,
+      reasons: result.reasons,
       kind: proxyKind(row.name),
     });
     if ((index + 1) % 25 === 0 || index === files.length - 1) {
@@ -206,7 +216,21 @@ async function main() {
   const explore = shuffled.slice(0, splitAt);
   const exploreBest = bestRawThreshold(explore.map((r) => ({ label: r.label, score: r.score })));
 
+  const recorded = recordedDecodeDelta();
+  let liveDecodeDelta = null;
+  try {
+    const chromeReport = JSON.parse(await readFile(join(root, "eval/results/chrome.json"), "utf8"));
+    liveDecodeDelta = computeDecodeDelta(chromeReport.officialOpenFake, official, {
+      label: "live latest.json vs chrome.json official-360 — confirm same commit before citing",
+    });
+  } catch {
+    /* chrome.json is optional; recorded pair still prints */
+  }
+
   const report = {
+    path: "node-sharp-ort",
+    decode: DECODE_PATHS.node,
+    sourceOfTruth: DECODE_PATHS.sourceOfTruth,
     models: [MODELS.commfor.id, MODELS.siglip2.id],
     hashes: { commfor: cfSpec.hash, siglip2: slSpec.hash },
     threshold: EVAL_THRESHOLD,
@@ -218,11 +242,14 @@ async function main() {
     officialOpenFake: official,
     mixIncludingEasyReal: mix,
     exploratoryBestRawOnOfficialSubset: exploreBest,
+    decodeDelta: recorded,
+    liveDecodeDelta,
     note:
+      "NODE PROXY (sharp + onnxruntime-node). Chrome-path is truth. " +
       "OFFICIAL number is shipped FUSE_DEFAULTS (bias=0) at threshold 0.65 on OpenFake core/test only. " +
       "Picsum is easy-real padding and is not the claim. CF DALL·E extras are excluded. " +
       "A calib-split raw-threshold search is printed as exploratory only and is not shipped. " +
-      "Eval decode uses sharp + onnxruntime-node CPU; the extension uses canvas drawImage + WebGPU/WASM.",
+      "node vs chrome is decode-delta — see eval/DECODE.md. Do not paper over in FUSE_DEFAULTS.",
   };
 
   await mkdir(join(root, "eval/results"), { recursive: true });
@@ -231,9 +258,10 @@ async function main() {
 
   const pct = (x) => `${(x * 100).toFixed(2)}%`;
   console.log("");
-  console.log("Grain eval — same ONNX + shipped fusion as the extension");
+  console.log("Grain eval — NODE PROXY (sharp + onnxruntime-node); chrome-path is truth");
   console.log(`Models: ${MODELS.siglip2.id} + ${MODELS.commfor.id}`);
   console.log(`Fuse bias=${FUSE_DEFAULTS.bias} temperature=${FUSE_DEFAULTS.temperature}`);
+  console.log(`Decode: ${DECODE_PATHS.node}  (not ${DECODE_PATHS.chrome})`);
   console.log(
     `Images: ${scored.length}  official(OpenFake)=${officialRows.length}  easy-real=${easyReal.length}  excluded-cf=${excluded.length}`,
   );
@@ -252,6 +280,12 @@ async function main() {
   console.log(
     `EXPLORATORY only — best raw cut on a 30% OpenFake subset: ${exploreBest.threshold.toFixed(2)} (BA ${pct(exploreBest.balancedAccuracy)}). Not shipped.`,
   );
+  console.log("");
+  console.log(formatDecodeDelta(recorded));
+  if (liveDecodeDelta) {
+    console.log("");
+    console.log(formatDecodeDelta(liveDecodeDelta));
+  }
   console.log("");
   console.log("Wrote eval/results/latest.json");
 }

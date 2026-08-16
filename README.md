@@ -54,7 +54,7 @@ Internet is used only to fetch the *page's own image bytes* (cookie-less) so the
 
 ## Evaluation harness
 
-The eval script uses the **same** preprocess, provenance scan, graphic gate, fusion, and ONNX weights as the extension (Node + `onnxruntime-node` + `sharp` instead of Chrome canvas / WebGPU).
+The eval script uses the **same** fusion, provenance scan, graphic gate, and ONNX weights as the extension. Node decode (`sharp` + `onnxruntime-node`) is a **proxy**. Chrome-path (`createImageBitmap` + `OffscreenCanvas`) is the source of truth. The score gap is **decode-delta** — see [eval/DECODE.md](eval/DECODE.md). Do not absorb it in `FUSE_DEFAULTS`.
 
 ```bash
 # Python deps for the downloader only: pip install datasets pillow
@@ -68,7 +68,7 @@ npm run eval:chrome             # Chrome ORT-web; broader proxy is the keep/reve
 
 Balanced accuracy = (TPR + TNR) / 2. An image is predicted AI when the **shipped** fused score `>= 0.65`. Fuse bias is `0` — the harness does not remap a lower raw cut onto 0.65.
 
-The number printed as **OFFICIAL OpenFake core/test** is the proxy score recorded in [CLAIM.md](CLAIM.md): Node+sharp **87.22%** BA @ 0.65 (TPR 90.00% / TNR 84.44%); Chrome ORT-web WASM **87.22%** BA @ 0.65 (TPR 87.22% / TNR 87.22%), same 360. Hardware WebGPU was UNVERIFIED on the measurement machine. Picsum photographs are easy-real padding and are labeled as such. Community Forensics DALL·E extras are excluded because they embed generator ASCII.
+The number printed as **OFFICIAL OpenFake core/test** is the proxy score recorded in [CLAIM.md](CLAIM.md): Node+sharp **87.22%** BA @ 0.65 (TPR 90.00% / TNR 84.44%); Chrome ORT-web WASM **87.22%** BA @ 0.65 (TPR 87.22% / TNR 87.22%), same 360. Same BA, 10 decision flips — that gap is **decode-delta**, not a fuse bug. Hardware WebGPU was UNVERIFIED on the measurement machine. Picsum photographs are easy-real padding and are labeled as such. Community Forensics DALL·E extras are excluded because they embed generator ASCII.
 
 Neither public mix is Kenny's private maintainer bench. The 360 prefix is a generator-holdout stand-in (JPEG q=88). The broader scalar adds in-the-wild Reddit JPEGs and a disjoint later `core/test` slice. Do not invent a private-bench score.
 
@@ -88,7 +88,7 @@ tests/               node:test unit tests
 - Scores are forensic signals, not proof of authorship.
 - Cookie-gated `https` images still fail closed (`credentials: "omit"`). Page-origin `blob:` / `data:` URLs are fetched in the content script and sent as Base64.
 - Recent generators that post-date Community Forensics training can still fool a single visual model. Provenance helps when generators embed C2PA.
-- Eval (`sharp` + CPU ORT) is not a bit-exact match of Chrome canvas + WebGPU/WASM.
+- Eval (`sharp` + CPU ORT) is not a bit-exact match of Chrome canvas + WebGPU/WASM. Report that gap as decode-delta. Do not paper it over in `fuse.js`.
 
 ## License
 
