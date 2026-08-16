@@ -339,6 +339,32 @@ describe("fuse", () => {
     assert.equal(comboOnly.reasons.includes("muted-strong-tail"), false);
   });
 
+  it("drops a muted scan-grain extreme-tail visual without inventing a real verdict from film grain alone", () => {
+    const dropped = fuseScores({
+      visual: 0.97,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: true, muted: true, scanGrain: true },
+    });
+    assert.ok(dropped.score < 0.65);
+    assert.ok(dropped.reasons.includes("muted-scan"));
+
+    const comboOnly = fuseScores({
+      visual: 0.2,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: true, muted: true, scanGrain: true },
+    });
+    assert.ok(Math.abs(comboOnly.fusedBeforeCalibration - 0.2) < 1e-9);
+    assert.equal(comboOnly.reasons.includes("muted-scan"), false);
+
+    const colorfulTail = fuseScores({
+      visual: 0.97,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, muted: false, scanGrain: false, vivid: true },
+    });
+    assert.equal(colorfulTail.reasons.includes("muted-scan"), false);
+    assert.ok(colorfulTail.score >= 0.65);
+  });
+
   it("lifts a muted mid-range visual without inventing a verdict from low colorfulness alone", () => {
     const lifted = fuseScores({
       visual: 0.56,
