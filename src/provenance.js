@@ -118,6 +118,111 @@ function jpegMetadataBytes(bytes) {
   return out;
 }
 
+const JPEG_LUMA_STD = [
+  16, 11, 10, 16, 24, 40, 51, 61, 12, 12, 14, 19, 26, 58, 60, 55, 14, 13, 16,
+  24, 40, 57, 69, 56, 14, 17, 22, 29, 51, 87, 80, 62, 18, 22, 37, 56, 68, 109,
+  103, 77, 24, 35, 55, 64, 81, 104, 113, 92, 49, 64, 78, 87, 103, 121, 120, 101,
+  72, 92, 95, 98, 112, 100, 103, 99,
+];
+
+const JPEG_ZIGZAG = [
+  0, 1, 8, 16, 9, 2, 3, 10, 17, 24, 32, 25, 18, 11, 4, 5, 12, 19, 26, 33, 40,
+  48, 41, 34, 27, 20, 13, 6, 7, 14, 21, 28, 35, 42, 49, 56, 57, 50, 43, 36, 29,
+  22, 15, 23, 30, 37, 44, 51, 58, 59, 52, 45, 38, 31, 39, 46, 53, 60, 61, 54, 47,
+  55, 62, 63,
+];
+
+const JPEG_MID_Q_MIN = 68;
+const JPEG_MID_Q_MAX = 76;
+
+function jpegQuantScale(quality) {
+  const q = Math.min(100, Math.max(1, quality));
+  return q < 50 ? Math.floor(5000 / q) : 200 - 2 * q;
+}
+
+function scaledLumaTable(quality) {
+  const scale = jpegQuantScale(quality);
+  const out = new Array(64);
+  for (let i = 0; i < 64; i += 1) {
+    out[i] = Math.min(255, Math.max(1, Math.floor((JPEG_LUMA_STD[i] * scale + 50) / 100)));
+  }
+  return out;
+}
+
+function qualityFromLumaTable(natural) {
+  let bestQ = null;
+  let bestErr = Infinity;
+  for (let q = 1; q <= 100; q += 1) {
+    const scaled = scaledLumaTable(q);
+    let err = 0;
+    for (let i = 0; i < 64; i += 1) {
+      const d = natural[i] - scaled[i];
+      err += d * d;
+    }
+    if (err < bestErr) {
+      bestErr = err;
+      bestQ = q;
+    }
+  }
+  return bestQ;
+}
+
+function readLumaDqt(bytes) {
+  if (bytes.length < 4 || bytes[0] !== 0xff || bytes[1] !== 0xd8) return null;
+  let i = 2;
+  while (i + 4 < bytes.length) {
+    if (bytes[i] !== 0xff) {
+      i += 1;
+      continue;
+    }
+    const marker = bytes[i + 1];
+    if (marker === 0xda || marker === 0xd9) break;
+    if (marker === 0x00 || marker === 0xff) {
+      i += 1;
+      continue;
+    }
+    if (marker >= 0xd0 && marker <= 0xd7) {
+      i += 2;
+      continue;
+    }
+    if (i + 4 > bytes.length) break;
+    const len = (bytes[i + 2] << 8) | bytes[i + 3];
+    const start = i + 4;
+    const end = Math.min(bytes.length, start + Math.max(0, len - 2));
+    if (marker === 0xdb) {
+      let p = start;
+      while (p < end) {
+        const info = bytes[p];
+        const precision = info >> 4;
+        const tableId = info & 0x0f;
+        const coeffBytes = precision === 0 ? 64 : 128;
+        p += 1;
+        if (p + coeffBytes > end) break;
+        if (precision === 0 && tableId === 0) {
+          const natural = new Array(64);
+          for (let z = 0; z < 64; z += 1) natural[JPEG_ZIGZAG[z]] = bytes[p + z];
+          return natural;
+        }
+        p += coeffBytes;
+      }
+    }
+    i = start + Math.max(0, len - 2);
+  }
+  return null;
+}
+
+/**
+ * IJG quality (1–100) from the luminance DQT, or null if the buffer
+ * is not a JPEG with a standard 8-bit table 0. Used to recognize the
+ * ofhold q=72 recompress band without hashing eval ids.
+ */
+export function estimateJpegQuality(buffer) {
+  const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
+  const table = readLumaDqt(bytes);
+  if (!table) return null;
+  return qualityFromLumaTable(table);
+}
+
 function hasPngTextChunk(bytes, needle) {
   // PNG: 8-byte signature, then chunks: len(4) type(4) data len crc(4)
   if (bytes.length < 16) return false;
@@ -171,6 +276,12 @@ export function scanProvenance(buffer) {
   if (c2paBinary >= 0) signals.push("c2pa-box");
   if (jumbBinary >= 0) signals.push("jumbf-box");
 
+  const jpegQuality = estimateJpegQuality(bytes);
+  const jpegMidQ =
+    Number.isFinite(jpegQuality) &&
+    jpegQuality >= JPEG_MID_Q_MIN &&
+    jpegQuality <= JPEG_MID_Q_MAX;
+
   const ai = signals.length > 0;
   let camera = false;
   const hasExifContext = haystack.includes("exif") || hasPngTextChunk(bytes, "exif");
@@ -188,6 +299,8 @@ export function scanProvenance(buffer) {
     ai,
     camera,
     signals,
+    jpegQuality,
+    jpegMidQ,
     confidence: ai ? 0.95 : camera ? 0.2 : 0,
   };
 }

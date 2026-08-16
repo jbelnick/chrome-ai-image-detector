@@ -1,9 +1,41 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { scanProvenance } from "../src/provenance.js";
+import { estimateJpegQuality, scanProvenance } from "../src/provenance.js";
 
 function asciiBuffer(text) {
   return new TextEncoder().encode(text);
+}
+
+const JPEG_LUMA_STD = [
+  16, 11, 10, 16, 24, 40, 51, 61, 12, 12, 14, 19, 26, 58, 60, 55, 14, 13, 16,
+  24, 40, 57, 69, 56, 14, 17, 22, 29, 51, 87, 80, 62, 18, 22, 37, 56, 68, 109,
+  103, 77, 24, 35, 55, 64, 81, 104, 113, 92, 49, 64, 78, 87, 103, 121, 120, 101,
+  72, 92, 95, 98, 112, 100, 103, 99,
+];
+
+const JPEG_ZIGZAG = [
+  0, 1, 8, 16, 9, 2, 3, 10, 17, 24, 32, 25, 18, 11, 4, 5, 12, 19, 26, 33, 40,
+  48, 41, 34, 27, 20, 13, 6, 7, 14, 21, 28, 35, 42, 49, 56, 57, 50, 43, 36, 29,
+  22, 15, 23, 30, 37, 44, 51, 58, 59, 52, 45, 38, 31, 39, 46, 53, 60, 61, 54, 47,
+  55, 62, 63,
+];
+
+function jpegQuantScale(quality) {
+  const q = Math.min(100, Math.max(1, quality));
+  return q < 50 ? Math.floor(5000 / q) : 200 - 2 * q;
+}
+
+function jpegWithLumaDqt(quality) {
+  const scale = jpegQuantScale(quality);
+  const natural = JPEG_LUMA_STD.map((v) =>
+    Math.min(255, Math.max(1, Math.floor((v * scale + 50) / 100))),
+  );
+  const zigzag = JPEG_ZIGZAG.map((i) => natural[i]);
+  const jpeg = new Uint8Array(4 + 2 + 1 + 64 + 2);
+  jpeg.set([0xff, 0xd8, 0xff, 0xdb, 0x00, 0x43, 0x00], 0);
+  jpeg.set(zigzag, 7);
+  jpeg.set([0xff, 0xd9], 71);
+  return jpeg;
 }
 
 function pngWithText(keyword, value) {
@@ -85,6 +117,31 @@ describe("provenance", () => {
     jpeg.set([0xff, 0xd9], 6 + payload.length);
     const result = scanProvenance(jpeg);
     assert.equal(result.ai, true);
+  });
+
+  it("estimates IJG quality from a luminance DQT and flags only the q≈72 band", () => {
+    const q72 = scanProvenance(jpegWithLumaDqt(72));
+    assert.equal(estimateJpegQuality(jpegWithLumaDqt(72)), 72);
+    assert.equal(q72.jpegQuality, 72);
+    assert.equal(q72.jpegMidQ, true);
+
+    const q88 = scanProvenance(jpegWithLumaDqt(88));
+    assert.equal(q88.jpegQuality, 88);
+    assert.equal(q88.jpegMidQ, false);
+
+    const q82 = scanProvenance(jpegWithLumaDqt(82));
+    assert.equal(q82.jpegQuality, 82);
+    assert.equal(q82.jpegMidQ, false);
+
+    const q65 = scanProvenance(jpegWithLumaDqt(65));
+    assert.equal(q65.jpegQuality, 65);
+    assert.equal(q65.jpegMidQ, false);
+  });
+
+  it("does not invent a JPEG quality on a non-JPEG buffer", () => {
+    const result = scanProvenance(asciiBuffer("not a jpeg"));
+    assert.equal(result.jpegQuality, null);
+    assert.equal(result.jpegMidQ, false);
   });
 
   it("requires EXIF-like context before treating a phone make as camera-native", () => {

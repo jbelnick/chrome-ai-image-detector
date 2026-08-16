@@ -321,6 +321,32 @@ describe("fuse", () => {
     assert.equal(comboOnly.reasons.includes("muted-strong-tail"), false);
   });
 
+  it("lifts a JPEG mid-Q near-cut visual without inventing a verdict from DQT alone", () => {
+    const lifted = fuseScores({
+      visual: 0.568,
+      provenance: { ai: false, camera: false, jpegMidQ: true },
+      graphic: { isGraphic: false, grainy: true },
+    });
+    assert.ok(lifted.score >= 0.65);
+    assert.ok(lifted.reasons.includes("jpeg-mid-q"));
+
+    const qOnly = fuseScores({
+      visual: 0.2,
+      provenance: { ai: false, camera: false, jpegMidQ: true },
+      graphic: { isGraphic: false, grainy: true },
+    });
+    assert.ok(Math.abs(qOnly.fusedBeforeCalibration - 0.2) < 1e-9);
+    assert.equal(qOnly.reasons.includes("jpeg-mid-q"), false);
+
+    const noQ = fuseScores({
+      visual: 0.568,
+      provenance: { ai: false, camera: false, jpegMidQ: false },
+      graphic: { isGraphic: false, grainy: true },
+    });
+    assert.ok(noQ.score < 0.65);
+    assert.equal(noQ.reasons.includes("jpeg-mid-q"), false);
+  });
+
   it("lifts a muted mid-range visual without inventing a verdict from low colorfulness alone", () => {
     const lifted = fuseScores({
       visual: 0.56,
