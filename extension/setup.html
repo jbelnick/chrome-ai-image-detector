@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Grain setup</title>
+    <link rel="stylesheet" href="popup.css" />
+    <style>
+      body {
+        width: auto;
+        max-width: 640px;
+        margin: 40px auto;
+        padding: 0 20px 40px;
+      }
+      pre {
+        white-space: pre-wrap;
+        background: #12100d;
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 12px;
+      }
+      button {
+        background: #f59e0b;
+        color: #1b1814;
+        border: 0;
+        border-radius: 8px;
+        padding: 8px 14px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="mark"></div>
+      <div>
+        <h1>Grain model setup</h1>
+        <p class="tag">One-time SHA-256 check of the packaged on-device weights</p>
+      </div>
+    </header>
+    <section>
+      <p>
+        Grain runs SigLIP2 + Community Forensics entirely inside Chrome
+        (WebGPU, then WASM). Image bytes are never uploaded.
+      </p>
+      <p>
+        If you built from this repository with <code>npm run build</code>, the
+        weights are already packaged. This page verifies their SHA-256 and warms
+        the inference engine. After that the extension works offline.
+      </p>
+      <button id="start" type="button">Verify and load model</button>
+      <pre id="log">Waiting…</pre>
+    </section>
+    <script src="setup.js" type="module"></script>
+  </body>
+</html>
