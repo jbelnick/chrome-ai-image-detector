@@ -76,6 +76,28 @@ describe("fuse", () => {
     assert.ok(Math.abs(toneOnly.fusedBeforeCalibration - 0.2) < 1e-9);
   });
 
+  it("skips photo-grain only after muted-color and flat-tone lifts already fired", () => {
+    const skipped = fuseScores({
+      visual: 0.607,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, grainy: true, muted: true, flatTone: true },
+    });
+    assert.equal(skipped.reasons.includes("muted-color"), true);
+    assert.equal(skipped.reasons.includes("flat-tone"), true);
+    assert.equal(skipped.reasons.includes("photo-grain"), false);
+    assert.ok(skipped.score >= 0.65);
+
+    const stillDropped = fuseScores({
+      visual: 0.709,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, grainy: true, muted: true, flatTone: true },
+    });
+    assert.equal(stillDropped.reasons.includes("muted-color"), false);
+    assert.equal(stillDropped.reasons.includes("flat-tone"), false);
+    assert.ok(stillDropped.reasons.includes("photo-grain"));
+    assert.ok(stillDropped.score < 0.65);
+  });
+
   it("drops a grainy just-over-cut visual without inventing a real verdict from grain alone", () => {
     const dropped = fuseScores({
       visual: 0.70,
