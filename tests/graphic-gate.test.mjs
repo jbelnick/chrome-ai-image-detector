@@ -110,6 +110,7 @@ describe("graphic-gate", () => {
     const mutedAnalysis = analyzePixels(muted, w, h);
     assert.equal(mutedAnalysis.muted, true);
     assert.equal(mutedAnalysis.mutedFine, true);
+    assert.equal(mutedAnalysis.scanGrain, true);
 
     const vivid = new Uint8Array(w * h * 4);
     seed = 1;
@@ -121,6 +122,29 @@ describe("graphic-gate", () => {
       vivid[i * 4 + 3] = 255;
     }
     assert.equal(analyzePixels(vivid, w, h).mutedFine, false);
+    assert.equal(analyzePixels(vivid, w, h).scanGrain, false);
+  });
+
+  it("flags a muted grainy monochrome field as scan-grain even when the UI gate also fires", () => {
+    const w = 128;
+    const h = 128;
+    const data = new Uint8Array(w * h * 4);
+    let seed = 1;
+    for (let y = 0; y < h; y += 1) {
+      for (let x = 0; x < w; x += 1) {
+        const i = (y * w + x) * 4;
+        seed = (seed * 1664525 + 1013904223) >>> 0;
+        const v = 110 + ((seed & 31) - 15);
+        data[i] = v;
+        data[i + 1] = v;
+        data[i + 2] = v;
+        data[i + 3] = 255;
+      }
+    }
+    const analysis = analyzePixels(data, w, h);
+    assert.equal(analysis.muted, true);
+    assert.ok(analysis.fineRatio >= 0.4);
+    assert.equal(analysis.scanGrain, true);
   });
 
   it("flags a uniform field as flat-tone", () => {
