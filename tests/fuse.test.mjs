@@ -11,9 +11,12 @@ describe("fuse", () => {
     });
     assert.ok(result.score >= 0.9);
     assert.ok(result.reasons.includes("provenance-ai"));
+    assert.equal(FUSE_DEFAULTS.provenanceAiScore, 0.93);
+    assert.ok(result.score >= FUSE_DEFAULTS.provenanceAiScore ** (FUSE_DEFAULTS.scorePower ?? 1) - 1e-6);
   });
 
   it("records camera EXIF without changing the visual score when scale is 1", () => {
+    assert.equal(FUSE_DEFAULTS.cameraRealScale, 1);
     const result = fuseScores({
       visual: 0.4,
       provenance: { ai: false, camera: true },
@@ -21,6 +24,44 @@ describe("fuse", () => {
     });
     assert.ok(Math.abs(result.fusedBeforeCalibration - 0.4) < 1e-9);
     assert.ok(result.reasons.includes("camera-exif"));
+  });
+
+  it("does not move a 0.65 badge when cameraRealScale is 1", () => {
+    const confused = fuseScores({
+      visual: 0.7,
+      provenance: { ai: false, camera: true },
+      graphic: { isGraphic: false },
+    });
+    const gray = fuseScores({
+      visual: 0.5,
+      provenance: { ai: false, camera: true },
+      graphic: { isGraphic: false },
+    });
+    assert.ok(confused.score >= 0.65);
+    assert.ok(gray.score < 0.65);
+    assert.equal(confused.reasons.includes("camera-exif"), false);
+    assert.ok(Math.abs(gray.fusedBeforeCalibration - 0.5) < 1e-9);
+  });
+
+  it("does not apply camera scale when visual is already above the confused band", () => {
+    const result = fuseScores({
+      visual: 0.62,
+      provenance: { ai: false, camera: true },
+      graphic: { isGraphic: false },
+    });
+    assert.ok(Math.abs(result.fusedBeforeCalibration - 0.62) < 1e-9);
+    assert.equal(result.reasons.includes("camera-exif"), false);
+  });
+
+  it("keeps provenance-ai above camera EXIF when both are present", () => {
+    const result = fuseScores({
+      visual: 0.2,
+      provenance: { ai: true, camera: true },
+      graphic: { isGraphic: false },
+    });
+    assert.ok(result.reasons.includes("provenance-ai"));
+    assert.equal(result.reasons.includes("camera-exif"), false);
+    assert.ok(result.fusedBeforeCalibration >= 0.93);
   });
 
   it("does not remap a raw 0.33 onto the 0.65 badge cut", () => {
