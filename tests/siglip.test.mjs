@@ -27,6 +27,15 @@ describe("siglip probe", () => {
     assert.ok(mid > 0.40);
   });
 
+  it("restores Community Forensics when SigLIP is sure-real but CF is extremely sure-AI", () => {
+    const restored = blendVisual(0.20, 0.99);
+    const ignored = blendVisual(0.20, 0.90);
+    assert.ok(Math.abs(restored - (1 - 0.8 * 0.8 * 0.01)) < 1e-9);
+    assert.ok(Math.abs(ignored - (1 - 0.8 * 0.8)) < 1e-9);
+    assert.ok(restored > ignored);
+    assert.ok(restored > 0.65);
+  });
+
   it("builds a 1x3x224x224 SigLIP tensor", () => {
     const n = 224 * 224;
     const rgba = new Uint8Array(n * 4);

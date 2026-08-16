@@ -56,12 +56,18 @@ export function siglipProbability(pooler) {
  * Broader-proxy family 1: when SigLIP is sure-real, ignore CF.
  * Web-JPEG reals often get a high CF score and a low SigLIP score;
  * letting CF dominate those disagreements is the 49-FP pattern.
+ *
+ * Broader-proxy family 20: still ignore CF on that sure-real band,
+ * except when CF itself is extremely sure-AI (commfor >= 0.99).
+ * That exception is for leftover FNs where SigLIP missed a generator
+ * that Community Forensics is essentially certain about. It is not a
+ * photo-grain / color-tone skip.
  */
 export function blendVisual(siglip, commfor) {
   const a = Number.isFinite(siglip) ? siglip : 0;
   const b = Number.isFinite(commfor) ? commfor : 0;
   const missS = 1 - a;
-  if (a < 0.25) {
+  if (a < 0.25 && b < 0.99) {
     return 1 - missS * missS;
   }
   return 1 - missS * missS * (1 - b);
