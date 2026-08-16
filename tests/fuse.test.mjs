@@ -76,6 +76,26 @@ describe("fuse", () => {
     assert.ok(Math.abs(toneOnly.fusedBeforeCalibration - 0.2) < 1e-9);
   });
 
+  it("skips photo-grain after a vivid colorfulness lift", () => {
+    const skipped = fuseScores({
+      visual: 0.629,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, grainy: true, vivid: true },
+    });
+    assert.equal(skipped.reasons.includes("colorfulness"), true);
+    assert.equal(skipped.reasons.includes("photo-grain"), false);
+    assert.ok(skipped.score >= 0.65);
+
+    const stillDropped = fuseScores({
+      visual: 0.709,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, grainy: true, vivid: true },
+    });
+    assert.equal(stillDropped.reasons.includes("colorfulness"), false);
+    assert.ok(stillDropped.reasons.includes("photo-grain"));
+    assert.ok(stillDropped.score < 0.65);
+  });
+
   it("skips photo-grain after a muted-color lift even without flat-tone", () => {
     const skipped = fuseScores({
       visual: 0.64,

@@ -128,6 +128,7 @@ export function fuseScores({
     grainDrop > 0 &&
     graphic?.grainy &&
     !reasons.includes("muted-color") &&
+    !reasons.includes("colorfulness") &&
     calibrated >= (config.grainBandMin ?? 0.65) &&
     calibrated < (config.grainBandMax ?? 0.78)
   ) {
