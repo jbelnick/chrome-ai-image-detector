@@ -12,7 +12,9 @@
     "eval": "node eval/run.mjs",
     "eval:download": "node eval/download-proxy.mjs",
     "eval:download:broader": "node eval/download-broader.mjs",
-    "eval:chrome": "node eval/chrome/run.mjs"
+    "eval:download:scenarios": "node eval/download-scenarios.mjs",
+    "eval:chrome": "node eval/chrome/run.mjs",
+    "eval:chrome:scenarios": "node eval/chrome/run-scenarios.mjs"
   },
   "engines": {
     "node": ">=20"

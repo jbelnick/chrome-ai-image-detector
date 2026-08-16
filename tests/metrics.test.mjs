@@ -4,6 +4,7 @@ import {
   confusionAtThreshold,
   balancedAccuracy,
   summarize,
+  summarizeByCategory,
 } from "../src/metrics.js";
 
 describe("metrics", () => {
@@ -17,6 +18,21 @@ describe("metrics", () => {
     const c = confusionAtThreshold(rows, 0.65);
     assert.deepEqual(c, { tp: 1, fn: 1, tn: 1, fp: 1 });
     assert.equal(balancedAccuracy(c), 0.5);
+  });
+
+  it("summarizes TPR/TNR/BA per category without changing overall math", () => {
+    const rows = [
+      { label: 1, score: 0.9, category: "a" },
+      { label: 1, score: 0.2, category: "a" },
+      { label: 0, score: 0.1, category: "b" },
+      { label: 0, score: 0.8, category: "b" },
+    ];
+    const { overall, byCategory } = summarizeByCategory(rows, 0.65);
+    assert.equal(overall.balancedAccuracy, 0.5);
+    assert.equal(byCategory.a.tpr, 0.5);
+    assert.equal(byCategory.a.nAi, 2);
+    assert.equal(byCategory.b.tnr, 0.5);
+    assert.equal(byCategory.b.nReal, 2);
   });
 
   it("treats the 0.65 threshold as inclusive for the AI class", () => {

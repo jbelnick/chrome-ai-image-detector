@@ -1,0 +1,2644 @@
+{
+  "version": 1,
+  "title": "Grain multi-scenario diagnostic holdout",
+  "note": "Diagnostic chrome-path holdout. Not Kenny's private maintainer bench. Not a KEEP scalar unless Jason says so later. Do not fit the SigLIP probe on these images. Do not replace the 358 broader proxy as a silent default ratchet. Public/legal sources only: Wikimedia Commons, OpenFake (already used in this repo), Lorem Picsum.",
+  "detector_base": "6e78751",
+  "keep_record": "e5f2b3fa36b5b075b1686c5d1fdf68add1891479",
+  "unverified": [],
+  "disjoint_from": {
+    "official_360": "OpenFake core/test streaming prefix openfake_* (first 180/class).",
+    "broader_358": "ofreddit_* (reddit/test first 90/class), ofhold_* (core/test skip 180 take 60), webai_* (reddit/test AI skip 90 take 30), webreal_* Picsum IDs in eval/download_broader.py WEB_PICSUM, picsum_* easy-real IDs."
+  },
+  "categories": {
+    "historic_scan_bw": "Pre-1950 B&W/sepia film scans. REAL only. Includes the Charlesworth 1910s Golden Retriever photo.",
+    "historic_scan_color": "Early color / Autochrome / Prokudin-Gorsky / faded print scans. REAL only.",
+    "wiki_web_real": "Modern Wikipedia/Commons photographs as served on the web (JPEG, typical wiki widths). REAL.",
+    "phone_web_real": "Casual modern photos with web recompress (q\u224865, max side 720). Picsum IDs not in the 358 mix. REAL.",
+    "social_reddit_real": "OpenFake reddit/test reals not already in the 358 manifest. REAL.",
+    "social_reddit_ai": "OpenFake reddit/test fakes not already in the 358. AI.",
+    "gen_holdout_ai": "OpenFake core/test after the 360 prefix and after the 358 ofhold_* files. AI.",
+    "gen_holdout_real": "Matching real holdout, disjoint from 360 and 358. REAL.",
+    "screenshot_ui": "Charts, UI screenshots, diagrams (graphic-gate case). Mix of real Commons screenshots and honestly labeled AI UI.",
+    "compressed_thumb": "Same images saved small (max side 250\u2013400, q=60). derived_from points at the original id.",
+    "ai_photoreal": "Recent photoreal generators in OpenFake (SDXL/Flux/etc.). AI.",
+    "ai_illustrated": "Obviously illustrated / cartoon / Midjourney-style in OpenFake. AI."
+  },
+  "images": [
+    {
+      "id": "historic_scan_bw_00",
+      "path": "scenarios/historic_scan_bw/historic_scan_bw_00.jpg",
+      "label": "real",
+      "category": "historic_scan_bw",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Mrs_Winifred_Charlesworth.jpg",
+      "license": "Public domain",
+      "attribution": "Unknown author. Wikimedia Commons. Public domain",
+      "notes": "Charlesworth 1910s Golden Retriever photo \u2014 the live Wikipedia miss (Grain called this AI 99%). REAL film scan.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Mrs Winifred Charlesworth.jpg",
+        "width": 800,
+        "original_width": 470,
+        "original_height": 638,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "historic_scan_bw_01",
+      "path": "scenarios/historic_scan_bw/historic_scan_bw_01.jpg",
+      "label": "real",
+      "category": "historic_scan_bw",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Nous_sitting_with_keeper.jpg",
+      "license": "Public domain",
+      "attribution": "Unknown author. Wikimedia Commons. Public domain",
+      "notes": "Nous at Guisachan, 1870s. Companion historic Golden Retriever scan from the same Wikipedia article.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Nous sitting with keeper.jpg",
+        "width": 800,
+        "original_width": 707,
+        "original_height": 1024,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "historic_scan_bw_02",
+      "path": "scenarios/historic_scan_bw/historic_scan_bw_02.jpg",
+      "label": "real",
+      "category": "historic_scan_bw",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Nous_on_left_with_keepers_and_guns.jpg",
+      "license": "Public domain",
+      "attribution": "Unknown author. Wikimedia Commons. Public domain",
+      "notes": "Nous with keepers and guns, 1870s Guisachan. Pre-1950 B&W animal/portrait scan.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Nous on left with keepers and guns.jpg",
+        "width": 800,
+        "original_width": 470,
+        "original_height": 247,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "historic_scan_bw_03",
+      "path": "scenarios/historic_scan_bw/historic_scan_bw_03.jpg",
+      "label": "real",
+      "category": "historic_scan_bw",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Abraham_Lincoln_O-77_matte_collodion_print.jpg",
+      "license": "Public domain",
+      "attribution": "Alexander Gardner. Wikimedia Commons. Public domain",
+      "notes": "1863 Gardner collodion print of Lincoln. Pre-1950 B&W portrait scan.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Abraham Lincoln O-77 matte collodion print.jpg",
+        "width": 800,
+        "original_width": 2200,
+        "original_height": 2835,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "historic_scan_bw_04",
+      "path": "scenarios/historic_scan_bw/historic_scan_bw_04.jpg",
+      "label": "real",
+      "category": "historic_scan_bw",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Migrant_Mother_(LOC_fsa.8b29516).jpg",
+      "license": "Public domain",
+      "attribution": "Lange, Dorothea(w), photographer.. Wikimedia Commons. Public domain",
+      "notes": "Dorothea Lange, Migrant Mother, 1936. Pre-1950 B&W film scan.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Migrant Mother (LOC fsa.8b29516).jpg",
+        "width": 800,
+        "original_width": 6309,
+        "original_height": 8099,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "historic_scan_bw_05",
+      "path": "scenarios/historic_scan_bw/historic_scan_bw_05.jpg",
+      "label": "real",
+      "category": "historic_scan_bw",
+      "source_url": "https://commons.wikimedia.org/wiki/File:First_flight2.jpg",
+      "license": "Public domain",
+      "attribution": "John T. Daniels. Wikimedia Commons. Public domain",
+      "notes": "Wright brothers first flight, 1903. Pre-1950 B&W scan.",
+      "download": {
+        "kind": "commons",
+        "title": "File:First flight2.jpg",
+        "width": 800,
+        "original_width": 6603,
+        "original_height": 4280,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "historic_scan_bw_06",
+      "path": "scenarios/historic_scan_bw/historic_scan_bw_06.jpg",
+      "label": "real",
+      "category": "historic_scan_bw",
+      "source_url": "https://commons.wikimedia.org/wiki/File:RMS_Titanic_3.jpg",
+      "license": "Public domain",
+      "attribution": "Francis Godolphin Osbourne Stuart. Wikimedia Commons. Public domain",
+      "notes": "RMS Titanic photograph. Pre-1950 B&W scan.",
+      "download": {
+        "kind": "commons",
+        "title": "File:RMS Titanic 3.jpg",
+        "width": 800,
+        "original_width": 5000,
+        "original_height": 3677,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "historic_scan_bw_07",
+      "path": "scenarios/historic_scan_bw/historic_scan_bw_07.jpg",
+      "label": "real",
+      "category": "historic_scan_bw",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Hindenburg_disaster.jpg",
+      "license": "Public domain",
+      "attribution": "Sam Shere. Wikimedia Commons. Public domain",
+      "notes": "Hindenburg disaster, 1937. Pre-1950 B&W news scan.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Hindenburg disaster.jpg",
+        "width": 800,
+        "original_width": 2560,
+        "original_height": 2046,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "historic_scan_bw_08",
+      "path": "scenarios/historic_scan_bw/historic_scan_bw_08.jpg",
+      "label": "real",
+      "category": "historic_scan_bw",
+      "source_url": "https://commons.wikimedia.org/wiki/File:The_Horse_in_Motion.jpg",
+      "license": "Public domain",
+      "attribution": "Eadweard Muybridge. Wikimedia Commons. Public domain",
+      "notes": "Muybridge, The Horse in Motion, 1878. Pre-1950 B&W photographic plate.",
+      "download": {
+        "kind": "commons",
+        "title": "File:The Horse in Motion.jpg",
+        "width": 800,
+        "original_width": 1536,
+        "original_height": 952,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "historic_scan_bw_09",
+      "path": "scenarios/historic_scan_bw/historic_scan_bw_09.jpg",
+      "label": "real",
+      "category": "historic_scan_bw",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Albert_Einstein_Head.jpg",
+      "license": "Public domain",
+      "attribution": "Photograph by Orren Jack Turner, Princeton, N.J. Modified with Photoshop by PM_Poon and later by Dantadd.. Wikimedia Commons. Public domain",
+      "notes": "Einstein portrait, 1947 (Orren Jack Turner). Pre-1950 B&W scan.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Albert Einstein Head.jpg",
+        "width": 800,
+        "original_width": 3250,
+        "original_height": 4333,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "historic_scan_bw_10",
+      "path": "scenarios/historic_scan_bw/historic_scan_bw_10.jpg",
+      "label": "real",
+      "category": "historic_scan_bw",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Charles_Darwin_01.jpg",
+      "license": "Public domain",
+      "attribution": "Julia Margaret Cameron. Wikimedia Commons. Public domain",
+      "notes": "Charles Darwin seated portrait. 19th-century B&W scan.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Charles Darwin 01.jpg",
+        "width": 800,
+        "original_width": 3256,
+        "original_height": 4183,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "historic_scan_bw_11",
+      "path": "scenarios/historic_scan_bw/historic_scan_bw_11.jpg",
+      "label": "real",
+      "category": "historic_scan_bw",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Mark_Twain_by_AF_Bradley.jpg",
+      "license": "Public domain",
+      "attribution": "A.F. Bradley, New York. Wikimedia Commons. Public domain",
+      "notes": "Mark Twain by A.F. Bradley, 1907. Pre-1950 B&W portrait scan.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Mark Twain by AF Bradley.jpg",
+        "width": 800,
+        "original_width": 756,
+        "original_height": 1061,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "historic_scan_color_00",
+      "path": "scenarios/historic_scan_color/historic_scan_color_00.jpg",
+      "label": "real",
+      "category": "historic_scan_color",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Autochrome_still_life_slnsw.jpg",
+      "license": "Public domain",
+      "attribution": "Unknown author. Wikimedia Commons. Public domain",
+      "notes": "Autochrome still life (State Library of NSW). Early color plate scan.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Autochrome still life slnsw.jpg",
+        "width": 800,
+        "original_width": 3904,
+        "original_height": 2799,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "historic_scan_color_01",
+      "path": "scenarios/historic_scan_color/historic_scan_color_01.jpg",
+      "label": "real",
+      "category": "historic_scan_color",
+      "source_url": "https://commons.wikimedia.org/wiki/File:The_Blue_Dress,_from_an_Autochrome_by_Alvin_Langdon_Coburn.jpg",
+      "license": "Public domain",
+      "attribution": "Alvin Langdon Coburn. Wikimedia Commons. Public domain",
+      "notes": "Alvin Langdon Coburn Autochrome, The Blue Dress. Early color.",
+      "download": {
+        "kind": "commons",
+        "title": "File:The Blue Dress, from an Autochrome by Alvin Langdon Coburn.jpg",
+        "width": 800,
+        "original_width": 1740,
+        "original_height": 2418,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "historic_scan_color_02",
+      "path": "scenarios/historic_scan_color/historic_scan_color_02.jpg",
+      "label": "real",
+      "category": "historic_scan_color",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Still_Life,_from_an_Autochrome_by_Baron_A._de_Meyer.jpg",
+      "license": "Public domain",
+      "attribution": "Adolf de Meyer. Wikimedia Commons. Public domain",
+      "notes": "Baron de Meyer Autochrome still life. Early color plate.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Still Life, from an Autochrome by Baron A. de Meyer.jpg",
+        "width": 800,
+        "original_width": 2355,
+        "original_height": 1683,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "historic_scan_color_03",
+      "path": "scenarios/historic_scan_color/historic_scan_color_03.jpg",
+      "label": "real",
+      "category": "historic_scan_color",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Jeune_femme_autochrome.jpg",
+      "license": "CC0",
+      "attribution": "Dominique le voileux. Wikimedia Commons. CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en)",
+      "notes": "Jeune femme Autochrome. Early color portrait scan.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Jeune femme autochrome.jpg",
+        "width": 800,
+        "original_width": 3000,
+        "original_height": 4000,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "historic_scan_color_04",
+      "path": "scenarios/historic_scan_color/historic_scan_color_04.jpg",
+      "label": "real",
+      "category": "historic_scan_color",
+      "source_url": "https://commons.wikimedia.org/wiki/File:A_woman_of_Samaria_c1912.jpg",
+      "license": "Public domain",
+      "attribution": "unattributed. Wikimedia Commons. Public domain",
+      "notes": "A woman of Samaria, c.1912 Autochrome-era color scan.",
+      "download": {
+        "kind": "commons",
+        "title": "File:A woman of Samaria c1912.jpg",
+        "width": 800,
+        "original_width": 1630,
+        "original_height": 2066,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "historic_scan_color_05",
+      "path": "scenarios/historic_scan_color/historic_scan_color_05.jpg",
+      "label": "real",
+      "category": "historic_scan_color",
+      "source_url": "https://commons.wikimedia.org/wiki/File:1913?_Mongolian_yurt.jpg",
+      "license": "Public domain",
+      "attribution": "Unknown author. Wikimedia Commons. Public domain",
+      "notes": "Mongolian yurt, c.1913 early color / Autochrome-era scan.",
+      "download": {
+        "kind": "commons",
+        "title": "File:1913? Mongolian yurt.jpg",
+        "width": 800,
+        "original_width": 1024,
+        "original_height": 761,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "historic_scan_color_06",
+      "path": "scenarios/historic_scan_color/historic_scan_color_06.jpg",
+      "label": "real",
+      "category": "historic_scan_color",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Prokudin-Gorskii-24.jpg",
+      "license": "Public domain",
+      "attribution": "Sergei Prokudin-Gorskii. Wikimedia Commons. Public domain",
+      "notes": "Prokudin-Gorsky early-1900s three-color process photograph.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Prokudin-Gorskii-24.jpg",
+        "width": 800,
+        "original_width": 3239,
+        "original_height": 2771,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "historic_scan_color_07",
+      "path": "scenarios/historic_scan_color/historic_scan_color_07.jpg",
+      "label": "real",
+      "category": "historic_scan_color",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Prokudin-Gorskii-12.jpg",
+      "license": "Public domain",
+      "attribution": "Unknown author, digital rendering for the Library of Congress by Walter Frankhauser / WalterStudio. Wikimedia Commons. Public domain",
+      "notes": "Prokudin-Gorsky early-1900s three-color process photograph.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Prokudin-Gorskii-12.jpg",
+        "width": 800,
+        "original_width": 3284,
+        "original_height": 2993,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "historic_scan_color_08",
+      "path": "scenarios/historic_scan_color/historic_scan_color_08.jpg",
+      "label": "real",
+      "category": "historic_scan_color",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Russian_peasant_girls_in_front_of_a_traditional_wooden_house_in_Kirillov.jpg",
+      "license": "Public domain",
+      "attribution": "Sergei Prokudin-Gorskii. Wikimedia Commons. Public domain",
+      "notes": "Prokudin-Gorsky, Russian peasant girls, Kirillov. Early color.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Russian peasant girls in front of a traditional wooden house in Kirillov.jpg",
+        "width": 800,
+        "original_width": 3320,
+        "original_height": 2873,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "historic_scan_color_09",
+      "path": "scenarios/historic_scan_color/historic_scan_color_09.jpg",
+      "label": "real",
+      "category": "historic_scan_color",
+      "source_url": "https://commons.wikimedia.org/wiki/File:L.N.Tolstoy_Prokudin-Gorsky.jpg",
+      "license": "Public domain",
+      "attribution": "Sergei Prokudin-Gorskii. Wikimedia Commons. Public domain",
+      "notes": "Prokudin-Gorsky portrait of Tolstoy. Early color process.",
+      "download": {
+        "kind": "commons",
+        "title": "File:L.N.Tolstoy Prokudin-Gorsky.jpg",
+        "width": 800,
+        "original_width": 2167,
+        "original_height": 3000,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "historic_scan_color_10",
+      "path": "scenarios/historic_scan_color/historic_scan_color_10.jpg",
+      "label": "real",
+      "category": "historic_scan_color",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Sergei_Prokudin-Gorskii,_Weighing_section,_Chakva_tea_factory,_ca._1910.jpg",
+      "license": "Public domain",
+      "attribution": "Sergei Prokudin-Gorskii. Wikimedia Commons. Public domain",
+      "notes": "Prokudin-Gorsky, Chakva tea factory, ca. 1910. Early color.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Sergei Prokudin-Gorskii, Weighing section, Chakva tea factory, ca. 1910.jpg",
+        "width": 800,
+        "original_width": 3349,
+        "original_height": 2939,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "historic_scan_color_11",
+      "path": "scenarios/historic_scan_color/historic_scan_color_11.jpg",
+      "label": "real",
+      "category": "historic_scan_color",
+      "source_url": "https://commons.wikimedia.org/wiki/File:View_of_Havlabar_(Tbilisi),_in_the_early_1900s,_Sergei_Mikhailovich_Prokudin-Gorskii.jpg",
+      "license": "Public domain",
+      "attribution": "Sergei Prokudin-Gorskii. Wikimedia Commons. Public domain",
+      "notes": "Prokudin-Gorsky, Havlabar (Tbilisi), early 1900s. Early color.",
+      "download": {
+        "kind": "commons",
+        "title": "File:View of Havlabar (Tbilisi), in the early 1900s, Sergei Mikhailovich Prokudin-Gorskii.jpg",
+        "width": 800,
+        "original_width": 3226,
+        "original_height": 2802,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "wiki_web_real_00",
+      "path": "scenarios/wiki_web_real/wiki_web_real_00.jpg",
+      "label": "real",
+      "category": "wiki_web_real",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Golden_retriever.jpg",
+      "license": "CC BY-SA 3.0",
+      "attribution": "see Commons file page. Wikimedia Commons. CC BY-SA 3.0 (http://creativecommons.org/licenses/by-sa/3.0/)",
+      "notes": "Modern Wikipedia/Commons Golden Retriever photograph, typical wiki JPEG width.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Golden retriever.jpg",
+        "width": 800,
+        "original_width": 800,
+        "original_height": 702,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "wiki_web_real_01",
+      "path": "scenarios/wiki_web_real/wiki_web_real_01.jpg",
+      "label": "real",
+      "category": "wiki_web_real",
+      "source_url": "https://commons.wikimedia.org/wiki/File:D\u00fclmen,_Hausd\u00fclmen,_Golden_Retriever_--_2022_--_5767.jpg",
+      "license": "CC BY-SA 4.0",
+      "attribution": "Dietmar Rabich. Wikimedia Commons. CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0)",
+      "notes": "Modern 2022 Commons Golden Retriever photograph.",
+      "download": {
+        "kind": "commons",
+        "title": "File:D\u00fclmen, Hausd\u00fclmen, Golden Retriever -- 2022 -- 5767.jpg",
+        "width": 800,
+        "original_width": 2375,
+        "original_height": 3167,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "wiki_web_real_02",
+      "path": "scenarios/wiki_web_real/wiki_web_real_02.jpg",
+      "label": "real",
+      "category": "wiki_web_real",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Colosseum_in_Rome,_Italy_-_April_2007.jpg",
+      "license": "CC BY-SA 2.5",
+      "attribution": "Diliff. Wikimedia Commons. CC BY-SA 2.5 (https://creativecommons.org/licenses/by-sa/2.5)",
+      "notes": "Modern Commons photograph of the Colosseum, April 2007.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Colosseum in Rome, Italy - April 2007.jpg",
+        "width": 800,
+        "original_width": 4827,
+        "original_height": 2833,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "wiki_web_real_03",
+      "path": "scenarios/wiki_web_real/wiki_web_real_03.jpg",
+      "label": "real",
+      "category": "wiki_web_real",
+      "source_url": "https://commons.wikimedia.org/wiki/File:GoldenGateBridge.jpg",
+      "license": "Public domain",
+      "attribution": "see Commons file page. Wikimedia Commons. Public domain",
+      "notes": "Modern Commons photograph of the Golden Gate Bridge.",
+      "download": {
+        "kind": "commons",
+        "title": "File:GoldenGateBridge.jpg",
+        "width": 800,
+        "original_width": 1142,
+        "original_height": 687,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "wiki_web_real_04",
+      "path": "scenarios/wiki_web_real/wiki_web_real_04.jpg",
+      "label": "real",
+      "category": "wiki_web_real",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Statue_of_Liberty_7.jpg",
+      "license": "Public domain",
+      "attribution": "Elcobbola. Wikimedia Commons. Public domain",
+      "notes": "Modern Commons photograph of the Statue of Liberty.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Statue of Liberty 7.jpg",
+        "width": 800,
+        "original_width": 1464,
+        "original_height": 2022,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "wiki_web_real_05",
+      "path": "scenarios/wiki_web_real/wiki_web_real_05.jpg",
+      "label": "real",
+      "category": "wiki_web_real",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Tour_Eiffel_Wikimedia_Commons.jpg",
+      "license": "Public domain",
+      "attribution": "Benh LIEU SONG. Wikimedia Commons. Public domain",
+      "notes": "Modern Commons photograph of the Eiffel Tower.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Tour Eiffel Wikimedia Commons.jpg",
+        "width": 800,
+        "original_width": 2900,
+        "original_height": 5367,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "wiki_web_real_06",
+      "path": "scenarios/wiki_web_real/wiki_web_real_06.jpg",
+      "label": "real",
+      "category": "wiki_web_real",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Sydney_Opera_House_Sails.jpg",
+      "license": "CC BY-SA 3.0",
+      "attribution": "No machine-readable author provided. Roybb95~commonswiki assumed (based on copyright claims).. Wikimedia Commons. CC BY-SA 3.0 (http://creativecommons.org/licenses/by-sa/3.0/)",
+      "notes": "Modern Commons photograph of the Sydney Opera House.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Sydney Opera House Sails.jpg",
+        "width": 800,
+        "original_width": 2125,
+        "original_height": 1405,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "wiki_web_real_07",
+      "path": "scenarios/wiki_web_real/wiki_web_real_07.jpg",
+      "label": "real",
+      "category": "wiki_web_real",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Grand_Canyon_South_Rim_at_Sunset.jpg",
+      "license": "CC0",
+      "attribution": "Mgimelfarb. Wikimedia Commons. CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en)",
+      "notes": "Modern Commons photograph, Grand Canyon South Rim.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Grand Canyon South Rim at Sunset.jpg",
+        "width": 800,
+        "original_width": 7600,
+        "original_height": 2426,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "wiki_web_real_08",
+      "path": "scenarios/wiki_web_real/wiki_web_real_08.jpg",
+      "label": "real",
+      "category": "wiki_web_real",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Grand_prismatic_spring.jpg",
+      "license": "Public domain",
+      "attribution": "Jim Peaco, National Park Service. Wikimedia Commons. Public domain",
+      "notes": "Modern Commons photograph of Grand Prismatic Spring.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Grand prismatic spring.jpg",
+        "width": 800,
+        "original_width": 1999,
+        "original_height": 1277,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "wiki_web_real_09",
+      "path": "scenarios/wiki_web_real/wiki_web_real_09.jpg",
+      "label": "real",
+      "category": "wiki_web_real",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Yellowstone_National_Park_(WY,_USA),_Grand_Prismatic_Spring_--_2022_--_2514.jpg",
+      "license": "CC BY-SA 4.0",
+      "attribution": "Dietmar Rabich. Wikimedia Commons. CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0)",
+      "notes": "Modern 2022 Commons photograph, Grand Prismatic Spring.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Yellowstone National Park (WY, USA), Grand Prismatic Spring -- 2022 -- 2514.jpg",
+        "width": 800,
+        "original_width": 6639,
+        "original_height": 4350,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "wiki_web_real_10",
+      "path": "scenarios/wiki_web_real/wiki_web_real_10.jpg",
+      "label": "real",
+      "category": "wiki_web_real",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Sun_rays_at_Hopi_Point_Grand_Canyon_2013.jpg",
+      "license": "CC BY-SA 3.0",
+      "attribution": "Tuxyso. Wikimedia Commons. CC BY-SA 3.0 (https://creativecommons.org/licenses/by-sa/3.0)",
+      "notes": "Modern 2013 Commons photograph, Hopi Point, Grand Canyon.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Sun rays at Hopi Point Grand Canyon 2013.jpg",
+        "width": 800,
+        "original_width": 4926,
+        "original_height": 3262,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "wiki_web_real_11",
+      "path": "scenarios/wiki_web_real/wiki_web_real_11.jpg",
+      "label": "real",
+      "category": "wiki_web_real",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Hazy_blue_hour_in_Grand_Canyon.JPG",
+      "license": "CC BY 3.0",
+      "attribution": "Michael G\u00e4bler. Wikimedia Commons. CC BY 3.0 (https://creativecommons.org/licenses/by/3.0)",
+      "notes": "Modern Commons photograph, Grand Canyon blue hour.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Hazy blue hour in Grand Canyon.JPG",
+        "width": 800,
+        "original_width": 1850,
+        "original_height": 1282,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "screenshot_ui_00",
+      "path": "scenarios/screenshot_ui/screenshot_ui_00.jpg",
+      "label": "real",
+      "category": "screenshot_ui",
+      "source_url": "https://commons.wikimedia.org/wiki/File:GIMP_2.10.jpg",
+      "license": "CC BY-SA 4.0",
+      "attribution": "The GIMP Team. Wikimedia Commons. CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0)",
+      "notes": "Real software UI screenshot: GIMP 2.10. Graphic-gate case.",
+      "download": {
+        "kind": "commons",
+        "title": "File:GIMP 2.10.jpg",
+        "width": 900,
+        "original_width": 960,
+        "original_height": 587,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "screenshot_ui_01",
+      "path": "scenarios/screenshot_ui/screenshot_ui_01.png",
+      "label": "real",
+      "category": "screenshot_ui",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Firefox_3.png",
+      "license": "Public domain",
+      "attribution": "SF007. Wikimedia Commons. Public domain",
+      "notes": "Real software UI screenshot: Firefox 3. Graphic-gate case.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Firefox 3.png",
+        "width": 900,
+        "original_width": 793,
+        "original_height": 607,
+        "mime": "image/png"
+      }
+    },
+    {
+      "id": "screenshot_ui_02",
+      "path": "scenarios/screenshot_ui/screenshot_ui_02.jpg",
+      "label": "real",
+      "category": "screenshot_ui",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Russian_Wikipedia_screenshot_(article).jpg",
+      "license": "CC0",
+      "attribution": "Clarettt. Wikimedia Commons. CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en)",
+      "notes": "Real Wikipedia article screenshot. Graphic-gate case.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Russian Wikipedia screenshot (article).jpg",
+        "width": 900,
+        "original_width": 1170,
+        "original_height": 1915,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "screenshot_ui_03",
+      "path": "scenarios/screenshot_ui/screenshot_ui_03.png",
+      "label": "real",
+      "category": "screenshot_ui",
+      "source_url": "https://commons.wikimedia.org/wiki/File:The_Wikipedia_Adventure_mobile_screenshot.png",
+      "license": "CC BY-SA 4.0",
+      "attribution": "Uricdivine. Wikimedia Commons. CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0)",
+      "notes": "Real mobile Wikipedia UI screenshot. Graphic-gate case.",
+      "download": {
+        "kind": "commons",
+        "title": "File:The Wikipedia Adventure mobile screenshot.png",
+        "width": 900,
+        "original_width": 720,
+        "original_height": 1514,
+        "mime": "image/png"
+      }
+    },
+    {
+      "id": "screenshot_ui_04",
+      "path": "scenarios/screenshot_ui/screenshot_ui_04.png",
+      "label": "real",
+      "category": "screenshot_ui",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Firefox_screenshot-404_error_in_Wikipedia.png",
+      "license": "CC BY-SA 3.0",
+      "attribution": "MaGIc2laNTern. Wikimedia Commons. CC BY-SA 3.0 (https://creativecommons.org/licenses/by-sa/3.0)",
+      "notes": "Real Firefox 404-on-Wikipedia screenshot. Graphic-gate case.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Firefox screenshot-404 error in Wikipedia.png",
+        "width": 900,
+        "original_width": 628,
+        "original_height": 389,
+        "mime": "image/png"
+      }
+    },
+    {
+      "id": "screenshot_ui_05",
+      "path": "scenarios/screenshot_ui/screenshot_ui_05.png",
+      "label": "real",
+      "category": "screenshot_ui",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Debian_10.13.0_KDE_GIMP_2.10_-_English.png",
+      "license": "GPL",
+      "attribution": "The Debian Project. Wikimedia Commons. GPL (http://www.gnu.org/licenses/gpl.html)",
+      "notes": "Real desktop+GIMP screenshot (Debian 10 KDE). Graphic-gate case.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Debian 10.13.0 KDE GIMP 2.10 - English.png",
+        "width": 900,
+        "original_width": 1474,
+        "original_height": 989,
+        "mime": "image/png"
+      }
+    },
+    {
+      "id": "screenshot_ui_06",
+      "path": "scenarios/screenshot_ui/screenshot_ui_06.jpg",
+      "label": "real",
+      "category": "screenshot_ui",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Pie-chart.jpg",
+      "license": "CC0",
+      "attribution": "Sylvanmoon. Wikimedia Commons. CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en)",
+      "notes": "Real pie chart graphic. Graphic-gate case.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Pie-chart.jpg",
+        "width": 900,
+        "original_width": 556,
+        "original_height": 516,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "screenshot_ui_07",
+      "path": "scenarios/screenshot_ui/screenshot_ui_07.png",
+      "label": "real",
+      "category": "screenshot_ui",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Ipcc_2014_bar_graph.png",
+      "license": "CC0",
+      "attribution": "Tetizeraz. Wikimedia Commons. CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en)",
+      "notes": "Real IPCC 2014 bar graph. Graphic-gate case.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Ipcc 2014 bar graph.png",
+        "width": 900,
+        "original_width": 698,
+        "original_height": 661,
+        "mime": "image/png"
+      }
+    },
+    {
+      "id": "screenshot_ui_08",
+      "path": "scenarios/screenshot_ui/screenshot_ui_08.png",
+      "label": "real",
+      "category": "screenshot_ui",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Bar_Chart_Showing_South_African_Internet_Usage_by_Year.png",
+      "license": "Public domain",
+      "attribution": "ChatGPT. Wikimedia Commons. Public domain",
+      "notes": "Real bar chart. Graphic-gate case.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Bar Chart Showing South African Internet Usage by Year.png",
+        "width": 900,
+        "original_width": 3600,
+        "original_height": 1800,
+        "mime": "image/png"
+      }
+    },
+    {
+      "id": "screenshot_ui_09",
+      "path": "scenarios/screenshot_ui/screenshot_ui_09.png",
+      "label": "real",
+      "category": "screenshot_ui",
+      "source_url": "https://commons.wikimedia.org/wiki/File:United_States_presidential_election_results_bar_graph_(Expanded).png",
+      "license": "CC0",
+      "attribution": "allixpeeke. Wikimedia Commons. CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en)",
+      "notes": "Real election results bar graph. Graphic-gate case.",
+      "download": {
+        "kind": "commons",
+        "title": "File:United States presidential election results bar graph (Expanded).png",
+        "width": 900,
+        "original_width": 9000,
+        "original_height": 7000,
+        "mime": "image/png"
+      }
+    },
+    {
+      "id": "screenshot_ui_10",
+      "path": "scenarios/screenshot_ui/screenshot_ui_10.png",
+      "label": "real",
+      "category": "screenshot_ui",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Temperature_Bar_Chart_Ocean-Indian_Ocean--1851-2020--2021-07-13.png",
+      "license": "CC BY 4.0",
+      "attribution": "Ed Hawkins, University of Reading. Wikimedia Commons. CC BY 4.0 (https://creativecommons.org/licenses/by/4.0)",
+      "notes": "Real temperature bar chart. Graphic-gate case.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Temperature Bar Chart Ocean-Indian Ocean--1851-2020--2021-07-13.png",
+        "width": 900,
+        "original_width": 3780,
+        "original_height": 2126,
+        "mime": "image/png"
+      }
+    },
+    {
+      "id": "screenshot_ui_11",
+      "path": "scenarios/screenshot_ui/screenshot_ui_11.png",
+      "label": "real",
+      "category": "screenshot_ui",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Urwigo_User_Interface_Structure.png",
+      "license": "CC BY-SA 4.0",
+      "attribution": "Platzm. Wikimedia Commons. CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0)",
+      "notes": "Real UI-structure diagram. Graphic-gate case.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Urwigo User Interface Structure.png",
+        "width": 900,
+        "original_width": 1050,
+        "original_height": 808,
+        "mime": "image/png"
+      }
+    },
+    {
+      "id": "screenshot_ui_12",
+      "path": "scenarios/screenshot_ui/screenshot_ui_12.jpg",
+      "label": "ai",
+      "category": "screenshot_ui",
+      "source_url": "https://commons.wikimedia.org/wiki/File:DALL-E_-_8_bit_videogame_screenshot_showing_anthropomorphic_rhinoceros_wearing_business_suit_,_holding_a_VHS_tape_about_to_put_inside_archive_cabinet.jpg",
+      "license": "Public domain",
+      "attribution": "Bing Image Creator. Wikimedia Commons. Public domain",
+      "notes": "AI-generated 8-bit videogame screenshot (Bing Image Creator / DALL-E). Labeled AI.",
+      "download": {
+        "kind": "commons",
+        "title": "File:DALL-E - 8 bit videogame screenshot showing anthropomorphic rhinoceros wearing business suit , holding a VHS tape about to put inside archive cabinet.jpg",
+        "width": 900,
+        "original_width": 1024,
+        "original_height": 1024,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "screenshot_ui_13",
+      "path": "scenarios/screenshot_ui/screenshot_ui_13.jpg",
+      "label": "ai",
+      "category": "screenshot_ui",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Screenshot_of_PS1_3D_graphic_game_featuring_a_single_anthropomorphic_rhinoceros_wearing_business_suit,_holding_a_flashlight_,_inside_the_ruined_city_at_night,_background_is_a_billboard_with_words_What_is_AI_Art.jpg",
+      "license": "Public domain",
+      "attribution": "Bing Image Creator. Wikimedia Commons. Public domain",
+      "notes": "AI-generated PS1-style game screenshot (Bing Image Creator / DALL-E). Labeled AI.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Screenshot of PS1 3D graphic game featuring a single anthropomorphic rhinoceros wearing business suit, holding a flashlight , inside the ruined city at night, background is a billboard with words What is AI Art.jpg",
+        "width": 900,
+        "original_width": 1024,
+        "original_height": 1024,
+        "mime": "image/jpeg"
+      }
+    },
+    {
+      "id": "phone_web_real_00",
+      "path": "scenarios/phone_web_real/phone_web_real_00.jpg",
+      "label": "real",
+      "category": "phone_web_real",
+      "source_url": "https://picsum.photos/id/16/info",
+      "license": "Unsplash License (via Lorem Picsum)",
+      "attribution": "Paul Jarvis / Unsplash via Lorem Picsum id 16",
+      "notes": "Casual modern photo, web recompress q=65 max side 720. Picsum ID not in the 360 easy-real set or the 358 webreal list.",
+      "download": {
+        "kind": "picsum",
+        "id": 16,
+        "quality": 65,
+        "max_side": 720
+      }
+    },
+    {
+      "id": "phone_web_real_01",
+      "path": "scenarios/phone_web_real/phone_web_real_01.jpg",
+      "label": "real",
+      "category": "phone_web_real",
+      "source_url": "https://picsum.photos/id/17/info",
+      "license": "Unsplash License (via Lorem Picsum)",
+      "attribution": "Paul Jarvis / Unsplash via Lorem Picsum id 17",
+      "notes": "Casual modern photo, web recompress q=65 max side 720. Picsum ID not in the 360 easy-real set or the 358 webreal list.",
+      "download": {
+        "kind": "picsum",
+        "id": 17,
+        "quality": 65,
+        "max_side": 720
+      }
+    },
+    {
+      "id": "phone_web_real_02",
+      "path": "scenarios/phone_web_real/phone_web_real_02.jpg",
+      "label": "real",
+      "category": "phone_web_real",
+      "source_url": "https://picsum.photos/id/18/info",
+      "license": "Unsplash License (via Lorem Picsum)",
+      "attribution": "Paul Jarvis / Unsplash via Lorem Picsum id 18",
+      "notes": "Casual modern photo, web recompress q=65 max side 720. Picsum ID not in the 360 easy-real set or the 358 webreal list.",
+      "download": {
+        "kind": "picsum",
+        "id": 18,
+        "quality": 65,
+        "max_side": 720
+      }
+    },
+    {
+      "id": "phone_web_real_03",
+      "path": "scenarios/phone_web_real/phone_web_real_03.jpg",
+      "label": "real",
+      "category": "phone_web_real",
+      "source_url": "https://picsum.photos/id/19/info",
+      "license": "Unsplash License (via Lorem Picsum)",
+      "attribution": "Paul Jarvis / Unsplash via Lorem Picsum id 19",
+      "notes": "Casual modern photo, web recompress q=65 max side 720. Picsum ID not in the 360 easy-real set or the 358 webreal list.",
+      "download": {
+        "kind": "picsum",
+        "id": 19,
+        "quality": 65,
+        "max_side": 720
+      }
+    },
+    {
+      "id": "phone_web_real_04",
+      "path": "scenarios/phone_web_real/phone_web_real_04.jpg",
+      "label": "real",
+      "category": "phone_web_real",
+      "source_url": "https://picsum.photos/id/20/info",
+      "license": "Unsplash License (via Lorem Picsum)",
+      "attribution": "Aleks Dorohovich / Unsplash via Lorem Picsum id 20",
+      "notes": "Casual modern photo, web recompress q=65 max side 720. Picsum ID not in the 360 easy-real set or the 358 webreal list.",
+      "download": {
+        "kind": "picsum",
+        "id": 20,
+        "quality": 65,
+        "max_side": 720
+      }
+    },
+    {
+      "id": "phone_web_real_05",
+      "path": "scenarios/phone_web_real/phone_web_real_05.jpg",
+      "label": "real",
+      "category": "phone_web_real",
+      "source_url": "https://picsum.photos/id/21/info",
+      "license": "Unsplash License (via Lorem Picsum)",
+      "attribution": "Alejandro Escamilla / Unsplash via Lorem Picsum id 21",
+      "notes": "Casual modern photo, web recompress q=65 max side 720. Picsum ID not in the 360 easy-real set or the 358 webreal list.",
+      "download": {
+        "kind": "picsum",
+        "id": 21,
+        "quality": 65,
+        "max_side": 720
+      }
+    },
+    {
+      "id": "phone_web_real_06",
+      "path": "scenarios/phone_web_real/phone_web_real_06.jpg",
+      "label": "real",
+      "category": "phone_web_real",
+      "source_url": "https://picsum.photos/id/22/info",
+      "license": "Unsplash License (via Lorem Picsum)",
+      "attribution": "Alejandro Escamilla / Unsplash via Lorem Picsum id 22",
+      "notes": "Casual modern photo, web recompress q=65 max side 720. Picsum ID not in the 360 easy-real set or the 358 webreal list.",
+      "download": {
+        "kind": "picsum",
+        "id": 22,
+        "quality": 65,
+        "max_side": 720
+      }
+    },
+    {
+      "id": "phone_web_real_07",
+      "path": "scenarios/phone_web_real/phone_web_real_07.jpg",
+      "label": "real",
+      "category": "phone_web_real",
+      "source_url": "https://picsum.photos/id/23/info",
+      "license": "Unsplash License (via Lorem Picsum)",
+      "attribution": "Alejandro Escamilla / Unsplash via Lorem Picsum id 23",
+      "notes": "Casual modern photo, web recompress q=65 max side 720. Picsum ID not in the 360 easy-real set or the 358 webreal list.",
+      "download": {
+        "kind": "picsum",
+        "id": 23,
+        "quality": 65,
+        "max_side": 720
+      }
+    },
+    {
+      "id": "phone_web_real_08",
+      "path": "scenarios/phone_web_real/phone_web_real_08.jpg",
+      "label": "real",
+      "category": "phone_web_real",
+      "source_url": "https://picsum.photos/id/24/info",
+      "license": "Unsplash License (via Lorem Picsum)",
+      "attribution": "Alejandro Escamilla / Unsplash via Lorem Picsum id 24",
+      "notes": "Casual modern photo, web recompress q=65 max side 720. Picsum ID not in the 360 easy-real set or the 358 webreal list.",
+      "download": {
+        "kind": "picsum",
+        "id": 24,
+        "quality": 65,
+        "max_side": 720
+      }
+    },
+    {
+      "id": "phone_web_real_09",
+      "path": "scenarios/phone_web_real/phone_web_real_09.jpg",
+      "label": "real",
+      "category": "phone_web_real",
+      "source_url": "https://picsum.photos/id/25/info",
+      "license": "Unsplash License (via Lorem Picsum)",
+      "attribution": "Alejandro Escamilla / Unsplash via Lorem Picsum id 25",
+      "notes": "Casual modern photo, web recompress q=65 max side 720. Picsum ID not in the 360 easy-real set or the 358 webreal list.",
+      "download": {
+        "kind": "picsum",
+        "id": 25,
+        "quality": 65,
+        "max_side": 720
+      }
+    },
+    {
+      "id": "phone_web_real_10",
+      "path": "scenarios/phone_web_real/phone_web_real_10.jpg",
+      "label": "real",
+      "category": "phone_web_real",
+      "source_url": "https://picsum.photos/id/26/info",
+      "license": "Unsplash License (via Lorem Picsum)",
+      "attribution": "Vadim Sherbakov / Unsplash via Lorem Picsum id 26",
+      "notes": "Casual modern photo, web recompress q=65 max side 720. Picsum ID not in the 360 easy-real set or the 358 webreal list.",
+      "download": {
+        "kind": "picsum",
+        "id": 26,
+        "quality": 65,
+        "max_side": 720
+      }
+    },
+    {
+      "id": "phone_web_real_11",
+      "path": "scenarios/phone_web_real/phone_web_real_11.jpg",
+      "label": "real",
+      "category": "phone_web_real",
+      "source_url": "https://picsum.photos/id/27/info",
+      "license": "Unsplash License (via Lorem Picsum)",
+      "attribution": "Yoni Kaplan-Nadel / Unsplash via Lorem Picsum id 27",
+      "notes": "Casual modern photo, web recompress q=65 max side 720. Picsum ID not in the 360 easy-real set or the 358 webreal list.",
+      "download": {
+        "kind": "picsum",
+        "id": 27,
+        "quality": 65,
+        "max_side": 720
+      }
+    },
+    {
+      "id": "social_reddit_real_00",
+      "path": "scenarios/social_reddit_real/social_reddit_real_00.jpg",
+      "label": "real",
+      "category": "social_reddit_real",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake reddit/test real streaming slot 0 after skip=90",
+      "notes": "OpenFake reddit/test real after the first 90 (ofreddit_*). Disjoint from the 358 mix.",
+      "download": {
+        "kind": "openfake",
+        "config": "reddit",
+        "split": "test",
+        "label": 0,
+        "skip": 90,
+        "slot": 0
+      }
+    },
+    {
+      "id": "social_reddit_real_01",
+      "path": "scenarios/social_reddit_real/social_reddit_real_01.jpg",
+      "label": "real",
+      "category": "social_reddit_real",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake reddit/test real streaming slot 1 after skip=90",
+      "notes": "OpenFake reddit/test real after the first 90 (ofreddit_*). Disjoint from the 358 mix.",
+      "download": {
+        "kind": "openfake",
+        "config": "reddit",
+        "split": "test",
+        "label": 0,
+        "skip": 90,
+        "slot": 1
+      }
+    },
+    {
+      "id": "social_reddit_real_02",
+      "path": "scenarios/social_reddit_real/social_reddit_real_02.jpg",
+      "label": "real",
+      "category": "social_reddit_real",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake reddit/test real streaming slot 2 after skip=90",
+      "notes": "OpenFake reddit/test real after the first 90 (ofreddit_*). Disjoint from the 358 mix.",
+      "download": {
+        "kind": "openfake",
+        "config": "reddit",
+        "split": "test",
+        "label": 0,
+        "skip": 90,
+        "slot": 2
+      }
+    },
+    {
+      "id": "social_reddit_real_03",
+      "path": "scenarios/social_reddit_real/social_reddit_real_03.jpg",
+      "label": "real",
+      "category": "social_reddit_real",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake reddit/test real streaming slot 3 after skip=90",
+      "notes": "OpenFake reddit/test real after the first 90 (ofreddit_*). Disjoint from the 358 mix.",
+      "download": {
+        "kind": "openfake",
+        "config": "reddit",
+        "split": "test",
+        "label": 0,
+        "skip": 90,
+        "slot": 3
+      }
+    },
+    {
+      "id": "social_reddit_real_04",
+      "path": "scenarios/social_reddit_real/social_reddit_real_04.jpg",
+      "label": "real",
+      "category": "social_reddit_real",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake reddit/test real streaming slot 4 after skip=90",
+      "notes": "OpenFake reddit/test real after the first 90 (ofreddit_*). Disjoint from the 358 mix.",
+      "download": {
+        "kind": "openfake",
+        "config": "reddit",
+        "split": "test",
+        "label": 0,
+        "skip": 90,
+        "slot": 4
+      }
+    },
+    {
+      "id": "social_reddit_real_05",
+      "path": "scenarios/social_reddit_real/social_reddit_real_05.jpg",
+      "label": "real",
+      "category": "social_reddit_real",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake reddit/test real streaming slot 5 after skip=90",
+      "notes": "OpenFake reddit/test real after the first 90 (ofreddit_*). Disjoint from the 358 mix.",
+      "download": {
+        "kind": "openfake",
+        "config": "reddit",
+        "split": "test",
+        "label": 0,
+        "skip": 90,
+        "slot": 5
+      }
+    },
+    {
+      "id": "social_reddit_real_06",
+      "path": "scenarios/social_reddit_real/social_reddit_real_06.jpg",
+      "label": "real",
+      "category": "social_reddit_real",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake reddit/test real streaming slot 6 after skip=90",
+      "notes": "OpenFake reddit/test real after the first 90 (ofreddit_*). Disjoint from the 358 mix.",
+      "download": {
+        "kind": "openfake",
+        "config": "reddit",
+        "split": "test",
+        "label": 0,
+        "skip": 90,
+        "slot": 6
+      }
+    },
+    {
+      "id": "social_reddit_real_07",
+      "path": "scenarios/social_reddit_real/social_reddit_real_07.jpg",
+      "label": "real",
+      "category": "social_reddit_real",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake reddit/test real streaming slot 7 after skip=90",
+      "notes": "OpenFake reddit/test real after the first 90 (ofreddit_*). Disjoint from the 358 mix.",
+      "download": {
+        "kind": "openfake",
+        "config": "reddit",
+        "split": "test",
+        "label": 0,
+        "skip": 90,
+        "slot": 7
+      }
+    },
+    {
+      "id": "social_reddit_real_08",
+      "path": "scenarios/social_reddit_real/social_reddit_real_08.jpg",
+      "label": "real",
+      "category": "social_reddit_real",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake reddit/test real streaming slot 8 after skip=90",
+      "notes": "OpenFake reddit/test real after the first 90 (ofreddit_*). Disjoint from the 358 mix.",
+      "download": {
+        "kind": "openfake",
+        "config": "reddit",
+        "split": "test",
+        "label": 0,
+        "skip": 90,
+        "slot": 8
+      }
+    },
+    {
+      "id": "social_reddit_real_09",
+      "path": "scenarios/social_reddit_real/social_reddit_real_09.jpg",
+      "label": "real",
+      "category": "social_reddit_real",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake reddit/test real streaming slot 9 after skip=90",
+      "notes": "OpenFake reddit/test real after the first 90 (ofreddit_*). Disjoint from the 358 mix.",
+      "download": {
+        "kind": "openfake",
+        "config": "reddit",
+        "split": "test",
+        "label": 0,
+        "skip": 90,
+        "slot": 9
+      }
+    },
+    {
+      "id": "social_reddit_real_10",
+      "path": "scenarios/social_reddit_real/social_reddit_real_10.jpg",
+      "label": "real",
+      "category": "social_reddit_real",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake reddit/test real streaming slot 10 after skip=90",
+      "notes": "OpenFake reddit/test real after the first 90 (ofreddit_*). Disjoint from the 358 mix.",
+      "download": {
+        "kind": "openfake",
+        "config": "reddit",
+        "split": "test",
+        "label": 0,
+        "skip": 90,
+        "slot": 10
+      }
+    },
+    {
+      "id": "social_reddit_real_11",
+      "path": "scenarios/social_reddit_real/social_reddit_real_11.jpg",
+      "label": "real",
+      "category": "social_reddit_real",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake reddit/test real streaming slot 11 after skip=90",
+      "notes": "OpenFake reddit/test real after the first 90 (ofreddit_*). Disjoint from the 358 mix.",
+      "download": {
+        "kind": "openfake",
+        "config": "reddit",
+        "split": "test",
+        "label": 0,
+        "skip": 90,
+        "slot": 11
+      }
+    },
+    {
+      "id": "social_reddit_ai_00",
+      "path": "scenarios/social_reddit_ai/social_reddit_ai_00.jpg",
+      "label": "ai",
+      "category": "social_reddit_ai",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake reddit/test ai streaming slot 0 after skip=120",
+      "notes": "OpenFake reddit/test fake after the first 120 (90 ofreddit_* + 30 webai_*). Disjoint from the 358 mix.",
+      "download": {
+        "kind": "openfake",
+        "config": "reddit",
+        "split": "test",
+        "label": 1,
+        "skip": 120,
+        "slot": 0
+      }
+    },
+    {
+      "id": "social_reddit_ai_01",
+      "path": "scenarios/social_reddit_ai/social_reddit_ai_01.jpg",
+      "label": "ai",
+      "category": "social_reddit_ai",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake reddit/test ai streaming slot 1 after skip=120",
+      "notes": "OpenFake reddit/test fake after the first 120 (90 ofreddit_* + 30 webai_*). Disjoint from the 358 mix.",
+      "download": {
+        "kind": "openfake",
+        "config": "reddit",
+        "split": "test",
+        "label": 1,
+        "skip": 120,
+        "slot": 1
+      }
+    },
+    {
+      "id": "social_reddit_ai_02",
+      "path": "scenarios/social_reddit_ai/social_reddit_ai_02.jpg",
+      "label": "ai",
+      "category": "social_reddit_ai",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake reddit/test ai streaming slot 2 after skip=120",
+      "notes": "OpenFake reddit/test fake after the first 120 (90 ofreddit_* + 30 webai_*). Disjoint from the 358 mix.",
+      "download": {
+        "kind": "openfake",
+        "config": "reddit",
+        "split": "test",
+        "label": 1,
+        "skip": 120,
+        "slot": 2
+      }
+    },
+    {
+      "id": "social_reddit_ai_03",
+      "path": "scenarios/social_reddit_ai/social_reddit_ai_03.jpg",
+      "label": "ai",
+      "category": "social_reddit_ai",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake reddit/test ai streaming slot 3 after skip=120",
+      "notes": "OpenFake reddit/test fake after the first 120 (90 ofreddit_* + 30 webai_*). Disjoint from the 358 mix.",
+      "download": {
+        "kind": "openfake",
+        "config": "reddit",
+        "split": "test",
+        "label": 1,
+        "skip": 120,
+        "slot": 3
+      }
+    },
+    {
+      "id": "social_reddit_ai_04",
+      "path": "scenarios/social_reddit_ai/social_reddit_ai_04.jpg",
+      "label": "ai",
+      "category": "social_reddit_ai",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake reddit/test ai streaming slot 4 after skip=120",
+      "notes": "OpenFake reddit/test fake after the first 120 (90 ofreddit_* + 30 webai_*). Disjoint from the 358 mix.",
+      "download": {
+        "kind": "openfake",
+        "config": "reddit",
+        "split": "test",
+        "label": 1,
+        "skip": 120,
+        "slot": 4
+      }
+    },
+    {
+      "id": "social_reddit_ai_05",
+      "path": "scenarios/social_reddit_ai/social_reddit_ai_05.jpg",
+      "label": "ai",
+      "category": "social_reddit_ai",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake reddit/test ai streaming slot 5 after skip=120",
+      "notes": "OpenFake reddit/test fake after the first 120 (90 ofreddit_* + 30 webai_*). Disjoint from the 358 mix.",
+      "download": {
+        "kind": "openfake",
+        "config": "reddit",
+        "split": "test",
+        "label": 1,
+        "skip": 120,
+        "slot": 5
+      }
+    },
+    {
+      "id": "social_reddit_ai_06",
+      "path": "scenarios/social_reddit_ai/social_reddit_ai_06.jpg",
+      "label": "ai",
+      "category": "social_reddit_ai",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake reddit/test ai streaming slot 6 after skip=120",
+      "notes": "OpenFake reddit/test fake after the first 120 (90 ofreddit_* + 30 webai_*). Disjoint from the 358 mix.",
+      "download": {
+        "kind": "openfake",
+        "config": "reddit",
+        "split": "test",
+        "label": 1,
+        "skip": 120,
+        "slot": 6
+      }
+    },
+    {
+      "id": "social_reddit_ai_07",
+      "path": "scenarios/social_reddit_ai/social_reddit_ai_07.jpg",
+      "label": "ai",
+      "category": "social_reddit_ai",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake reddit/test ai streaming slot 7 after skip=120",
+      "notes": "OpenFake reddit/test fake after the first 120 (90 ofreddit_* + 30 webai_*). Disjoint from the 358 mix.",
+      "download": {
+        "kind": "openfake",
+        "config": "reddit",
+        "split": "test",
+        "label": 1,
+        "skip": 120,
+        "slot": 7
+      }
+    },
+    {
+      "id": "social_reddit_ai_08",
+      "path": "scenarios/social_reddit_ai/social_reddit_ai_08.jpg",
+      "label": "ai",
+      "category": "social_reddit_ai",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake reddit/test ai streaming slot 8 after skip=120",
+      "notes": "OpenFake reddit/test fake after the first 120 (90 ofreddit_* + 30 webai_*). Disjoint from the 358 mix.",
+      "download": {
+        "kind": "openfake",
+        "config": "reddit",
+        "split": "test",
+        "label": 1,
+        "skip": 120,
+        "slot": 8
+      }
+    },
+    {
+      "id": "social_reddit_ai_09",
+      "path": "scenarios/social_reddit_ai/social_reddit_ai_09.jpg",
+      "label": "ai",
+      "category": "social_reddit_ai",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake reddit/test ai streaming slot 9 after skip=120",
+      "notes": "OpenFake reddit/test fake after the first 120 (90 ofreddit_* + 30 webai_*). Disjoint from the 358 mix.",
+      "download": {
+        "kind": "openfake",
+        "config": "reddit",
+        "split": "test",
+        "label": 1,
+        "skip": 120,
+        "slot": 9
+      }
+    },
+    {
+      "id": "social_reddit_ai_10",
+      "path": "scenarios/social_reddit_ai/social_reddit_ai_10.jpg",
+      "label": "ai",
+      "category": "social_reddit_ai",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake reddit/test ai streaming slot 10 after skip=120",
+      "notes": "OpenFake reddit/test fake after the first 120 (90 ofreddit_* + 30 webai_*). Disjoint from the 358 mix.",
+      "download": {
+        "kind": "openfake",
+        "config": "reddit",
+        "split": "test",
+        "label": 1,
+        "skip": 120,
+        "slot": 10
+      }
+    },
+    {
+      "id": "social_reddit_ai_11",
+      "path": "scenarios/social_reddit_ai/social_reddit_ai_11.jpg",
+      "label": "ai",
+      "category": "social_reddit_ai",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake reddit/test ai streaming slot 11 after skip=120",
+      "notes": "OpenFake reddit/test fake after the first 120 (90 ofreddit_* + 30 webai_*). Disjoint from the 358 mix.",
+      "download": {
+        "kind": "openfake",
+        "config": "reddit",
+        "split": "test",
+        "label": 1,
+        "skip": 120,
+        "slot": 11
+      }
+    },
+    {
+      "id": "gen_holdout_ai_00",
+      "path": "scenarios/gen_holdout_ai/gen_holdout_ai_00.jpg",
+      "label": "ai",
+      "category": "gen_holdout_ai",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 0 after skip=240",
+      "notes": "OpenFake core/test AI after the 180 official prefix and 60 ofhold_* files (skip=240). Disjoint from 360 and 358.",
+      "download": {
+        "kind": "openfake",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 240,
+        "slot": 0
+      }
+    },
+    {
+      "id": "gen_holdout_ai_01",
+      "path": "scenarios/gen_holdout_ai/gen_holdout_ai_01.jpg",
+      "label": "ai",
+      "category": "gen_holdout_ai",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 1 after skip=240",
+      "notes": "OpenFake core/test AI after the 180 official prefix and 60 ofhold_* files (skip=240). Disjoint from 360 and 358.",
+      "download": {
+        "kind": "openfake",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 240,
+        "slot": 1
+      }
+    },
+    {
+      "id": "gen_holdout_ai_02",
+      "path": "scenarios/gen_holdout_ai/gen_holdout_ai_02.jpg",
+      "label": "ai",
+      "category": "gen_holdout_ai",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 2 after skip=240",
+      "notes": "OpenFake core/test AI after the 180 official prefix and 60 ofhold_* files (skip=240). Disjoint from 360 and 358.",
+      "download": {
+        "kind": "openfake",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 240,
+        "slot": 2
+      }
+    },
+    {
+      "id": "gen_holdout_ai_03",
+      "path": "scenarios/gen_holdout_ai/gen_holdout_ai_03.jpg",
+      "label": "ai",
+      "category": "gen_holdout_ai",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 3 after skip=240",
+      "notes": "OpenFake core/test AI after the 180 official prefix and 60 ofhold_* files (skip=240). Disjoint from 360 and 358.",
+      "download": {
+        "kind": "openfake",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 240,
+        "slot": 3
+      }
+    },
+    {
+      "id": "gen_holdout_ai_04",
+      "path": "scenarios/gen_holdout_ai/gen_holdout_ai_04.jpg",
+      "label": "ai",
+      "category": "gen_holdout_ai",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 4 after skip=240",
+      "notes": "OpenFake core/test AI after the 180 official prefix and 60 ofhold_* files (skip=240). Disjoint from 360 and 358.",
+      "download": {
+        "kind": "openfake",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 240,
+        "slot": 4
+      }
+    },
+    {
+      "id": "gen_holdout_ai_05",
+      "path": "scenarios/gen_holdout_ai/gen_holdout_ai_05.jpg",
+      "label": "ai",
+      "category": "gen_holdout_ai",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 5 after skip=240",
+      "notes": "OpenFake core/test AI after the 180 official prefix and 60 ofhold_* files (skip=240). Disjoint from 360 and 358.",
+      "download": {
+        "kind": "openfake",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 240,
+        "slot": 5
+      }
+    },
+    {
+      "id": "gen_holdout_ai_06",
+      "path": "scenarios/gen_holdout_ai/gen_holdout_ai_06.jpg",
+      "label": "ai",
+      "category": "gen_holdout_ai",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 6 after skip=240",
+      "notes": "OpenFake core/test AI after the 180 official prefix and 60 ofhold_* files (skip=240). Disjoint from 360 and 358.",
+      "download": {
+        "kind": "openfake",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 240,
+        "slot": 6
+      }
+    },
+    {
+      "id": "gen_holdout_ai_07",
+      "path": "scenarios/gen_holdout_ai/gen_holdout_ai_07.jpg",
+      "label": "ai",
+      "category": "gen_holdout_ai",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 7 after skip=240",
+      "notes": "OpenFake core/test AI after the 180 official prefix and 60 ofhold_* files (skip=240). Disjoint from 360 and 358.",
+      "download": {
+        "kind": "openfake",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 240,
+        "slot": 7
+      }
+    },
+    {
+      "id": "gen_holdout_ai_08",
+      "path": "scenarios/gen_holdout_ai/gen_holdout_ai_08.jpg",
+      "label": "ai",
+      "category": "gen_holdout_ai",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 8 after skip=240",
+      "notes": "OpenFake core/test AI after the 180 official prefix and 60 ofhold_* files (skip=240). Disjoint from 360 and 358.",
+      "download": {
+        "kind": "openfake",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 240,
+        "slot": 8
+      }
+    },
+    {
+      "id": "gen_holdout_ai_09",
+      "path": "scenarios/gen_holdout_ai/gen_holdout_ai_09.jpg",
+      "label": "ai",
+      "category": "gen_holdout_ai",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 9 after skip=240",
+      "notes": "OpenFake core/test AI after the 180 official prefix and 60 ofhold_* files (skip=240). Disjoint from 360 and 358.",
+      "download": {
+        "kind": "openfake",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 240,
+        "slot": 9
+      }
+    },
+    {
+      "id": "gen_holdout_ai_10",
+      "path": "scenarios/gen_holdout_ai/gen_holdout_ai_10.jpg",
+      "label": "ai",
+      "category": "gen_holdout_ai",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 10 after skip=240",
+      "notes": "OpenFake core/test AI after the 180 official prefix and 60 ofhold_* files (skip=240). Disjoint from 360 and 358.",
+      "download": {
+        "kind": "openfake",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 240,
+        "slot": 10
+      }
+    },
+    {
+      "id": "gen_holdout_ai_11",
+      "path": "scenarios/gen_holdout_ai/gen_holdout_ai_11.jpg",
+      "label": "ai",
+      "category": "gen_holdout_ai",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 11 after skip=240",
+      "notes": "OpenFake core/test AI after the 180 official prefix and 60 ofhold_* files (skip=240). Disjoint from 360 and 358.",
+      "download": {
+        "kind": "openfake",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 240,
+        "slot": 11
+      }
+    },
+    {
+      "id": "gen_holdout_real_00",
+      "path": "scenarios/gen_holdout_real/gen_holdout_real_00.jpg",
+      "label": "real",
+      "category": "gen_holdout_real",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test real streaming slot 0 after skip=240",
+      "notes": "OpenFake core/test real after the 180 official prefix and 60 ofhold_* files (skip=240). Disjoint from 360 and 358.",
+      "download": {
+        "kind": "openfake",
+        "config": "core",
+        "split": "test",
+        "label": 0,
+        "skip": 240,
+        "slot": 0
+      }
+    },
+    {
+      "id": "gen_holdout_real_01",
+      "path": "scenarios/gen_holdout_real/gen_holdout_real_01.jpg",
+      "label": "real",
+      "category": "gen_holdout_real",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test real streaming slot 1 after skip=240",
+      "notes": "OpenFake core/test real after the 180 official prefix and 60 ofhold_* files (skip=240). Disjoint from 360 and 358.",
+      "download": {
+        "kind": "openfake",
+        "config": "core",
+        "split": "test",
+        "label": 0,
+        "skip": 240,
+        "slot": 1
+      }
+    },
+    {
+      "id": "gen_holdout_real_02",
+      "path": "scenarios/gen_holdout_real/gen_holdout_real_02.jpg",
+      "label": "real",
+      "category": "gen_holdout_real",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test real streaming slot 2 after skip=240",
+      "notes": "OpenFake core/test real after the 180 official prefix and 60 ofhold_* files (skip=240). Disjoint from 360 and 358.",
+      "download": {
+        "kind": "openfake",
+        "config": "core",
+        "split": "test",
+        "label": 0,
+        "skip": 240,
+        "slot": 2
+      }
+    },
+    {
+      "id": "gen_holdout_real_03",
+      "path": "scenarios/gen_holdout_real/gen_holdout_real_03.jpg",
+      "label": "real",
+      "category": "gen_holdout_real",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test real streaming slot 3 after skip=240",
+      "notes": "OpenFake core/test real after the 180 official prefix and 60 ofhold_* files (skip=240). Disjoint from 360 and 358.",
+      "download": {
+        "kind": "openfake",
+        "config": "core",
+        "split": "test",
+        "label": 0,
+        "skip": 240,
+        "slot": 3
+      }
+    },
+    {
+      "id": "gen_holdout_real_04",
+      "path": "scenarios/gen_holdout_real/gen_holdout_real_04.jpg",
+      "label": "real",
+      "category": "gen_holdout_real",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test real streaming slot 4 after skip=240",
+      "notes": "OpenFake core/test real after the 180 official prefix and 60 ofhold_* files (skip=240). Disjoint from 360 and 358.",
+      "download": {
+        "kind": "openfake",
+        "config": "core",
+        "split": "test",
+        "label": 0,
+        "skip": 240,
+        "slot": 4
+      }
+    },
+    {
+      "id": "gen_holdout_real_05",
+      "path": "scenarios/gen_holdout_real/gen_holdout_real_05.jpg",
+      "label": "real",
+      "category": "gen_holdout_real",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test real streaming slot 5 after skip=240",
+      "notes": "OpenFake core/test real after the 180 official prefix and 60 ofhold_* files (skip=240). Disjoint from 360 and 358.",
+      "download": {
+        "kind": "openfake",
+        "config": "core",
+        "split": "test",
+        "label": 0,
+        "skip": 240,
+        "slot": 5
+      }
+    },
+    {
+      "id": "gen_holdout_real_06",
+      "path": "scenarios/gen_holdout_real/gen_holdout_real_06.jpg",
+      "label": "real",
+      "category": "gen_holdout_real",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test real streaming slot 6 after skip=240",
+      "notes": "OpenFake core/test real after the 180 official prefix and 60 ofhold_* files (skip=240). Disjoint from 360 and 358.",
+      "download": {
+        "kind": "openfake",
+        "config": "core",
+        "split": "test",
+        "label": 0,
+        "skip": 240,
+        "slot": 6
+      }
+    },
+    {
+      "id": "gen_holdout_real_07",
+      "path": "scenarios/gen_holdout_real/gen_holdout_real_07.jpg",
+      "label": "real",
+      "category": "gen_holdout_real",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test real streaming slot 7 after skip=240",
+      "notes": "OpenFake core/test real after the 180 official prefix and 60 ofhold_* files (skip=240). Disjoint from 360 and 358.",
+      "download": {
+        "kind": "openfake",
+        "config": "core",
+        "split": "test",
+        "label": 0,
+        "skip": 240,
+        "slot": 7
+      }
+    },
+    {
+      "id": "gen_holdout_real_08",
+      "path": "scenarios/gen_holdout_real/gen_holdout_real_08.jpg",
+      "label": "real",
+      "category": "gen_holdout_real",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test real streaming slot 8 after skip=240",
+      "notes": "OpenFake core/test real after the 180 official prefix and 60 ofhold_* files (skip=240). Disjoint from 360 and 358.",
+      "download": {
+        "kind": "openfake",
+        "config": "core",
+        "split": "test",
+        "label": 0,
+        "skip": 240,
+        "slot": 8
+      }
+    },
+    {
+      "id": "gen_holdout_real_09",
+      "path": "scenarios/gen_holdout_real/gen_holdout_real_09.jpg",
+      "label": "real",
+      "category": "gen_holdout_real",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test real streaming slot 9 after skip=240",
+      "notes": "OpenFake core/test real after the 180 official prefix and 60 ofhold_* files (skip=240). Disjoint from 360 and 358.",
+      "download": {
+        "kind": "openfake",
+        "config": "core",
+        "split": "test",
+        "label": 0,
+        "skip": 240,
+        "slot": 9
+      }
+    },
+    {
+      "id": "gen_holdout_real_10",
+      "path": "scenarios/gen_holdout_real/gen_holdout_real_10.jpg",
+      "label": "real",
+      "category": "gen_holdout_real",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test real streaming slot 10 after skip=240",
+      "notes": "OpenFake core/test real after the 180 official prefix and 60 ofhold_* files (skip=240). Disjoint from 360 and 358.",
+      "download": {
+        "kind": "openfake",
+        "config": "core",
+        "split": "test",
+        "label": 0,
+        "skip": 240,
+        "slot": 10
+      }
+    },
+    {
+      "id": "gen_holdout_real_11",
+      "path": "scenarios/gen_holdout_real/gen_holdout_real_11.jpg",
+      "label": "real",
+      "category": "gen_holdout_real",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test real streaming slot 11 after skip=240",
+      "notes": "OpenFake core/test real after the 180 official prefix and 60 ofhold_* files (skip=240). Disjoint from 360 and 358.",
+      "download": {
+        "kind": "openfake",
+        "config": "core",
+        "split": "test",
+        "label": 0,
+        "skip": 240,
+        "slot": 11
+      }
+    },
+    {
+      "id": "ai_photoreal_00",
+      "path": "scenarios/ai_photoreal/ai_photoreal_00.jpg",
+      "label": "ai",
+      "category": "ai_photoreal",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 0 after skip=252, filter=photoreal",
+      "notes": "OpenFake core/test AI after skip=252, filtered to photoreal generators (SDXL/Flux/Imagen/GPT-image/etc.). Disjoint from 360, 358, and gen_holdout (skip 240\u2013251).",
+      "download": {
+        "kind": "openfake-filter",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 252,
+        "slot": 0,
+        "filter": "photoreal"
+      }
+    },
+    {
+      "id": "ai_photoreal_01",
+      "path": "scenarios/ai_photoreal/ai_photoreal_01.jpg",
+      "label": "ai",
+      "category": "ai_photoreal",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 1 after skip=252, filter=photoreal",
+      "notes": "OpenFake core/test AI after skip=252, filtered to photoreal generators (SDXL/Flux/Imagen/GPT-image/etc.). Disjoint from 360, 358, and gen_holdout (skip 240\u2013251).",
+      "download": {
+        "kind": "openfake-filter",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 252,
+        "slot": 1,
+        "filter": "photoreal"
+      }
+    },
+    {
+      "id": "ai_photoreal_02",
+      "path": "scenarios/ai_photoreal/ai_photoreal_02.jpg",
+      "label": "ai",
+      "category": "ai_photoreal",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 2 after skip=252, filter=photoreal",
+      "notes": "OpenFake core/test AI after skip=252, filtered to photoreal generators (SDXL/Flux/Imagen/GPT-image/etc.). Disjoint from 360, 358, and gen_holdout (skip 240\u2013251).",
+      "download": {
+        "kind": "openfake-filter",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 252,
+        "slot": 2,
+        "filter": "photoreal"
+      }
+    },
+    {
+      "id": "ai_photoreal_03",
+      "path": "scenarios/ai_photoreal/ai_photoreal_03.jpg",
+      "label": "ai",
+      "category": "ai_photoreal",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 3 after skip=252, filter=photoreal",
+      "notes": "OpenFake core/test AI after skip=252, filtered to photoreal generators (SDXL/Flux/Imagen/GPT-image/etc.). Disjoint from 360, 358, and gen_holdout (skip 240\u2013251).",
+      "download": {
+        "kind": "openfake-filter",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 252,
+        "slot": 3,
+        "filter": "photoreal"
+      }
+    },
+    {
+      "id": "ai_photoreal_04",
+      "path": "scenarios/ai_photoreal/ai_photoreal_04.jpg",
+      "label": "ai",
+      "category": "ai_photoreal",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 4 after skip=252, filter=photoreal",
+      "notes": "OpenFake core/test AI after skip=252, filtered to photoreal generators (SDXL/Flux/Imagen/GPT-image/etc.). Disjoint from 360, 358, and gen_holdout (skip 240\u2013251).",
+      "download": {
+        "kind": "openfake-filter",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 252,
+        "slot": 4,
+        "filter": "photoreal"
+      }
+    },
+    {
+      "id": "ai_photoreal_05",
+      "path": "scenarios/ai_photoreal/ai_photoreal_05.jpg",
+      "label": "ai",
+      "category": "ai_photoreal",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 5 after skip=252, filter=photoreal",
+      "notes": "OpenFake core/test AI after skip=252, filtered to photoreal generators (SDXL/Flux/Imagen/GPT-image/etc.). Disjoint from 360, 358, and gen_holdout (skip 240\u2013251).",
+      "download": {
+        "kind": "openfake-filter",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 252,
+        "slot": 5,
+        "filter": "photoreal"
+      }
+    },
+    {
+      "id": "ai_photoreal_06",
+      "path": "scenarios/ai_photoreal/ai_photoreal_06.jpg",
+      "label": "ai",
+      "category": "ai_photoreal",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 6 after skip=252, filter=photoreal",
+      "notes": "OpenFake core/test AI after skip=252, filtered to photoreal generators (SDXL/Flux/Imagen/GPT-image/etc.). Disjoint from 360, 358, and gen_holdout (skip 240\u2013251).",
+      "download": {
+        "kind": "openfake-filter",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 252,
+        "slot": 6,
+        "filter": "photoreal"
+      }
+    },
+    {
+      "id": "ai_photoreal_07",
+      "path": "scenarios/ai_photoreal/ai_photoreal_07.jpg",
+      "label": "ai",
+      "category": "ai_photoreal",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 7 after skip=252, filter=photoreal",
+      "notes": "OpenFake core/test AI after skip=252, filtered to photoreal generators (SDXL/Flux/Imagen/GPT-image/etc.). Disjoint from 360, 358, and gen_holdout (skip 240\u2013251).",
+      "download": {
+        "kind": "openfake-filter",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 252,
+        "slot": 7,
+        "filter": "photoreal"
+      }
+    },
+    {
+      "id": "ai_photoreal_08",
+      "path": "scenarios/ai_photoreal/ai_photoreal_08.jpg",
+      "label": "ai",
+      "category": "ai_photoreal",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 8 after skip=252, filter=photoreal",
+      "notes": "OpenFake core/test AI after skip=252, filtered to photoreal generators (SDXL/Flux/Imagen/GPT-image/etc.). Disjoint from 360, 358, and gen_holdout (skip 240\u2013251).",
+      "download": {
+        "kind": "openfake-filter",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 252,
+        "slot": 8,
+        "filter": "photoreal"
+      }
+    },
+    {
+      "id": "ai_photoreal_09",
+      "path": "scenarios/ai_photoreal/ai_photoreal_09.jpg",
+      "label": "ai",
+      "category": "ai_photoreal",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 9 after skip=252, filter=photoreal",
+      "notes": "OpenFake core/test AI after skip=252, filtered to photoreal generators (SDXL/Flux/Imagen/GPT-image/etc.). Disjoint from 360, 358, and gen_holdout (skip 240\u2013251).",
+      "download": {
+        "kind": "openfake-filter",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 252,
+        "slot": 9,
+        "filter": "photoreal"
+      }
+    },
+    {
+      "id": "ai_photoreal_10",
+      "path": "scenarios/ai_photoreal/ai_photoreal_10.jpg",
+      "label": "ai",
+      "category": "ai_photoreal",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 10 after skip=252, filter=photoreal",
+      "notes": "OpenFake core/test AI after skip=252, filtered to photoreal generators (SDXL/Flux/Imagen/GPT-image/etc.). Disjoint from 360, 358, and gen_holdout (skip 240\u2013251).",
+      "download": {
+        "kind": "openfake-filter",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 252,
+        "slot": 10,
+        "filter": "photoreal"
+      }
+    },
+    {
+      "id": "ai_photoreal_11",
+      "path": "scenarios/ai_photoreal/ai_photoreal_11.jpg",
+      "label": "ai",
+      "category": "ai_photoreal",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 11 after skip=252, filter=photoreal",
+      "notes": "OpenFake core/test AI after skip=252, filtered to photoreal generators (SDXL/Flux/Imagen/GPT-image/etc.). Disjoint from 360, 358, and gen_holdout (skip 240\u2013251).",
+      "download": {
+        "kind": "openfake-filter",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 252,
+        "slot": 11,
+        "filter": "photoreal"
+      }
+    },
+    {
+      "id": "ai_illustrated_00",
+      "path": "scenarios/ai_illustrated/ai_illustrated_00.jpg",
+      "label": "ai",
+      "category": "ai_illustrated",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 0 after skip=252, filter=illustrated",
+      "notes": "OpenFake core/test AI after skip=252, filtered to illustrated/cartoon/Midjourney-style generators. Disjoint from 360, 358, gen_holdout, and ai_photoreal (same stream, exclusive assignment).",
+      "download": {
+        "kind": "openfake-filter",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 252,
+        "slot": 0,
+        "filter": "illustrated"
+      }
+    },
+    {
+      "id": "ai_illustrated_01",
+      "path": "scenarios/ai_illustrated/ai_illustrated_01.jpg",
+      "label": "ai",
+      "category": "ai_illustrated",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 1 after skip=252, filter=illustrated",
+      "notes": "OpenFake core/test AI after skip=252, filtered to illustrated/cartoon/Midjourney-style generators. Disjoint from 360, 358, gen_holdout, and ai_photoreal (same stream, exclusive assignment).",
+      "download": {
+        "kind": "openfake-filter",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 252,
+        "slot": 1,
+        "filter": "illustrated"
+      }
+    },
+    {
+      "id": "ai_illustrated_02",
+      "path": "scenarios/ai_illustrated/ai_illustrated_02.jpg",
+      "label": "ai",
+      "category": "ai_illustrated",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 2 after skip=252, filter=illustrated",
+      "notes": "OpenFake core/test AI after skip=252, filtered to illustrated/cartoon/Midjourney-style generators. Disjoint from 360, 358, gen_holdout, and ai_photoreal (same stream, exclusive assignment).",
+      "download": {
+        "kind": "openfake-filter",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 252,
+        "slot": 2,
+        "filter": "illustrated"
+      }
+    },
+    {
+      "id": "ai_illustrated_03",
+      "path": "scenarios/ai_illustrated/ai_illustrated_03.jpg",
+      "label": "ai",
+      "category": "ai_illustrated",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 3 after skip=252, filter=illustrated",
+      "notes": "OpenFake core/test AI after skip=252, filtered to illustrated/cartoon/Midjourney-style generators. Disjoint from 360, 358, gen_holdout, and ai_photoreal (same stream, exclusive assignment).",
+      "download": {
+        "kind": "openfake-filter",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 252,
+        "slot": 3,
+        "filter": "illustrated"
+      }
+    },
+    {
+      "id": "ai_illustrated_04",
+      "path": "scenarios/ai_illustrated/ai_illustrated_04.jpg",
+      "label": "ai",
+      "category": "ai_illustrated",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 4 after skip=252, filter=illustrated",
+      "notes": "OpenFake core/test AI after skip=252, filtered to illustrated/cartoon/Midjourney-style generators. Disjoint from 360, 358, gen_holdout, and ai_photoreal (same stream, exclusive assignment).",
+      "download": {
+        "kind": "openfake-filter",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 252,
+        "slot": 4,
+        "filter": "illustrated"
+      }
+    },
+    {
+      "id": "ai_illustrated_05",
+      "path": "scenarios/ai_illustrated/ai_illustrated_05.jpg",
+      "label": "ai",
+      "category": "ai_illustrated",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 5 after skip=252, filter=illustrated",
+      "notes": "OpenFake core/test AI after skip=252, filtered to illustrated/cartoon/Midjourney-style generators. Disjoint from 360, 358, gen_holdout, and ai_photoreal (same stream, exclusive assignment).",
+      "download": {
+        "kind": "openfake-filter",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 252,
+        "slot": 5,
+        "filter": "illustrated"
+      }
+    },
+    {
+      "id": "ai_illustrated_06",
+      "path": "scenarios/ai_illustrated/ai_illustrated_06.jpg",
+      "label": "ai",
+      "category": "ai_illustrated",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 6 after skip=252, filter=illustrated",
+      "notes": "OpenFake core/test AI after skip=252, filtered to illustrated/cartoon/Midjourney-style generators. Disjoint from 360, 358, gen_holdout, and ai_photoreal (same stream, exclusive assignment).",
+      "download": {
+        "kind": "openfake-filter",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 252,
+        "slot": 6,
+        "filter": "illustrated"
+      }
+    },
+    {
+      "id": "ai_illustrated_07",
+      "path": "scenarios/ai_illustrated/ai_illustrated_07.jpg",
+      "label": "ai",
+      "category": "ai_illustrated",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 7 after skip=252, filter=illustrated",
+      "notes": "OpenFake core/test AI after skip=252, filtered to illustrated/cartoon/Midjourney-style generators. Disjoint from 360, 358, gen_holdout, and ai_photoreal (same stream, exclusive assignment).",
+      "download": {
+        "kind": "openfake-filter",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 252,
+        "slot": 7,
+        "filter": "illustrated"
+      }
+    },
+    {
+      "id": "ai_illustrated_08",
+      "path": "scenarios/ai_illustrated/ai_illustrated_08.jpg",
+      "label": "ai",
+      "category": "ai_illustrated",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 8 after skip=252, filter=illustrated",
+      "notes": "OpenFake core/test AI after skip=252, filtered to illustrated/cartoon/Midjourney-style generators. Disjoint from 360, 358, gen_holdout, and ai_photoreal (same stream, exclusive assignment).",
+      "download": {
+        "kind": "openfake-filter",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 252,
+        "slot": 8,
+        "filter": "illustrated"
+      }
+    },
+    {
+      "id": "ai_illustrated_09",
+      "path": "scenarios/ai_illustrated/ai_illustrated_09.jpg",
+      "label": "ai",
+      "category": "ai_illustrated",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 9 after skip=252, filter=illustrated",
+      "notes": "OpenFake core/test AI after skip=252, filtered to illustrated/cartoon/Midjourney-style generators. Disjoint from 360, 358, gen_holdout, and ai_photoreal (same stream, exclusive assignment).",
+      "download": {
+        "kind": "openfake-filter",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 252,
+        "slot": 9,
+        "filter": "illustrated"
+      }
+    },
+    {
+      "id": "ai_illustrated_10",
+      "path": "scenarios/ai_illustrated/ai_illustrated_10.jpg",
+      "label": "ai",
+      "category": "ai_illustrated",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 10 after skip=252, filter=illustrated",
+      "notes": "OpenFake core/test AI after skip=252, filtered to illustrated/cartoon/Midjourney-style generators. Disjoint from 360, 358, gen_holdout, and ai_photoreal (same stream, exclusive assignment).",
+      "download": {
+        "kind": "openfake-filter",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 252,
+        "slot": 10,
+        "filter": "illustrated"
+      }
+    },
+    {
+      "id": "ai_illustrated_11",
+      "path": "scenarios/ai_illustrated/ai_illustrated_11.jpg",
+      "label": "ai",
+      "category": "ai_illustrated",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 11 after skip=252, filter=illustrated",
+      "notes": "OpenFake core/test AI after skip=252, filtered to illustrated/cartoon/Midjourney-style generators. Disjoint from 360, 358, gen_holdout, and ai_photoreal (same stream, exclusive assignment).",
+      "download": {
+        "kind": "openfake-filter",
+        "config": "core",
+        "split": "test",
+        "label": 1,
+        "skip": 252,
+        "slot": 11,
+        "filter": "illustrated"
+      }
+    },
+    {
+      "id": "compressed_thumb_00",
+      "path": "scenarios/compressed_thumb/compressed_thumb_00.jpg",
+      "label": "real",
+      "category": "compressed_thumb",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Mrs_Winifred_Charlesworth.jpg",
+      "license": "Public domain",
+      "attribution": "Unknown author. Wikimedia Commons. Public domain",
+      "notes": "Charlesworth at max-side 250 / q=60 \u2014 Wikipedia also served a 250px thumb.",
+      "derived_from": "historic_scan_bw_00",
+      "download": {
+        "kind": "derive",
+        "from": "historic_scan_bw_00",
+        "quality": 60,
+        "max_side": 250
+      }
+    },
+    {
+      "id": "compressed_thumb_01",
+      "path": "scenarios/compressed_thumb/compressed_thumb_01.jpg",
+      "label": "real",
+      "category": "compressed_thumb",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Nous_sitting_with_keeper.jpg",
+      "license": "Public domain",
+      "attribution": "Unknown author. Wikimedia Commons. Public domain",
+      "notes": "Nous 1870s thumb.",
+      "derived_from": "historic_scan_bw_01",
+      "download": {
+        "kind": "derive",
+        "from": "historic_scan_bw_01",
+        "quality": 60,
+        "max_side": 320
+      }
+    },
+    {
+      "id": "compressed_thumb_02",
+      "path": "scenarios/compressed_thumb/compressed_thumb_02.jpg",
+      "label": "real",
+      "category": "compressed_thumb",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Autochrome_still_life_slnsw.jpg",
+      "license": "Public domain",
+      "attribution": "Unknown author. Wikimedia Commons. Public domain",
+      "notes": "Autochrome still-life thumb.",
+      "derived_from": "historic_scan_color_00",
+      "download": {
+        "kind": "derive",
+        "from": "historic_scan_color_00",
+        "quality": 60,
+        "max_side": 320
+      }
+    },
+    {
+      "id": "compressed_thumb_03",
+      "path": "scenarios/compressed_thumb/compressed_thumb_03.jpg",
+      "label": "real",
+      "category": "compressed_thumb",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Golden_retriever.jpg",
+      "license": "CC BY-SA 3.0",
+      "attribution": "see Commons file page. Wikimedia Commons. CC BY-SA 3.0 (http://creativecommons.org/licenses/by-sa/3.0/)",
+      "notes": "Modern Golden Retriever wiki photo as a small thumb.",
+      "derived_from": "wiki_web_real_00",
+      "download": {
+        "kind": "derive",
+        "from": "wiki_web_real_00",
+        "quality": 60,
+        "max_side": 320
+      }
+    },
+    {
+      "id": "compressed_thumb_04",
+      "path": "scenarios/compressed_thumb/compressed_thumb_04.jpg",
+      "label": "real",
+      "category": "compressed_thumb",
+      "source_url": "https://picsum.photos/id/16/info",
+      "license": "Unsplash License (via Lorem Picsum)",
+      "attribution": "Paul Jarvis / Unsplash via Lorem Picsum id 16",
+      "notes": "Picsum phone-web real further crushed to a thumb.",
+      "derived_from": "phone_web_real_00",
+      "download": {
+        "kind": "derive",
+        "from": "phone_web_real_00",
+        "quality": 60,
+        "max_side": 280
+      }
+    },
+    {
+      "id": "compressed_thumb_05",
+      "path": "scenarios/compressed_thumb/compressed_thumb_05.jpg",
+      "label": "real",
+      "category": "compressed_thumb",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake reddit/test real streaming slot 0 after skip=90",
+      "notes": "OpenFake reddit real as a thumb.",
+      "derived_from": "social_reddit_real_00",
+      "download": {
+        "kind": "derive",
+        "from": "social_reddit_real_00",
+        "quality": 60,
+        "max_side": 320
+      }
+    },
+    {
+      "id": "compressed_thumb_06",
+      "path": "scenarios/compressed_thumb/compressed_thumb_06.jpg",
+      "label": "ai",
+      "category": "compressed_thumb",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake reddit/test ai streaming slot 0 after skip=120",
+      "notes": "OpenFake reddit AI as a thumb.",
+      "derived_from": "social_reddit_ai_00",
+      "download": {
+        "kind": "derive",
+        "from": "social_reddit_ai_00",
+        "quality": 60,
+        "max_side": 320
+      }
+    },
+    {
+      "id": "compressed_thumb_07",
+      "path": "scenarios/compressed_thumb/compressed_thumb_07.jpg",
+      "label": "ai",
+      "category": "compressed_thumb",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 0 after skip=240",
+      "notes": "OpenFake core holdout AI as a thumb.",
+      "derived_from": "gen_holdout_ai_00",
+      "download": {
+        "kind": "derive",
+        "from": "gen_holdout_ai_00",
+        "quality": 60,
+        "max_side": 320
+      }
+    },
+    {
+      "id": "compressed_thumb_08",
+      "path": "scenarios/compressed_thumb/compressed_thumb_08.jpg",
+      "label": "real",
+      "category": "compressed_thumb",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test real streaming slot 0 after skip=240",
+      "notes": "OpenFake core holdout real as a thumb.",
+      "derived_from": "gen_holdout_real_00",
+      "download": {
+        "kind": "derive",
+        "from": "gen_holdout_real_00",
+        "quality": 60,
+        "max_side": 320
+      }
+    },
+    {
+      "id": "compressed_thumb_09",
+      "path": "scenarios/compressed_thumb/compressed_thumb_09.jpg",
+      "label": "real",
+      "category": "compressed_thumb",
+      "source_url": "https://commons.wikimedia.org/wiki/File:GIMP_2.10.jpg",
+      "license": "CC BY-SA 4.0",
+      "attribution": "The GIMP Team. Wikimedia Commons. CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0)",
+      "notes": "GIMP UI screenshot as a thumb.",
+      "derived_from": "screenshot_ui_00",
+      "download": {
+        "kind": "derive",
+        "from": "screenshot_ui_00",
+        "quality": 60,
+        "max_side": 360
+      }
+    },
+    {
+      "id": "compressed_thumb_10",
+      "path": "scenarios/compressed_thumb/compressed_thumb_10.jpg",
+      "label": "ai",
+      "category": "compressed_thumb",
+      "source_url": "https://huggingface.co/datasets/ComplexDataLab/OpenFake",
+      "license": "OpenFake dataset terms (Hugging Face: ComplexDataLab/OpenFake). Evaluation use only; some generator subsets are non-commercial.",
+      "attribution": "OpenFake core/test ai streaming slot 0 after skip=250, filter=photoreal",
+      "notes": "Photoreal generator sample as a thumb.",
+      "derived_from": "ai_photoreal_00",
+      "download": {
+        "kind": "derive",
+        "from": "ai_photoreal_00",
+        "quality": 60,
+        "max_side": 320
+      }
+    },
+    {
+      "id": "compressed_thumb_11",
+      "path": "scenarios/compressed_thumb/compressed_thumb_11.jpg",
+      "label": "ai",
+      "category": "compressed_thumb",
+      "source_url": "https://commons.wikimedia.org/wiki/File:DALL-E_-_8_bit_videogame_screenshot_showing_anthropomorphic_rhinoceros_wearing_business_suit_,_holding_a_VHS_tape_about_to_put_inside_archive_cabinet.jpg",
+      "license": "Public domain",
+      "attribution": "Bing Image Creator. Wikimedia Commons. Public domain",
+      "notes": "DALL-E AI 'screenshot' as a thumb.",
+      "derived_from": "screenshot_ui_12",
+      "download": {
+        "kind": "derive",
+        "from": "screenshot_ui_12",
+        "quality": 60,
+        "max_side": 320
+      }
+    }
+  ]
+}

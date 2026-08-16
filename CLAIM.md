@@ -691,6 +691,18 @@ webgpu:      UNVERIFIED
 
 Versus KEEP `92afcb1` on the same mix: TPR +1, TNR held, net +1, BA 0.910615 → 0.913408. Secondary 360 0.891667 → 0.888889 (TNR −1; official FP `openfake_real_0020` after the vivid grain skip). Broader TNR held.
 
+## Diagnostic scenario holdout (not a KEEP scalar)
+
+The 358 broader proxy still did not contain the miss Jason hit live: Grain called the 1910s Wikimedia Commons photograph of Winifred Charlesworth with her Golden Retrievers **AI 99%**. That class of historic film-scan / wiki-web JPEG is now a dedicated chrome-path slice.
+
+Command: `npm run eval:download:scenarios` then `npm run eval:chrome:scenarios`.  
+Manifest: `eval/data/manifest-scenarios.json`. Images: `eval/data/scenarios/` (gitignored).  
+This is **not** Kenny's private maintainer bench. It is **not** a KEEP scalar unless Jason says so later. Do **not** fit the SigLIP probe on these images. Do **not** replace the 358 as a silent default ratchet. See [eval/SCENARIOS.md](eval/SCENARIOS.md).
+
+Categories (minimum 10 each, public/legal sources only): `historic_scan_bw`, `historic_scan_color`, `wiki_web_real`, `phone_web_real`, `social_reddit_real`, `social_reddit_ai`, `gen_holdout_ai`, `gen_holdout_real`, `screenshot_ui`, `compressed_thumb`, `ai_photoreal`, `ai_illustrated`.
+
+Sample chrome-path numbers belong in the PR / `eval/results/chrome-scenarios.json` after a harness run — copied from the printout, not invented.
+
 ## Rules checklist
 
 - [x] No cloud inference

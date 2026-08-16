@@ -60,11 +60,15 @@ The eval script uses the **same** preprocess, provenance scan, graphic gate, fus
 # Python deps for the downloader only: pip install datasets pillow
 npm run eval:download           # OpenFake core/test 360 prefix + optional Picsum easy-reals
 npm run eval:download:broader   # reddit/test + core/test holdout + web recompress (scalar)
+npm run eval:download:scenarios # diagnostic holdout (Commons / Picsum / unused OpenFake)
 npm run eval                    # Node + onnxruntime-node + sharp (360 secondary)
 npm run eval:chrome             # Chrome ORT-web; broader proxy is the keep/revert scalar
+npm run eval:chrome:scenarios   # per-category diagnostic holdout (not the KEEP scalar)
 ```
 
 `npm run eval:chrome` launches headless Chrome against a local page that copies the extension offscreen path: SHA-check the packaged ONNX, try a WebGPU session, fall back to WASM, decode with `createImageBitmap` + `OffscreenCanvas`. The **keep/revert scalar** is the broader public proxy (OpenFake `reddit/test` + a `core/test` holdout past the 360 prefix + extra web recompress). The official 360 is still printed every run as a secondary report. If this machine has no GPU adapter, the printed backend is `wasm` and WebGPU is labeled `UNVERIFIED`. Requires `npm run build` (vendored ORT) and a Chrome binary (`CHROME_PATH` overrides).
+
+A separate **diagnostic scenario holdout** (`npm run eval:download:scenarios` then `npm run eval:chrome:scenarios`) grades failure modes the 358 mix never contained — including the 1910s Wikimedia Commons Charlesworth Golden Retriever scan that Grain called AI 99%. It prints **per-category** TPR/TNR/BA. It is **not** Kenny's private bench and **not** a KEEP scalar unless Jason says so later. Do not fit the SigLIP probe on those images. See [eval/SCENARIOS.md](eval/SCENARIOS.md).
 
 Balanced accuracy = (TPR + TNR) / 2. An image is predicted AI when the **shipped** fused score `>= 0.65`. Fuse bias is `0` — the harness does not remap a lower raw cut onto 0.65.
 

@@ -1,7 +1,8 @@
 node_modules/
 models/*.bin
 models/siglip2-vision.onnx
-eval/data/
+eval/data/*
+!eval/data/manifest-scenarios.json
 eval/results/
 eval/.cache/
 extension/vendor/

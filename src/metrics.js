@@ -47,3 +47,26 @@ export function summarize(rows, threshold = 0.65) {
     balancedAccuracy: (tpr + tnr) / 2,
   };
 }
+
+/**
+ * Per-category TPR/TNR/BA plus overall. Used by the diagnostic
+ * scenario holdout — not the KEEP scalar.
+ */
+export function summarizeByCategory(rows, threshold = 0.65) {
+  const byCategory = {};
+  const groups = new Map();
+  for (const row of rows) {
+    const key = row.category || "uncategorized";
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(row);
+  }
+  for (const [category, group] of [...groups.entries()].sort((a, b) =>
+    a[0].localeCompare(b[0]),
+  )) {
+    byCategory[category] = summarize(group, threshold);
+  }
+  return {
+    overall: summarize(rows, threshold),
+    byCategory,
+  };
+}
