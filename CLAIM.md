@@ -709,6 +709,54 @@ Raw heads (Charlesworth orig / 250px): SigLIP 0.867 / 0.894, CF 0.225 / 0.002, v
 
 Rule (already landed): `scanGrain = isGraphic && muted && fineRatio >= 0.40`. Drop 0.36 in `[0.955, 1.0)`. Not a URL or file-hash special-case. Fuse bias stays 0.
 
+## Screenshot / UI live miss (ordinary real captures)
+
+Jason's diagnostic glance on KEEP `6e78751` had screenshot/UI reals at TNR 41.67%. The 358-mix is **not** a KEEP veto for this fix. The PR 12 holdout was not used to fit the rule.
+
+Independent chrome-path dump (same offscreen fusion as the extension), wasm / WebGPU UNVERIFIED, 2026-08-16. Images are Wikimedia Commons files **not** in the holdout `screenshot_ui` list, plus Charlesworth as a muted-scan regression check. Copied from `eval/chrome/dump-ui.mjs` — not invented.
+
+BEFORE this rule (historic-scan HEAD `b6edc41`):
+
+| image | role | badge | score | sl / cf | isGraphic | uniqueColors | fineRatio |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `real_blender` | Blender 2.92 UI | **99%** | 0.987 | 0.851 / 0.001 | no | 79 | 0.107 |
+| `real_libreoffice` | Writer 7.5 UI | **100%** | 0.998 | 0.929 / 0.000 | no | 145 | 0.067 |
+| `real_inkscape` | Inkscape UI | **86%** | 0.864 | 0.574 / 0.000 | no | 114 | 0.020 |
+| `real_vlc` | VLC UI | **89%** | 0.891 | 0.613 / 0.000 | no | 108 | 0.049 |
+| `real_simple_pie` | pie chart | **99%** | 0.987 | 0.846 / 0.000 | no | 122 | 0.024 |
+| `real_win95` | Windows 95 UI | **77%** | 0.766 | 0.462 / 0.000 | no | 9 | 0.034 |
+| `real_org_chart` | DOE org chart | **66%** | 0.660 | 0.294 / 0.001 | no | 63 | 0.074 |
+| `real_wiki_main` | EN wiki main | 37% | 0.375 | 0.183 / 0.000 | no | 101 | 0.118 |
+| `real_charlesworth` | 1910s scan | **63%** | 0.633 | 0.870 / 0.252 | yes | 28 | 0.521 |
+| `ai_dalle_shiba` | DALL·E illustration | 100% | 1.000 | 0.922 / 0.936 | no | 179 | 0.357 |
+| `ai_dalle_astronaut` | DALL·E illustration | 100% | 1.000 | 0.786 / 1.000 | no | 168 | 0.310 |
+| `ai_midjourney_castle` | Midjourney illustration | 100% | 0.998 | 0.930 / 0.009 | no | 312 | 0.347 |
+
+Ordinary UI is **not** the Charlesworth `isGraphic` trap. Community Forensics is already sure-real (`cf ≈ 0`). SigLIP is sure-AI. Soft-OR fusion trusts SigLIP. `isGraphic` stays false because a 12-bin palette still has 80–150 colors once chrome and anti-aliasing are counted, so every grain drop is skipped and `graphicScaleWhenFlagged` is still 1.
+
+Rule: `uiCapture = !scanGrain && uniqueColors < 200 && fineRatio < 0.20`. Drop 0.36 when calibrated is in `[0.65, 1.0)` (`ui-capture`). Skip muted/flat/vivid **lifts** on `uiCapture` so a mid-range diagram is not pushed over 0.65. Not a URL or file-hash special-case. Fuse bias stays 0. Muted-scan is unchanged.
+
+AFTER the same chrome-path dump (`0b48399`, wasm / WebGPU UNVERIFIED). Copied from the harness — not invented.
+
+| image | BEFORE | AFTER | reason |
+| --- | --- | --- | --- |
+| `real_blender` | **99%** | **63%** (0.627) | `ui-capture` |
+| `real_libreoffice` | **100%** | **64%** (0.638) | `ui-capture` |
+| `real_inkscape` | **86%** | **50%** (0.504) | `ui-capture` |
+| `real_vlc` | **89%** | **53%** (0.531) | `ui-capture` |
+| `real_simple_pie` | **99%** | **63%** (0.627) | `ui-capture` |
+| `real_win95` | **77%** | **41%** (0.406) | `ui-capture` |
+| `real_org_chart` | **66%** | **56%** (0.557) | lifts skipped |
+| `real_wiki_main` | 37% | 37% (0.375) | held |
+| `real_charlesworth` | **63%** | **63%** (0.633) | `muted-scan` held, `uiCapture` false |
+| `ai_dalle_shiba` | 100% | 100% | held |
+| `ai_dalle_astronaut` | 100% | 100% | held |
+| `ai_midjourney_castle` | 100% | 0.998 | held |
+
+Charlesworth did not go back to 99%. The three AI illustrations did not walk.
+
+Glance only (not a fit, not a KEEP scalar) at PR 12 `screenshot_ui` after the change: 12/12 reals under 0.65, both labeled AI game-screenshots stayed 100%. That category is still grade-only.
+
 ## Rules checklist
 
 - [x] No cloud inference

@@ -168,6 +168,19 @@ async function inferBytes(cfSession, slSession, bytes, mime) {
       siglip,
       commfor,
       reasons: fused.reasons,
+      graphic: {
+        isGraphic: graphic.isGraphic,
+        scanGrain: graphic.scanGrain,
+        uiCapture: graphic.uiCapture,
+        muted: graphic.muted,
+        vivid: graphic.vivid,
+        flatTone: graphic.flatTone,
+        uniqueColors: graphic.uniqueColors,
+        edgeRatio: graphic.edgeRatio,
+        fineRatio: graphic.fineRatio,
+        colorfulness: graphic.colorfulness,
+        centerBorder: graphic.centerBorder,
+      },
     };
   } finally {
     bitmap.close?.();
@@ -247,6 +260,7 @@ async function main() {
       siglip: result.siglip,
       commfor: result.commfor,
       reasons: result.reasons,
+      graphic: result.graphic,
     });
     if ((index + 1) % 5 === 0 || index === manifest.length - 1) {
       log(`scored ${index + 1}/${manifest.length}`);

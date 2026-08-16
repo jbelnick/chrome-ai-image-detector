@@ -58,6 +58,9 @@ export const FUSE_DEFAULTS = {
   mutedScanDrop: 0.36,
   mutedScanBandMin: 0.955,
   mutedScanBandMax: 1,
+  uiCaptureDrop: 0.36,
+  uiCaptureBandMin: 0.65,
+  uiCaptureBandMax: 1,
   bias: 0,
   temperature: 0.9,
   scorePower: 0.85,
@@ -89,6 +92,7 @@ export function fuseScores({
   if (
     lift > 0 &&
     graphic?.vivid &&
+    !graphic?.uiCapture &&
     score >= (config.vividBandMin ?? 0.5) &&
     score < (config.vividBandMax ?? 0.68)
   ) {
@@ -100,6 +104,7 @@ export function fuseScores({
   if (
     mutedLift > 0 &&
     graphic?.muted &&
+    !graphic?.uiCapture &&
     score >= (config.mutedBandMin ?? 0.5) &&
     score < (config.mutedBandMax ?? 0.68)
   ) {
@@ -111,6 +116,7 @@ export function fuseScores({
   if (
     flatToneLift > 0 &&
     graphic?.flatTone &&
+    !graphic?.uiCapture &&
     score >= (config.flatToneBandMin ?? 0.5) &&
     score < (config.flatToneBandMax ?? 0.68)
   ) {
@@ -272,6 +278,17 @@ export function fuseScores({
   ) {
     calibrated -= mutedScanDrop;
     reasons.push("muted-scan");
+  }
+
+  const uiCaptureDrop = config.uiCaptureDrop ?? 0;
+  if (
+    uiCaptureDrop > 0 &&
+    graphic?.uiCapture &&
+    calibrated >= (config.uiCaptureBandMin ?? 0.65) &&
+    calibrated < (config.uiCaptureBandMax ?? 1)
+  ) {
+    calibrated -= uiCaptureDrop;
+    reasons.push("ui-capture");
   }
 
   return {

@@ -10,7 +10,7 @@ License: [MIT](LICENSE).
 - Runs a dedicated offscreen ONNX session on each image.
 - Overlays a badge with the **AI confidence** (`AI 87%`).
 - Optionally short-circuits when specific C2PA / generator metadata is present (not a bare `openai` / `google` token in JPEG entropy).
-- Still flags charts / UI screenshots in the reason list; the graphic scale is currently 1 (no score down-weight).
+- Still flags charts / UI screenshots in the reason list; the graphic scale is currently 1 (no score down-weight). Flat limited-palette captures get a post-calibration `ui-capture` drop instead.
 
 The visual path is a hybrid:
 
