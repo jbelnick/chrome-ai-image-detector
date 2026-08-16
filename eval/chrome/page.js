@@ -95,6 +95,19 @@ async function probeGpu() {
   return { hasNavigatorGpu, adapter, adapterInfo };
 }
 
+function graphicDump(graphic) {
+  return {
+    isGraphic: graphic.isGraphic,
+    scanGrain: graphic.scanGrain,
+    uiCapture: graphic.uiCapture,
+    uniqueColors: graphic.uniqueColors,
+    edgeRatio: graphic.edgeRatio,
+    fineRatio: graphic.fineRatio,
+    colorfulness: graphic.colorfulness,
+    muted: graphic.muted,
+  };
+}
+
 async function inferBytes(cfSession, slSession, bytes, mime) {
   const result = await scoreImage(bytes, {
     mime,
@@ -108,6 +121,7 @@ async function inferBytes(cfSession, slSession, bytes, mime) {
     siglip: result.siglip,
     commfor: result.commfor,
     reasons: result.reasons,
+    graphic: graphicDump(result.graphic),
   };
 }
 
@@ -184,6 +198,7 @@ async function main() {
       siglip: result.siglip,
       commfor: result.commfor,
       reasons: result.reasons,
+      graphic: result.graphic,
     });
     if ((index + 1) % 5 === 0 || index === manifest.length - 1) {
       log(`scored ${index + 1}/${manifest.length}`);
