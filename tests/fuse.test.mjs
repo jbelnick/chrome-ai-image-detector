@@ -319,6 +319,55 @@ describe("fuse", () => {
     assert.equal(comboOnly.reasons.includes("muted-strong-tail"), false);
   });
 
+  it("lifts a mid-color ordinary-grain near-cut visual without inventing a verdict from grain alone", () => {
+    const lifted = fuseScores({
+      visual: 0.568,
+      provenance: { ai: false, camera: false },
+      graphic: {
+        isGraphic: false,
+        grainy: true,
+        muted: false,
+        vivid: false,
+        flatTone: false,
+        strongGrain: false,
+        fineRatio: 0.138,
+      },
+    });
+    assert.ok(lifted.reasons.includes("mid-grain-cut"));
+    assert.ok(lifted.score >= 0.65);
+
+    const grainOnly = fuseScores({
+      visual: 0.2,
+      provenance: { ai: false, camera: false },
+      graphic: {
+        isGraphic: false,
+        grainy: true,
+        muted: false,
+        vivid: false,
+        flatTone: false,
+        strongGrain: false,
+        fineRatio: 0.138,
+      },
+    });
+    assert.ok(Math.abs(grainOnly.fusedBeforeCalibration - 0.2) < 1e-9);
+    assert.equal(grainOnly.reasons.includes("mid-grain-cut"), false);
+
+    const mutedNearCut = fuseScores({
+      visual: 0.568,
+      provenance: { ai: false, camera: false },
+      graphic: {
+        isGraphic: false,
+        grainy: true,
+        muted: true,
+        vivid: false,
+        flatTone: false,
+        strongGrain: false,
+        fineRatio: 0.138,
+      },
+    });
+    assert.equal(mutedNearCut.reasons.includes("mid-grain-cut"), false);
+  });
+
   it("lifts a muted mid-range visual without inventing a verdict from low colorfulness alone", () => {
     const lifted = fuseScores({
       visual: 0.56,

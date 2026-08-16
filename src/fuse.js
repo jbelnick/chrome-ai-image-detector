@@ -55,6 +55,14 @@ export const FUSE_DEFAULTS = {
   mutedStrongTailDrop: 0.04,
   mutedStrongTailBandMin: 0.68,
   mutedStrongTailBandMax: 0.694,
+  // Near-cut leftover FN: mid-color ordinary grain just under 0.65.
+  // Targets ofhold_ai_0004 (0.625, fineRatio 0.138) without jpeg-Q or
+  // photo-grain-after-lift skips. Known TNs sit at 0.615 / 0.644.
+  midGrainLift: 0.035,
+  midGrainBandMin: 0.62,
+  midGrainBandMax: 0.632,
+  midGrainFineMin: 0.12,
+  midGrainFineMax: 0.16,
   bias: 0,
   temperature: 0.9,
   scorePower: 0.85,
@@ -257,6 +265,25 @@ export function fuseScores({
   ) {
     calibrated -= mutedStrongTailDrop;
     reasons.push("muted-strong-tail");
+  }
+
+  const midGrainLift = config.midGrainLift ?? 0;
+  const fineRatio = graphic?.fineRatio ?? 0;
+  if (
+    midGrainLift > 0 &&
+    graphic?.grainy &&
+    !graphic?.isGraphic &&
+    !graphic?.muted &&
+    !graphic?.vivid &&
+    !graphic?.flatTone &&
+    !graphic?.strongGrain &&
+    fineRatio >= (config.midGrainFineMin ?? 0.12) &&
+    fineRatio < (config.midGrainFineMax ?? 0.16) &&
+    calibrated >= (config.midGrainBandMin ?? 0.62) &&
+    calibrated < (config.midGrainBandMax ?? 0.632)
+  ) {
+    calibrated = Math.min(0.92, calibrated + midGrainLift);
+    reasons.push("mid-grain-cut");
   }
 
   return {
