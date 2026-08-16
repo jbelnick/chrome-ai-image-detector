@@ -1,7 +1,11 @@
 node_modules/
 models/*.bin
 models/siglip2-vision.onnx
-eval/data/
+eval/data/*
+!eval/data/manifest-ship-gate.json
+!eval/data/holdout-grade-only.json
+!eval/data/ship-gate/
+!eval/data/ship-gate/**
 eval/results/
 eval/.cache/
 extension/vendor/

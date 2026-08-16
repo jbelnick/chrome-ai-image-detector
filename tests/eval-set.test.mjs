@@ -37,4 +37,12 @@ describe("eval-set", () => {
     assert.equal(isBroaderProxy("real/webreal_0010.jpg"), true);
     assert.equal(isBroaderProxy("real/picsum_237.jpg"), false);
   });
+
+  it("keeps ship-gate fixtures and the PR 12 holdout out of both public mixes", () => {
+    assert.equal(proxyKind("ship-gate/shipgate_charlesworth_orig.jpg"), "ship-gate");
+    assert.equal(isOfficialProxy("ship-gate/shipgate_charlesworth_orig.jpg"), false);
+    assert.equal(isBroaderProxy("ship-gate/shipgate_charlesworth_orig.jpg"), false);
+    assert.equal(isOfficialProxy("scenarios/historic_scan_bw/historic_scan_bw_00.jpg"), false);
+    assert.equal(isBroaderProxy("scenarios/historic_scan_bw/historic_scan_bw_00.jpg"), false);
+  });
 });

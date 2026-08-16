@@ -9,7 +9,12 @@
  */
 
 export function proxyKind(name) {
-  const base = String(name).split("/").pop() || "";
+  const raw = String(name);
+  const base = raw.split("/").pop() || "";
+  if (base.startsWith("shipgate_") || raw.includes("/ship-gate/")) return "ship-gate";
+  if (raw.includes("/scenarios/") || raw.includes("manifest-scenarios")) {
+    return "scenario-holdout";
+  }
   if (base.startsWith("cf_")) return "excluded-metadata-extra";
   if (base.startsWith("picsum_")) return "easy-real";
   if (base.startsWith("openfake_")) return "openfake";

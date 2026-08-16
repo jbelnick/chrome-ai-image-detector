@@ -1,0 +1,138 @@
+{
+  "version": 1,
+  "title": "Grain ship-gate fixtures",
+  "note": "Named live-page product fixtures for the hunter ship gate. Not the 358 broader mix. Not the PR 12 diagnostic holdout. Do not train. Do not fit the SigLIP probe. Do not add these paths to eval/data/ai or eval/data/real. Chrome-path freeze numbers are copied from PR 11 / CLAIM historic-scan dump — not invented.",
+  "detector_freeze": "b6edc41",
+  "freeze_evidence": "58b1418",
+  "score_contract": "cursor/score-contract-c339",
+  "threshold": 0.65,
+  "disjoint_from": {
+    "official_360": "openfake_* prefix is never these files.",
+    "broader_358": "ofreddit_ / ofhold_ / webai_ / webreal_ / picsum_* are never these files.",
+    "pr12_holdout": "The 146-image scenario suite is grade-only. None of those extra holdout images are in this 5-file set or the 358 mix."
+  },
+  "images": [
+    {
+      "id": "charlesworth_orig",
+      "role": "charlesworth",
+      "path": "ship-gate/shipgate_charlesworth_orig.jpg",
+      "label": "real",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Mrs_Winifred_Charlesworth.jpg",
+      "page_url": "https://en.wikipedia.org/wiki/Golden_Retriever",
+      "license": "Public domain",
+      "attribution": "Unknown author. Wikimedia Commons. Public domain.",
+      "notes": "Wikipedia 1910s Charlesworth original (470×638). Live miss was AI 99%. Must stay < 0.65 on this branch.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Mrs Winifred Charlesworth.jpg",
+        "width": 470,
+        "use_original_if_smaller": true
+      },
+      "chrome_path_freeze": {
+        "source": "PR 11 freeze / CLAIM.md Historic-scan live miss. Copied, not invented.",
+        "commit": "b6edc41",
+        "siglip": 0.867,
+        "commfor": 0.225,
+        "visual": 0.986,
+        "calibrated_no_scan": 0.993,
+        "score": 0.632695,
+        "badge": "63%",
+        "reasons": ["visual", "graphic-gate", "muted-scan"],
+        "graphic": {
+          "colorfulness": 9.3,
+          "fineRatio": 0.517,
+          "uniqueColors": 28,
+          "edgeRatio": 0.196,
+          "flatTone": true,
+          "muted": true,
+          "isGraphic": true,
+          "scanGrain": true
+        }
+      }
+    },
+    {
+      "id": "charlesworth_250",
+      "role": "charlesworth",
+      "path": "ship-gate/shipgate_charlesworth_250.jpg",
+      "label": "real",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Mrs_Winifred_Charlesworth.jpg",
+      "page_url": "https://en.wikipedia.org/wiki/Golden_Retriever",
+      "license": "Public domain",
+      "attribution": "Unknown author. Wikimedia Commons. Public domain.",
+      "notes": "Wikipedia-served 250px Charlesworth thumb. Must stay < 0.65 / not 0.99.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Mrs Winifred Charlesworth.jpg",
+        "width": 250
+      },
+      "chrome_path_freeze": {
+        "source": "PR 11 freeze / CLAIM.md Historic-scan live miss. Copied, not invented.",
+        "commit": "b6edc41",
+        "siglip": 0.894,
+        "commfor": 0.002,
+        "visual": 0.989,
+        "calibrated_no_scan": 0.994,
+        "score": 0.634229,
+        "badge": "63%",
+        "reasons": ["visual", "graphic-gate", "muted-scan"]
+      }
+    },
+    {
+      "id": "nous_1870s_250",
+      "role": "nous",
+      "path": "ship-gate/shipgate_nous_1870s_250.jpg",
+      "label": "real",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Nous_sitting_with_keeper.jpg",
+      "page_url": "https://en.wikipedia.org/wiki/Golden_Retriever",
+      "license": "Public domain",
+      "attribution": "Unknown author. Wikimedia Commons. Public domain.",
+      "notes": "Nous 1870s 250px thumb from the same Wikipedia article. Must stay real.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Nous sitting with keeper.jpg",
+        "width": 250
+      },
+      "chrome_path_freeze": {
+        "source": "PR 11 freeze / CLAIM.md. Copied, not invented.",
+        "commit": "b6edc41",
+        "score": 0.322159,
+        "badge": "32%",
+        "reasons": ["visual"]
+      }
+    },
+    {
+      "id": "wiki_real_golden",
+      "role": "wiki-real",
+      "path": "ship-gate/shipgate_wiki_real_golden.jpg",
+      "label": "real",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Golden_retriever.jpg",
+      "page_url": "https://en.wikipedia.org/wiki/Golden_Retriever",
+      "license": "CC BY-SA 3.0",
+      "attribution": "See Commons file page. Wikimedia Commons. CC BY-SA 3.0.",
+      "notes": "Ordinary modern Wikipedia Golden Retriever photograph. Named product fixture, not a 358 mix row. No chrome-path score is recorded on this branch — do not invent one.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Golden retriever.jpg",
+        "width": 800
+      },
+      "chrome_path_freeze": null
+    },
+    {
+      "id": "wiki_real_dulmen",
+      "role": "wiki-real",
+      "path": "ship-gate/shipgate_wiki_real_dulmen.jpg",
+      "label": "real",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Dülmen,_Hausdülmen,_Golden_Retriever_--_2022_--_5767.jpg",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Dülmen,_Hausdülmen,_Golden_Retriever_--_2022_--_5767.jpg",
+      "license": "CC BY-SA 4.0",
+      "attribution": "Dietmar Rabich. Wikimedia Commons. CC BY-SA 4.0.",
+      "notes": "Ordinary modern Commons photograph. Named product fixture, not a 358 mix row. No chrome-path score is recorded on this branch — do not invent one.",
+      "download": {
+        "kind": "commons",
+        "title": "File:Dülmen, Hausdülmen, Golden Retriever -- 2022 -- 5767.jpg",
+        "width": 800
+      },
+      "chrome_path_freeze": null
+    }
+  ]
+}
