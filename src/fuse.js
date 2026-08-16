@@ -55,9 +55,6 @@ export const FUSE_DEFAULTS = {
   mutedStrongTailDrop: 0.04,
   mutedStrongTailBandMin: 0.68,
   mutedStrongTailBandMax: 0.694,
-  mutedScanDrop: 0.36,
-  mutedScanBandMin: 0.955,
-  mutedScanBandMax: 1,
   bias: 0,
   temperature: 0.9,
   scorePower: 0.85,
@@ -261,17 +258,6 @@ export function fuseScores({
   ) {
     calibrated -= mutedStrongTailDrop;
     reasons.push("muted-strong-tail");
-  }
-
-  const mutedScanDrop = config.mutedScanDrop ?? 0;
-  if (
-    mutedScanDrop > 0 &&
-    graphic?.scanGrain &&
-    calibrated >= (config.mutedScanBandMin ?? 0.955) &&
-    calibrated < (config.mutedScanBandMax ?? 1)
-  ) {
-    calibrated -= mutedScanDrop;
-    reasons.push("muted-scan");
   }
 
   return {
