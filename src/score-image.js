@@ -11,6 +11,8 @@ import {
   imageDataToTensor,
   visualProbabilityFromLogit,
   applyCanvasResample,
+  commforResampleWhich,
+  isCompressedThumbSize,
 } from "./preprocess.js";
 import { analyzePixels } from "./graphic-gate.js";
 import { fuseScores, FUSE_DEFAULTS } from "./fuse.js";
@@ -24,11 +26,15 @@ import {
 /** Badge / product cut. AI iff score >= 0.65. Not a remapped raw threshold. */
 export const PRODUCT_THRESHOLD = 0.65;
 
-export function cropForCommfor(bitmap, Canvas = globalThis.OffscreenCanvas) {
+export function cropForCommfor(
+  bitmap,
+  Canvas = globalThis.OffscreenCanvas,
+  which = "commfor",
+) {
   const { width, height } = scaledSize(bitmap.width, bitmap.height);
   const canvas = new Canvas(width, height);
   const ctx = canvas.getContext("2d", { willReadFrequently: true });
-  applyCanvasResample(ctx, "commfor");
+  applyCanvasResample(ctx, which);
   ctx.drawImage(bitmap, 0, 0, width, height);
   const box = centerCropBox(width, height, PREPROCESS.crop);
   return ctx.getImageData(box.x, box.y, box.size, box.size);
@@ -99,9 +105,17 @@ export async function scoreImage(bytes, {
   const blob = new Blob([u8], { type: mime || "application/octet-stream" });
   const bitmap = await createBitmap(blob);
   try {
-    const cfPixels = cropForCommfor(bitmap, Canvas);
+    const thumb = isCompressedThumbSize(bitmap.width, bitmap.height);
+    const graphicPixels = cropForCommfor(bitmap, Canvas, "commfor");
+    const cfPixels = thumb
+      ? cropForCommfor(bitmap, Canvas, commforResampleWhich(bitmap.width, bitmap.height))
+      : graphicPixels;
     const slPixels = squareForSiglip(bitmap, Canvas);
-    const graphic = analyzePixels(cfPixels.data, cfPixels.width, cfPixels.height);
+    const graphic = analyzePixels(
+      graphicPixels.data,
+      graphicPixels.width,
+      graphicPixels.height,
+    );
     let commfor;
     let siglip;
     if (runVisual) {

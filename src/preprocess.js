@@ -21,12 +21,23 @@ export const PREPROCESS = {
  * Medium-smooth Community Forensics (try to recover TNR);
  * nearest-neighbor SigLIP (KEEP 404faa6 TPR came from the 224 stretch).
  *
+ * Named product rule `compressedThumb`: a source whose short edge is
+ * below the CF 440 recipe must be upscaled. Medium-smooth upsample
+ * smears the leftover generator traces on Wikipedia/social JPEG thumbs
+ * (holdout compressed-thumb AI TPR was 25% — grade only, not a fit).
+ * Nearest on that upsample is the same 224-stretch TPR lesson, applied
+ * only when the source is already smaller than the CF short-edge.
+ * Charlesworth orig is 470×638 (no upsample) and does not take this
+ * branch. Graphic flags still read the default medium CF crop so the
+ * 250px Charlesworth scanGrain / muted-scan path cannot flip to 99%.
+ *
  * This is the source-of-truth decode. Node sharp kernels below are a proxy.
  * node(B) − chrome(B) is decode-delta. Do not absorb it in FUSE_DEFAULTS.
  */
 export const CANVAS_RESAMPLE = {
   commfor: { imageSmoothingEnabled: true, imageSmoothingQuality: "medium" },
   siglip: { imageSmoothingEnabled: false, imageSmoothingQuality: "medium" },
+  compressedThumb: { imageSmoothingEnabled: false, imageSmoothingQuality: "medium" },
 };
 
 /**
@@ -52,6 +63,20 @@ export function applyCanvasResample(ctx, which = "commfor") {
   const spec = CANVAS_RESAMPLE[which] || CANVAS_RESAMPLE.commfor;
   ctx.imageSmoothingEnabled = spec.imageSmoothingEnabled;
   ctx.imageSmoothingQuality = spec.imageSmoothingQuality;
+}
+
+/**
+ * Named product rule: source must be upscaled to reach the CF short-edge.
+ * Not a URL or file-hash special-case. Not a fuse band.
+ */
+export function isCompressedThumbSize(width, height) {
+  const short = Math.min(width, height);
+  return short > 0 && short < PREPROCESS.resizeShortEdge;
+}
+
+/** CF canvas which: nearest upsample on compressed thumbs, else medium. */
+export function commforResampleWhich(width, height) {
+  return isCompressedThumbSize(width, height) ? "compressedThumb" : "commfor";
 }
 
 export function scaledSize(width, height, shortEdge = PREPROCESS.resizeShortEdge) {

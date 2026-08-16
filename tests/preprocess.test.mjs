@@ -11,6 +11,8 @@ import {
   NODE_SHARP_RESAMPLE,
   DECODE_PATHS,
   applyCanvasResample,
+  isCompressedThumbSize,
+  commforResampleWhich,
 } from "../src/preprocess.js";
 
 describe("preprocess", () => {
@@ -78,6 +80,21 @@ describe("preprocess", () => {
     const sl = { imageSmoothingEnabled: true, imageSmoothingQuality: "high" };
     applyCanvasResample(sl, "siglip");
     assert.equal(sl.imageSmoothingEnabled, false);
+  });
+
+  it("names compressed-thumb as nearest CF upsample when the source is below 440", () => {
+    assert.equal(isCompressedThumbSize(250, 339), true);
+    assert.equal(isCompressedThumbSize(320, 320), true);
+    assert.equal(isCompressedThumbSize(470, 638), false);
+    assert.equal(isCompressedThumbSize(440, 600), false);
+    assert.equal(commforResampleWhich(250, 339), "compressedThumb");
+    assert.equal(commforResampleWhich(470, 638), "commfor");
+
+    const thumb = { imageSmoothingEnabled: true, imageSmoothingQuality: "high" };
+    applyCanvasResample(thumb, "compressedThumb");
+    assert.equal(thumb.imageSmoothingEnabled, false);
+    assert.equal(CANVAS_RESAMPLE.compressedThumb.imageSmoothingEnabled, false);
+    assert.equal(CANVAS_RESAMPLE.commfor.imageSmoothingEnabled, true);
   });
 
   it("converts a logit to a probability with sigmoid", () => {
