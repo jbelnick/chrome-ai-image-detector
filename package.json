@@ -1,0 +1,27 @@
+{
+  "name": "grain-ai-image-detector",
+  "version": "1.0.0",
+  "private": true,
+  "description": "On-device Chrome MV3 extension that detects AI-generated images entirely in the browser.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "fetch-models": "node scripts/fetch-models.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "eval": "node eval/run.mjs",
+    "eval:download": "node eval/download-proxy.mjs",
+    "eval:download:broader": "node eval/download-broader.mjs",
+    "eval:download:scenarios": "node eval/download-scenarios.mjs",
+    "eval:chrome": "node eval/chrome/run.mjs",
+    "eval:chrome:scenarios": "node eval/chrome/run-scenarios.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "onnxruntime-node": "^1.21.0",
+    "onnxruntime-web": "^1.21.0",
+    "sharp": "^0.34.1"
+  }
+}
