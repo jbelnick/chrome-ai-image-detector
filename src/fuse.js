@@ -8,7 +8,7 @@ import { graphicScale } from "./graphic-gate.js";
  */
 export const FUSE_DEFAULTS = {
   provenanceAiScore: 0.93,
-  cameraRealScale: 1,
+  cameraRealScale: 0.72,
   graphicScaleWhenFlagged: 1,
   vividLift: 0.05,
   vividBandMin: 0.5,

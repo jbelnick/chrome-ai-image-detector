@@ -11,16 +11,47 @@ describe("fuse", () => {
     });
     assert.ok(result.score >= 0.9);
     assert.ok(result.reasons.includes("provenance-ai"));
+    assert.equal(FUSE_DEFAULTS.provenanceAiScore, 0.93);
+    assert.ok(result.score >= FUSE_DEFAULTS.provenanceAiScore ** (FUSE_DEFAULTS.scorePower ?? 1) - 1e-6);
   });
 
-  it("records camera EXIF without changing the visual score when scale is 1", () => {
+  it("pulls a confused visual down when camera EXIF is present", () => {
+    assert.ok(FUSE_DEFAULTS.cameraRealScale < 1);
+    assert.equal(FUSE_DEFAULTS.cameraRealScale, 0.72);
     const result = fuseScores({
       visual: 0.4,
       provenance: { ai: false, camera: true },
       graphic: { isGraphic: false },
     });
-    assert.ok(Math.abs(result.fusedBeforeCalibration - 0.4) < 1e-9);
+    assert.ok(Math.abs(result.fusedBeforeCalibration - 0.4 * FUSE_DEFAULTS.cameraRealScale) < 1e-9);
+    assert.ok(result.fusedBeforeCalibration < 0.4);
+    assert.ok(result.score < fuseScores({
+      visual: 0.4,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false },
+    }).score);
     assert.ok(result.reasons.includes("camera-exif"));
+  });
+
+  it("does not apply camera scale when visual is already above the confused band", () => {
+    const result = fuseScores({
+      visual: 0.62,
+      provenance: { ai: false, camera: true },
+      graphic: { isGraphic: false },
+    });
+    assert.ok(Math.abs(result.fusedBeforeCalibration - 0.62) < 1e-9);
+    assert.equal(result.reasons.includes("camera-exif"), false);
+  });
+
+  it("keeps provenance-ai above camera EXIF when both are present", () => {
+    const result = fuseScores({
+      visual: 0.2,
+      provenance: { ai: true, camera: true },
+      graphic: { isGraphic: false },
+    });
+    assert.ok(result.reasons.includes("provenance-ai"));
+    assert.equal(result.reasons.includes("camera-exif"), false);
+    assert.ok(result.fusedBeforeCalibration >= 0.93);
   });
 
   it("does not remap a raw 0.33 onto the 0.65 badge cut", () => {
