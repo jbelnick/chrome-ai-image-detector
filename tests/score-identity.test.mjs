@@ -115,4 +115,76 @@ describe("score identity", () => {
     });
     assert.notEqual(overlay.score, drifted.score);
   });
+
+  it("uses nearest CF upsample on a compressed thumb but keeps the medium crop for graphic flags", async () => {
+    const which = [];
+    class RecordCanvas {
+      constructor(width, height) {
+        this.width = width;
+        this.height = height;
+      }
+      getContext() {
+        const canvas = this;
+        const ctx = {
+          imageSmoothingEnabled: true,
+          imageSmoothingQuality: "medium",
+          drawImage() {},
+          getImageData(_x, _y, width, height) {
+            which.push({
+              w: canvas.width,
+              enabled: ctx.imageSmoothingEnabled,
+            });
+            const data = new Uint8ClampedArray(width * height * 4);
+            return { data, width, height };
+          },
+        };
+        return ctx;
+      }
+    }
+    const bytes = new Uint8Array([0xff, 0xd8, 0xff, 0xd9, 2, 2, 2, 2]);
+    await scoreImage(bytes, {
+      ...overlayOpts(),
+      createBitmap: async () => fakeBitmap(250, 339),
+      Canvas: RecordCanvas,
+    });
+    const cfCrops = which.filter((row) => row.w !== 224);
+    assert.equal(cfCrops.length, 2, "thumb path should draw a medium graphic crop and a nearest CF crop");
+    assert.equal(cfCrops[0].enabled, true, "graphic flags stay on the medium CF crop");
+    assert.equal(cfCrops[0].w, 440, "graphic flags stay on the 440 short-edge crop");
+    assert.equal(cfCrops[1].enabled, false, "CF model upsample is nearest on a thumb");
+    assert.equal(cfCrops[1].w, 640, "CF model uses nearest-to-640, not nearest-to-440");
+  });
+
+  it("does not take the compressed-thumb branch on Charlesworth-orig sized sources", async () => {
+    const which = [];
+    class RecordCanvas {
+      constructor(width, height) {
+        this.width = width;
+        this.height = height;
+      }
+      getContext() {
+        const canvas = this;
+        const ctx = {
+          imageSmoothingEnabled: true,
+          imageSmoothingQuality: "medium",
+          drawImage() {},
+          getImageData(_x, _y, width, height) {
+            which.push({ w: canvas.width, enabled: ctx.imageSmoothingEnabled });
+            const data = new Uint8ClampedArray(width * height * 4);
+            return { data, width, height };
+          },
+        };
+        return ctx;
+      }
+    }
+    const bytes = new Uint8Array([0xff, 0xd8, 0xff, 0xd9, 3, 3, 3, 3]);
+    await scoreImage(bytes, {
+      ...overlayOpts(),
+      createBitmap: async () => fakeBitmap(470, 638),
+      Canvas: RecordCanvas,
+    });
+    const cfCrops = which.filter((row) => row.w !== 224);
+    assert.equal(cfCrops.length, 1);
+    assert.equal(cfCrops[0].enabled, true);
+  });
 });

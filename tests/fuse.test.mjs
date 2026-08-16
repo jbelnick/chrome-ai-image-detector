@@ -1,6 +1,14 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { fuseScores, FUSE_DEFAULTS } from "../src/fuse.js";
+
+const fuseSrc = readFileSync(
+  join(dirname(fileURLToPath(import.meta.url)), "../src/fuse.js"),
+  "utf8",
+);
 
 describe("fuse", () => {
   it("short-circuits to a high AI score when provenance declares a generator", () => {
@@ -422,5 +430,17 @@ describe("fuse", () => {
     });
     assert.ok(lifted.fusedBeforeCalibration > 0.56);
     assert.ok(lifted.reasons.includes("muted-color"));
+  });
+
+  it("keeps frozen mix nips and does not add a compressed-thumb fuse band", () => {
+    assert.equal(FUSE_DEFAULTS.graphicScaleWhenFlagged, 1);
+    assert.equal(FUSE_DEFAULTS.bias, 0);
+    assert.equal(FUSE_DEFAULTS.vividLift, 0.05);
+    assert.equal(FUSE_DEFAULTS.grainDrop, 0.12);
+    assert.equal(FUSE_DEFAULTS.mutedFineDrop, 0.28);
+    assert.equal(FUSE_DEFAULTS.mutedScanDrop, 0.36);
+    assert.equal("uiCaptureDrop" in FUSE_DEFAULTS, false);
+    assert.equal("compressedThumbLift" in FUSE_DEFAULTS, false);
+    assert.doesNotMatch(fuseSrc, /compressedThumbLift|uiCaptureDrop/);
   });
 });

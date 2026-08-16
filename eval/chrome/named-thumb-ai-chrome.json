@@ -1,0 +1,634 @@
+{
+  "path": "chrome-ort-web-named-thumb-ai",
+  "sharp": false,
+  "backend": "wasm",
+  "webgpu": "UNVERIFIED",
+  "gpu": {
+    "hasNavigatorGpu": true,
+    "adapter": true,
+    "adapterInfo": {
+      "vendor": "google",
+      "architecture": "swiftshader",
+      "device": ""
+    }
+  },
+  "hashes": {
+    "commfor": "67a3770d39d07403a65628544eb99d0c4c444285d3ca2fcdec80972a1237436f",
+    "siglip2": "c0573e3f4140c3a7c4e9cc5912bd6b26a033b46a6a8e8af26cbea262b163bcad"
+  },
+  "dukeSha256": {
+    "250px-Golden_Retriever_Dukedestiny01_drvd.jpg": "40a49c7a244484c9406393b44dcf1f60adf555b345d334e4dd7cb7ffd872ef8e",
+    "500px-Golden_Retriever_Dukedestiny01_drvd.jpg": "1a5278316a8bb2f413ca29be6f4579ffcd6fff589f58d054bfe17e86d4fa5b50",
+    "Golden_Retriever_Dukedestiny01_drvd.jpg": "74cd09d6d360041ff3763af1abcb0a809200a26f784e3baf81321c60b676eb31"
+  },
+  "threshold": 0.65,
+  "fuse": {
+    "provenanceAiScore": 0.93,
+    "cameraRealScale": 1,
+    "graphicScaleWhenFlagged": 1,
+    "vividLift": 0.05,
+    "vividBandMin": 0.5,
+    "vividBandMax": 0.68,
+    "mutedLift": 0.05,
+    "mutedBandMin": 0.5,
+    "mutedBandMax": 0.68,
+    "flatToneLift": 0.05,
+    "flatToneBandMin": 0.5,
+    "flatToneBandMax": 0.68,
+    "grainDrop": 0.12,
+    "grainBandMin": 0.65,
+    "grainBandMax": 0.78,
+    "strongGrainDrop": 0.25,
+    "strongGrainBandMin": 0.8,
+    "strongGrainBandMax": 0.95,
+    "mutedHighDrop": 0.28,
+    "mutedHighBandMin": 0.8,
+    "mutedHighBandMax": 0.88,
+    "flatHighDrop": 0.2,
+    "flatHighBandMin": 0.8,
+    "flatHighBandMax": 0.83,
+    "vividHighDrop": 0.24,
+    "vividHighBandMin": 0.87,
+    "vividHighBandMax": 0.89,
+    "mutedFineDrop": 0.28,
+    "mutedFineBandMin": 0.88,
+    "mutedFineBandMax": 0.93,
+    "flatMidDrop": 0.27,
+    "flatMidBandMin": 0.9,
+    "flatMidBandMax": 0.918,
+    "flatFineDrop": 0.28,
+    "flatFineBandMin": 0.92,
+    "flatFineBandMax": 0.94,
+    "flatUpperDrop": 0.29,
+    "flatUpperBandMin": 0.934,
+    "flatUpperBandMax": 0.946,
+    "mutedFlatFineDrop": 0.31,
+    "mutedFlatFineBandMin": 0.946,
+    "mutedFlatFineBandMax": 0.955,
+    "mutedUpperDrop": 0.31,
+    "mutedUpperBandMin": 0.949,
+    "mutedUpperBandMax": 0.954,
+    "mutedStrongTailDrop": 0.04,
+    "mutedStrongTailBandMin": 0.68,
+    "mutedStrongTailBandMax": 0.694,
+    "mutedScanDrop": 0.36,
+    "mutedScanBandMin": 0.955,
+    "mutedScanBandMax": 1,
+    "bias": 0,
+    "temperature": 0.9,
+    "scorePower": 0.85
+  },
+  "n": 23,
+  "rows": [
+    {
+      "name": "250px-Astronaut_riding_an_elephant.png",
+      "label": 0,
+      "score": 0.9999783574417752,
+      "visual": 0.9999266706120583,
+      "siglip": 0.9856699890977845,
+      "commfor": 0.6429039728757004,
+      "reasons": [
+        "visual"
+      ],
+      "graphic": {
+        "isGraphic": false,
+        "scanGrain": false,
+        "uiCapture": false,
+        "uniqueColors": 270,
+        "edgeRatio": 0.27157894736842103,
+        "fineRatio": 0.2423268698060942,
+        "colorfulness": 84.96533172369467,
+        "muted": false
+      },
+      "role": "thumb-ai"
+    },
+    {
+      "name": "250px-DALL-E_3_Wikipedia_Example.png",
+      "label": 0,
+      "score": 0.9999909765676732,
+      "visual": 0.9999666307149585,
+      "siglip": 0.9809205096600874,
+      "commfor": 0.9083329272957245,
+      "reasons": [
+        "visual"
+      ],
+      "graphic": {
+        "isGraphic": false,
+        "scanGrain": false,
+        "uiCapture": false,
+        "uniqueColors": 284,
+        "edgeRatio": 0.26204986149584486,
+        "fineRatio": 0.312797783933518,
+        "colorfulness": 36.670282344468234,
+        "muted": false
+      },
+      "role": "thumb-ai"
+    },
+    {
+      "name": "250px-DALL-E_Flow_horse_astronaut.png",
+      "label": 0,
+      "score": 0.9996862015863334,
+      "visual": 0.9991866288826377,
+      "siglip": 0.8270203380488773,
+      "commfor": 0.9728169202948134,
+      "reasons": [
+        "visual"
+      ],
+      "graphic": {
+        "isGraphic": false,
+        "scanGrain": false,
+        "uiCapture": false,
+        "uniqueColors": 166,
+        "edgeRatio": 0.19678670360110803,
+        "fineRatio": 0.2893074792243767,
+        "colorfulness": 29.476766798449848,
+        "muted": false
+      },
+      "role": "thumb-ai"
+    },
+    {
+      "name": "250px-DALLE2_Shiba_beret.jpg",
+      "label": 0,
+      "score": 0.9997699269964013,
+      "visual": 0.9993847768535665,
+      "siglip": 0.9377424767631355,
+      "commfor": 0.8412736652528789,
+      "reasons": [
+        "visual"
+      ],
+      "graphic": {
+        "isGraphic": false,
+        "scanGrain": false,
+        "uiCapture": false,
+        "uniqueColors": 182,
+        "edgeRatio": 0.14127423822714683,
+        "fineRatio": 0.3592243767313019,
+        "colorfulness": 46.42305510351403,
+        "muted": false
+      },
+      "role": "thumb-ai"
+    },
+    {
+      "name": "250px-Golden_Retriever_Dukedestiny01_drvd.jpg",
+      "label": 0,
+      "score": 0.8205609828524497,
+      "visual": 0.7695199508082421,
+      "siglip": 0.5159146606658603,
+      "commfor": 0.01646577348767768,
+      "reasons": [
+        "visual"
+      ],
+      "graphic": {
+        "isGraphic": false,
+        "scanGrain": false,
+        "uiCapture": false,
+        "uniqueColors": 147,
+        "edgeRatio": 0.3566759002770083,
+        "fineRatio": 0.3904709141274238,
+        "colorfulness": 45.80720094099107,
+        "muted": false
+      },
+      "role": "dukedestiny"
+    },
+    {
+      "name": "250px-Midjourney_armor_portrait.png",
+      "label": 0,
+      "score": 0.9999913310779721,
+      "visual": 0.9999678129434966,
+      "siglip": 0.88605498243932,
+      "commfor": 0.9975209197638243,
+      "reasons": [
+        "visual"
+      ],
+      "graphic": {
+        "isGraphic": false,
+        "scanGrain": false,
+        "uiCapture": false,
+        "uniqueColors": 155,
+        "edgeRatio": 0.20842105263157895,
+        "fineRatio": 0.33761772853185595,
+        "colorfulness": 37.09684353193889,
+        "muted": false
+      },
+      "role": "thumb-ai"
+    },
+    {
+      "name": "250px-Mrs_Winifred_Charlesworth.jpg",
+      "label": 0,
+      "score": 0.6398020634274447,
+      "visual": 0.999462662458246,
+      "siglip": 0.8944255098130955,
+      "commfor": 0.9517908806343087,
+      "reasons": [
+        "visual",
+        "muted-scan"
+      ],
+      "graphic": {
+        "isGraphic": false,
+        "scanGrain": true,
+        "uiCapture": false,
+        "uniqueColors": 30,
+        "edgeRatio": 0.25850415512465375,
+        "fineRatio": 0.5089196675900277,
+        "colorfulness": 9.184123321997246,
+        "muted": true
+      },
+      "role": "charlesworth"
+    },
+    {
+      "name": "250px-Nous_sitting_with_keeper.jpg",
+      "label": 0,
+      "score": 0.3221587320361304,
+      "visual": 0.28419955367195504,
+      "siglip": 0.1539500922947601,
+      "commfor": 0.001973858781998173,
+      "reasons": [
+        "visual"
+      ],
+      "graphic": {
+        "isGraphic": false,
+        "scanGrain": false,
+        "uiCapture": false,
+        "uniqueColors": 65,
+        "edgeRatio": 0.2844321329639889,
+        "fineRatio": 0.44742382271468145,
+        "colorfulness": 31.163060210527625,
+        "muted": false
+      },
+      "role": "nous"
+    },
+    {
+      "name": "250px-Pope_Francis_puffy_jacket.jpg",
+      "label": 0,
+      "score": 0.48408796376699764,
+      "visual": 0.4332300031751939,
+      "siglip": 0.24715871737476694,
+      "commfor": 0.18924862906204978,
+      "reasons": [
+        "visual"
+      ],
+      "graphic": {
+        "isGraphic": false,
+        "scanGrain": false,
+        "uiCapture": false,
+        "uniqueColors": 129,
+        "edgeRatio": 0.2565096952908587,
+        "fineRatio": 0.3417174515235457,
+        "colorfulness": 14.250504288261476,
+        "muted": true
+      },
+      "role": "thumb-ai"
+    },
+    {
+      "name": "250px-Portrait_paint_drops.png",
+      "label": 0,
+      "score": 0.9999967919442557,
+      "visual": 0.9999868436222936,
+      "siglip": 0.9949357221342199,
+      "commfor": 0.48701899949848054,
+      "reasons": [
+        "visual"
+      ],
+      "graphic": {
+        "isGraphic": false,
+        "scanGrain": false,
+        "uiCapture": false,
+        "uniqueColors": 516,
+        "edgeRatio": 0.2985041551246537,
+        "fineRatio": 0.33717451523545705,
+        "colorfulness": 73.64139112342346,
+        "muted": false
+      },
+      "role": "thumb-ai"
+    },
+    {
+      "name": "250px-Space_opera_1_Midjourney.jpg",
+      "label": 0,
+      "score": 0.9998059922288448,
+      "visual": 0.9994722679638103,
+      "siglip": 0.5870937902200871,
+      "commfor": 0.9969046438189902,
+      "reasons": [
+        "visual"
+      ],
+      "graphic": {
+        "isGraphic": false,
+        "scanGrain": false,
+        "uiCapture": false,
+        "uniqueColors": 224,
+        "edgeRatio": 0.2896398891966759,
+        "fineRatio": 0.3686426592797784,
+        "colorfulness": 29.345379492613407,
+        "muted": false
+      },
+      "role": "thumb-ai"
+    },
+    {
+      "name": "250px-Theatre_Dopera_Spatial.jpg",
+      "label": 0,
+      "score": 0.9999665464731188,
+      "visual": 0.9998914854968237,
+      "siglip": 0.8809199521394253,
+      "commfor": 0.9923473863986668,
+      "reasons": [
+        "visual"
+      ],
+      "graphic": {
+        "isGraphic": false,
+        "scanGrain": false,
+        "uiCapture": false,
+        "uniqueColors": 140,
+        "edgeRatio": 0.15058171745152354,
+        "fineRatio": 0.4673684210526316,
+        "colorfulness": 36.298081544245946,
+        "muted": false
+      },
+      "role": "thumb-ai"
+    },
+    {
+      "name": "500px-Golden_Retriever_Dukedestiny01_drvd.jpg",
+      "label": 0,
+      "score": 0.6155921703780662,
+      "visual": 0.558634646565412,
+      "siglip": 0.33540570615712445,
+      "commfor": 0.0007249998454807996,
+      "reasons": [
+        "visual"
+      ],
+      "graphic": {
+        "isGraphic": false,
+        "scanGrain": false,
+        "uiCapture": false,
+        "uniqueColors": 172,
+        "edgeRatio": 0.4232686980609418,
+        "fineRatio": 0.34493074792243766,
+        "colorfulness": 46.12207566615998,
+        "muted": false
+      },
+      "role": "dukedestiny"
+    },
+    {
+      "name": "Blender_2.92_UI.png",
+      "label": 0,
+      "score": 0.0019630887322198303,
+      "visual": 0.0013594580059044237,
+      "siglip": 0.8732518793386221,
+      "commfor": 0.0006799601758725852,
+      "reasons": [
+        "visual",
+        "graphic-gate"
+      ],
+      "graphic": {
+        "isGraphic": true,
+        "scanGrain": false,
+        "uiCapture": true,
+        "uniqueColors": 82,
+        "edgeRatio": 0.10094182825484764,
+        "fineRatio": 0.10825484764542936,
+        "colorfulness": 9.411120097336847,
+        "muted": true
+      },
+      "role": "ui"
+    },
+    {
+      "name": "Golden_Retriever_Dukedestiny01_drvd.jpg",
+      "label": 0,
+      "score": 0.6477516366657887,
+      "visual": 0.712556672006358,
+      "siglip": 0.4635506225350488,
+      "commfor": 0.001162724964918203,
+      "reasons": [
+        "visual",
+        "photo-grain"
+      ],
+      "graphic": {
+        "isGraphic": false,
+        "scanGrain": false,
+        "uiCapture": false,
+        "uniqueColors": 170,
+        "edgeRatio": 0.3542382271468144,
+        "fineRatio": 0.37850415512465374,
+        "colorfulness": 46.89996244097319,
+        "muted": false
+      },
+      "role": "dukedestiny"
+    },
+    {
+      "name": "LibreOffice_Writer_7.5.png",
+      "label": 0,
+      "score": 0.00019765535661289265,
+      "visual": 0.00011967020471104206,
+      "siglip": 0.8730912676094944,
+      "commfor": 0.000059836892582322637,
+      "reasons": [
+        "visual",
+        "graphic-gate"
+      ],
+      "graphic": {
+        "isGraphic": true,
+        "scanGrain": false,
+        "uiCapture": true,
+        "uniqueColors": 181,
+        "edgeRatio": 0.2245983379501385,
+        "fineRatio": 0.07955678670360111,
+        "colorfulness": 49.066001493044276,
+        "muted": false
+      },
+      "role": "ui"
+    },
+    {
+      "name": "Mrs_Winifred_Charlesworth.jpg",
+      "label": 0,
+      "score": 0.632694839834306,
+      "visual": 0.9862627007794768,
+      "siglip": 0.8668807114713026,
+      "commfor": 0.22478997145559196,
+      "reasons": [
+        "visual",
+        "muted-scan"
+      ],
+      "graphic": {
+        "isGraphic": false,
+        "scanGrain": true,
+        "uiCapture": false,
+        "uniqueColors": 28,
+        "edgeRatio": 0.19634349030470913,
+        "fineRatio": 0.5170083102493075,
+        "colorfulness": 9.342769867775639,
+        "muted": true
+      },
+      "role": "charlesworth"
+    },
+    {
+      "name": "q60-250-DALLE2_Shiba_beret.jpg",
+      "label": 0,
+      "score": 0.9967935309562986,
+      "visual": 0.9934317227749888,
+      "siglip": 0.9148791867689328,
+      "commfor": 0.09347466433336638,
+      "reasons": [
+        "visual"
+      ],
+      "graphic": {
+        "isGraphic": false,
+        "scanGrain": false,
+        "uiCapture": false,
+        "uniqueColors": 194,
+        "edgeRatio": 0.1382825484764543,
+        "fineRatio": 0.3615512465373961,
+        "colorfulness": 45.70349060587185,
+        "muted": false
+      },
+      "role": "thumb-ai"
+    },
+    {
+      "name": "q60-250-Pope_Francis_puffy_jacket.jpg",
+      "label": 0,
+      "score": 0.19247724380304385,
+      "visual": 0.16730307001768874,
+      "siglip": 0.08747770987098001,
+      "commfor": 0.6118065699882917,
+      "reasons": [
+        "visual"
+      ],
+      "graphic": {
+        "isGraphic": false,
+        "scanGrain": false,
+        "uiCapture": false,
+        "uniqueColors": 121,
+        "edgeRatio": 0.23867036011080334,
+        "fineRatio": 0.36952908587257616,
+        "colorfulness": 13.616112015863122,
+        "muted": true
+      },
+      "role": "thumb-ai"
+    },
+    {
+      "name": "q60-250-Space_opera_1_Midjourney.jpg",
+      "label": 0,
+      "score": 0.9898799767441603,
+      "visual": 0.9816153723967439,
+      "siglip": 0.54616020259163,
+      "commfor": 0.910741479508164,
+      "reasons": [
+        "visual"
+      ],
+      "graphic": {
+        "isGraphic": false,
+        "scanGrain": false,
+        "uiCapture": false,
+        "uniqueColors": 191,
+        "edgeRatio": 0.26227146814404434,
+        "fineRatio": 0.3720775623268698,
+        "colorfulness": 27.166592913037466,
+        "muted": true
+      },
+      "role": "thumb-ai"
+    },
+    {
+      "name": "q60-250-Theatre_Dopera_Spatial.jpg",
+      "label": 0,
+      "score": 0.9956309463805344,
+      "visual": 0.9913313191669104,
+      "siglip": 0.5566318953396321,
+      "commfor": 0.9559014694048235,
+      "reasons": [
+        "visual"
+      ],
+      "graphic": {
+        "isGraphic": false,
+        "scanGrain": false,
+        "uiCapture": false,
+        "uniqueColors": 136,
+        "edgeRatio": 0.12853185595567868,
+        "fineRatio": 0.42670360110803324,
+        "colorfulness": 35.38710098180525,
+        "muted": false
+      },
+      "role": "thumb-ai"
+    },
+    {
+      "name": "simple_pie_chart.png",
+      "label": 0,
+      "score": 0.00016692603076848929,
+      "visual": 0.00010006684290475576,
+      "siglip": 0.6141488049923591,
+      "commfor": 0.000050034673186657334,
+      "reasons": [
+        "visual",
+        "graphic-gate"
+      ],
+      "graphic": {
+        "isGraphic": true,
+        "scanGrain": false,
+        "uiCapture": true,
+        "uniqueColors": 67,
+        "edgeRatio": 0.0732409972299169,
+        "fineRatio": 0.011412742382271468,
+        "colorfulness": 168.9837543104384,
+        "muted": false
+      },
+      "role": "ui"
+    },
+    {
+      "name": "VLC_UI.png",
+      "label": 0,
+      "score": 0.00020098544631451775,
+      "visual": 0.00012180589118993002,
+      "siglip": 0.5660272159727183,
+      "commfor": 0.00006090480029233054,
+      "reasons": [
+        "visual",
+        "graphic-gate"
+      ],
+      "graphic": {
+        "isGraphic": true,
+        "scanGrain": false,
+        "uiCapture": true,
+        "uniqueColors": 108,
+        "edgeRatio": 0.06160664819944598,
+        "fineRatio": 0.04941828254847645,
+        "colorfulness": 39.75999881768772,
+        "muted": false
+      },
+      "role": "ui"
+    }
+  ],
+  "note": "Chrome-path dump of named compressed-thumb AI fixtures plus Dukedestiny 250/500/orig, Charlesworth, and UI gate. Same scoreImage path as the overlay. createImageBitmap + OffscreenCanvas + shipped fuse. Sharp does not count. Not PR 12 holdout. Do not train on PR 12.",
+  "baseline": {
+    "detector": "dc4b68d",
+    "path": "chrome-ort-web-named-thumb-ai",
+    "sharp": false,
+    "note": "Chrome-path wasm on the same named files at accepted main, before this PR's thumb resample. Dukedestiny scores are the live main/no-this-PR numbers. Not PR 12.",
+    "scores": {
+      "250px-Astronaut_riding_an_elephant.png": 0.999998,
+      "250px-DALL-E_3_Wikipedia_Example.png": 0.999963,
+      "250px-DALL-E_Flow_horse_astronaut.png": 0.999998,
+      "250px-DALLE2_Shiba_beret.jpg": 0.999271,
+      "250px-Midjourney_armor_portrait.png": 0.999992,
+      "250px-Mrs_Winifred_Charlesworth.jpg": 0.634229,
+      "250px-Nous_sitting_with_keeper.jpg": 0.322159,
+      "250px-Pope_Francis_puffy_jacket.jpg": 0.484088,
+      "250px-Portrait_paint_drops.png": 0.999999,
+      "250px-Space_opera_1_Midjourney.jpg": 0.873897,
+      "250px-Theatre_Dopera_Spatial.jpg": 0.992677,
+      "Mrs_Winifred_Charlesworth.jpg": 0.632695,
+      "q60-250-DALLE2_Shiba_beret.jpg": 0.996443,
+      "q60-250-Pope_Francis_puffy_jacket.jpg": 0.192477,
+      "q60-250-Space_opera_1_Midjourney.jpg": 0.562776,
+      "q60-250-Theatre_Dopera_Spatial.jpg": 0.601919,
+      "250px-Golden_Retriever_Dukedestiny01_drvd.jpg": 0.817068,
+      "500px-Golden_Retriever_Dukedestiny01_drvd.jpg": 0.615567,
+      "Golden_Retriever_Dukedestiny01_drvd.jpg": 0.647752
+    },
+    "thumbAiTp": 9,
+    "thumbAiN": 13,
+    "thumbAiTpr": 0.6923076923076923
+  },
+  "after": {
+    "detector": "nearest-thumb-640",
+    "thumbAiTp": 11,
+    "thumbAiN": 13,
+    "thumbAiTpr": 0.8461538461538461
+  }
+}
