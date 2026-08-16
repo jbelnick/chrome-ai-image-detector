@@ -740,7 +740,26 @@ Ordinary UI is **not** the Charlesworth `isGraphic` trap. Community Forensics is
 
 Rule: `uiCapture = !scanGrain && uniqueColors < 200 && fineRatio < 0.20`. Drop 0.36 when calibrated is in `[0.65, 1.0)` (`ui-capture`). Skip muted/flat/vivid **lifts** on `uiCapture` so a mid-range diagram is not pushed over 0.65. Not a URL or file-hash special-case. Fuse bias stays 0. Muted-scan is unchanged.
 
-AFTER scores are filled from the same chrome-path dump after the rule lands.
+AFTER the same chrome-path dump (`0b48399`, wasm / WebGPU UNVERIFIED). Copied from the harness — not invented.
+
+| image | BEFORE | AFTER | reason |
+| --- | --- | --- | --- |
+| `real_blender` | **99%** | **63%** (0.627) | `ui-capture` |
+| `real_libreoffice` | **100%** | **64%** (0.638) | `ui-capture` |
+| `real_inkscape` | **86%** | **50%** (0.504) | `ui-capture` |
+| `real_vlc` | **89%** | **53%** (0.531) | `ui-capture` |
+| `real_simple_pie` | **99%** | **63%** (0.627) | `ui-capture` |
+| `real_win95` | **77%** | **41%** (0.406) | `ui-capture` |
+| `real_org_chart` | **66%** | **56%** (0.557) | lifts skipped |
+| `real_wiki_main` | 37% | 37% (0.375) | held |
+| `real_charlesworth` | **63%** | **63%** (0.633) | `muted-scan` held, `uiCapture` false |
+| `ai_dalle_shiba` | 100% | 100% | held |
+| `ai_dalle_astronaut` | 100% | 100% | held |
+| `ai_midjourney_castle` | 100% | 0.998 | held |
+
+Charlesworth did not go back to 99%. The three AI illustrations did not walk.
+
+Glance only (not a fit, not a KEEP scalar) at PR 12 `screenshot_ui` after the change: 12/12 reals under 0.65, both labeled AI game-screenshots stayed 100%. That category is still grade-only.
 
 ## Rules checklist
 
