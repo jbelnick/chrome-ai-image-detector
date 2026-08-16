@@ -245,6 +245,24 @@ describe("fuse", () => {
     assert.equal(toneOnly.reasons.includes("flat-upper"), false);
   });
 
+  it("drops a muted-flat-fine high-band visual without inventing a real verdict from that combo alone", () => {
+    const dropped = fuseScores({
+      visual: 0.925,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, mutedFlatFine: true },
+    });
+    assert.ok(dropped.score < 0.65);
+    assert.ok(dropped.reasons.includes("muted-flat-fine"));
+
+    const comboOnly = fuseScores({
+      visual: 0.2,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, mutedFlatFine: true },
+    });
+    assert.ok(Math.abs(comboOnly.fusedBeforeCalibration - 0.2) < 1e-9);
+    assert.equal(comboOnly.reasons.includes("muted-flat-fine"), false);
+  });
+
   it("lifts a muted mid-range visual without inventing a verdict from low colorfulness alone", () => {
     const lifted = fuseScores({
       visual: 0.56,

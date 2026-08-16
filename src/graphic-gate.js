@@ -102,6 +102,7 @@ export function analyzePixels(data, width, height) {
     centerBorder >= TEXTURE.flatToneLo && centerBorder <= TEXTURE.flatToneHi;
   // Flat illumination plus denser mid-delta luma than typical flat photos.
   const flatFine = flatTone && !isGraphic && fineRatio >= 0.34;
+  const mutedFlatFine = muted && flatTone && !isGraphic && fineRatio >= 0.3;
   return {
     uniqueRatio,
     edgeRatio,
@@ -118,6 +119,7 @@ export function analyzePixels(data, width, height) {
     strongGrain,
     mutedFine,
     flatFine,
+    mutedFlatFine,
   };
 }
 
