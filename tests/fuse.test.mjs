@@ -319,6 +319,35 @@ describe("fuse", () => {
     assert.equal(comboOnly.reasons.includes("muted-strong-tail"), false);
   });
 
+  it("lifts a mid-Q dense-DHT near-cut visual without inventing a verdict from JPEG structure alone", () => {
+    const lifted = fuseScores({
+      visual: 0.56,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false },
+      jpeg: { jpegMidQ: true, jpegDenseAc: true },
+    });
+    assert.ok(lifted.score >= 0.65);
+    assert.ok(lifted.reasons.includes("jpeg-dense-midq"));
+
+    const structOnly = fuseScores({
+      visual: 0.2,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false },
+      jpeg: { jpegMidQ: true, jpegDenseAc: true },
+    });
+    assert.ok(Math.abs(structOnly.fusedBeforeCalibration - 0.2) < 1e-9);
+    assert.equal(structOnly.reasons.includes("jpeg-dense-midq"), false);
+
+    const midOnly = fuseScores({
+      visual: 0.56,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false },
+      jpeg: { jpegMidQ: true, jpegDenseAc: false },
+    });
+    assert.ok(midOnly.score < 0.65);
+    assert.equal(midOnly.reasons.includes("jpeg-dense-midq"), false);
+  });
+
   it("lifts a muted mid-range visual without inventing a verdict from low colorfulness alone", () => {
     const lifted = fuseScores({
       visual: 0.56,

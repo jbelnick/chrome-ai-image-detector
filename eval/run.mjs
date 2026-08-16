@@ -19,6 +19,7 @@ import {
 } from "../src/preprocess.js";
 import { imageDataToSiglipTensor, siglipProbability, blendVisual, SIGLIP } from "../src/siglip.js";
 import { scanProvenance } from "../src/provenance.js";
+import { scanJpegStructure } from "../src/jpeg-structure.js";
 import { analyzePixels } from "../src/graphic-gate.js";
 import { fuseScores, FUSE_DEFAULTS } from "../src/fuse.js";
 import { bestRawThreshold } from "../src/calibrate.js";
@@ -148,6 +149,7 @@ async function main() {
   for (const [index, row] of files.entries()) {
     const { bytes, rgbaCf, tensorCf, tensorSig } = await decodeBoth(row.path);
     const provenance = scanProvenance(bytes);
+    const jpeg = scanJpegStructure(bytes);
     const graphic = analyzePixels(rgbaCf, PREPROCESS.crop, PREPROCESS.crop);
     const cfOut = await cfSess.run({
       [MODELS.commfor.inputName]: new ort.Tensor("float32", tensorCf, [1, 3, PREPROCESS.crop, PREPROCESS.crop]),
@@ -162,6 +164,7 @@ async function main() {
       visual,
       provenance,
       graphic,
+      jpeg,
       config: FUSE_DEFAULTS,
     });
     scored.push({

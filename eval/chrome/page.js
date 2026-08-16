@@ -5,6 +5,7 @@
  */
 import { MODELS } from "/lib/model-config.js";
 import { scanProvenance } from "/lib/provenance.js";
+import { scanJpegStructure } from "/lib/jpeg-structure.js";
 import {
   PREPROCESS,
   scaledSize,
@@ -132,6 +133,7 @@ function squareForSiglip(bitmap) {
 
 async function inferBytes(cfSession, slSession, bytes, mime) {
   const provenance = scanProvenance(bytes);
+  const jpeg = scanJpegStructure(bytes);
   const blob = new Blob([bytes], { type: mime || "application/octet-stream" });
   const bitmap = await createImageBitmap(blob);
   try {
@@ -161,7 +163,7 @@ async function inferBytes(cfSession, slSession, bytes, mime) {
     );
     const siglip = siglipProbability(slOut[MODELS.siglip2.outputName].data);
     const visual = blendVisual(siglip, commfor);
-    const fused = fuseScores({ visual, provenance, graphic, config: fuseConfig });
+    const fused = fuseScores({ visual, provenance, graphic, jpeg, config: fuseConfig });
     return {
       score: fused.score,
       visual,

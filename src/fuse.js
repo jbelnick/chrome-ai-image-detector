@@ -55,6 +55,9 @@ export const FUSE_DEFAULTS = {
   mutedStrongTailDrop: 0.04,
   mutedStrongTailBandMin: 0.68,
   mutedStrongTailBandMax: 0.694,
+  jpegDenseMidQLift: 0.04,
+  jpegDenseMidQBandMin: 0.61,
+  jpegDenseMidQBandMax: 0.65,
   bias: 0,
   temperature: 0.9,
   scorePower: 0.85,
@@ -64,6 +67,7 @@ export function fuseScores({
   visual,
   provenance,
   graphic,
+  jpeg,
   config = FUSE_DEFAULTS,
 } = {}) {
   let score = Number.isFinite(visual) ? visual : 0.5;
@@ -257,6 +261,18 @@ export function fuseScores({
   ) {
     calibrated -= mutedStrongTailDrop;
     reasons.push("muted-strong-tail");
+  }
+
+  const jpegDenseMidQLift = config.jpegDenseMidQLift ?? 0;
+  if (
+    jpegDenseMidQLift > 0 &&
+    jpeg?.jpegMidQ &&
+    jpeg?.jpegDenseAc &&
+    calibrated >= (config.jpegDenseMidQBandMin ?? 0.61) &&
+    calibrated < (config.jpegDenseMidQBandMax ?? 0.65)
+  ) {
+    calibrated = Math.min(0.92, calibrated + jpegDenseMidQLift);
+    reasons.push("jpeg-dense-midq");
   }
 
   return {
