@@ -1,23 +1,8 @@
 import { MODELS } from "./lib/model-config.js";
-import { scanProvenance } from "./lib/provenance.js";
-import {
-  PREPROCESS,
-  scaledSize,
-  centerCropBox,
-  imageDataToTensor,
-  visualProbabilityFromLogit,
-  applyCanvasResample,
-} from "./lib/preprocess.js";
-import { analyzePixels } from "./lib/graphic-gate.js";
-import { fuseScores, FUSE_DEFAULTS } from "./lib/fuse.js";
+import { FUSE_DEFAULTS } from "./lib/fuse.js";
 import { sha256Hex, assertSha256 } from "./lib/sha256.js";
-import {
-  SIGLIP,
-  imageDataToSiglipTensor,
-  siglipProbability,
-  blendVisual,
-} from "./lib/siglip.js";
 import { base64ToBytes } from "./lib/transfer-bytes.js";
+import { scoreImage } from "./lib/score-image.js";
 
 let cfSession = null;
 let slSession = null;
@@ -101,58 +86,24 @@ async function initModel() {
   return initPromise;
 }
 
-function cropForCommfor(bitmap) {
-  const { width, height } = scaledSize(bitmap.width, bitmap.height);
-  const canvas = new OffscreenCanvas(width, height);
-  const ctx = canvas.getContext("2d", { willReadFrequently: true });
-  applyCanvasResample(ctx, "commfor");
-  ctx.drawImage(bitmap, 0, 0, width, height);
-  const box = centerCropBox(width, height, PREPROCESS.crop);
-  return ctx.getImageData(box.x, box.y, box.size, box.size);
-}
-
-function squareForSiglip(bitmap) {
-  const canvas = new OffscreenCanvas(SIGLIP.size, SIGLIP.size);
-  const ctx = canvas.getContext("2d", { willReadFrequently: true });
-  applyCanvasResample(ctx, "siglip");
-  ctx.drawImage(bitmap, 0, 0, SIGLIP.size, SIGLIP.size);
-  return ctx.getImageData(0, 0, SIGLIP.size, SIGLIP.size);
-}
-
 async function inferBytes(bytes, mime) {
   await initModel();
-  const provenance = scanProvenance(bytes);
-  const blob = new Blob([bytes], { type: mime || "application/octet-stream" });
-  const bitmap = await createImageBitmap(blob);
-  try {
-    const cfPixels = cropForCommfor(bitmap);
-    const slPixels = squareForSiglip(bitmap);
-    const graphic = analyzePixels(cfPixels.data, cfPixels.width, cfPixels.height);
-    const cfTensor = imageDataToTensor(cfPixels.data, cfPixels.width, cfPixels.height);
-    const slTensor = imageDataToSiglipTensor(slPixels.data, slPixels.width, slPixels.height);
-    const cfOut = await cfSession.run({
-      [MODELS.commfor.inputName]: new ort.Tensor("float32", cfTensor, [1, 3, PREPROCESS.crop, PREPROCESS.crop]),
-    });
-    const slOut = await slSession.run({
-      [MODELS.siglip2.inputName]: new ort.Tensor("float32", slTensor, [1, 3, SIGLIP.size, SIGLIP.size]),
-    });
-    const commfor = visualProbabilityFromLogit(Number(cfOut[MODELS.commfor.outputName].data[0]));
-    const siglip = siglipProbability(slOut[MODELS.siglip2.outputName].data);
-    const visual = blendVisual(siglip, commfor);
-    const fused = fuseScores({ visual, provenance, graphic, config: fuseConfig });
-    return {
-      score: fused.score,
-      visual,
-      siglip,
-      commfor,
-      reasons: fused.reasons,
-      provenance: provenance.signals,
-      graphic: graphic.isGraphic,
-      provider: activeProvider,
-    };
-  } finally {
-    bitmap.close?.();
-  }
+  const result = await scoreImage(bytes, {
+    mime,
+    cfSession,
+    slSession,
+    config: fuseConfig,
+  });
+  return {
+    score: result.score,
+    visual: result.visual,
+    siglip: result.siglip,
+    commfor: result.commfor,
+    reasons: result.reasons,
+    provenance: result.provenance.signals,
+    graphic: result.graphic.isGraphic,
+    provider: activeProvider,
+  };
 }
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
