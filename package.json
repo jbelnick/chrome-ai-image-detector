@@ -12,7 +12,10 @@
     "eval": "node eval/run.mjs",
     "eval:download": "node eval/download-proxy.mjs",
     "eval:download:broader": "node eval/download-broader.mjs",
-    "eval:chrome": "node eval/chrome/run.mjs"
+    "eval:download:ship-gate": "node eval/download-ship-gate.mjs",
+    "eval:chrome": "node eval/chrome/run.mjs",
+    "eval:chrome:ship-gate": "node eval/chrome/run-ship-gate.mjs",
+    "eval:chrome:named-probe": "node eval/chrome/run-named-probe.mjs"
   },
   "engines": {
     "node": ">=20"
