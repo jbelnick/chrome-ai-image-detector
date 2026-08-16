@@ -683,6 +683,24 @@ webgpu:      UNVERIFIED
 
 Versus KEEP `92afcb1` on the same mix: TPR +3, TNR −1, net +2, BA 0.910615 → 0.916201. Secondary 360 slipped 0.891667 → 0.888889 — called out, not hidden, not a crater.
 
+## Prior broader-proxy KEEP (`6e78751`, original builder family 20)
+
+Skip photo-grain after a vivid/colorfulness lift. Recorded here as the later live bar this lane compared against — not re-run on this branch, and not retried. Fuse bias stays 0.
+
+```
+SCALAR broader-proxy (keep/revert)
+bal_acc_065: 0.913408
+tpr_065:     0.871508
+tnr_065:     0.955307
+tp/fn/tn/fp: 156 / 23 / 171 / 8
+n:           358
+
+SECONDARY official-360 (not the ratchet)
+bal_acc_065: 0.888889
+```
+
+This lane's KEEP `2e5756b` (restore CF when `sl < 0.25` except `cf >= 0.99`) still prints broader **0.916201**, which is strictly greater than 0.913408. Versus `6e78751`: TPR +2, TNR −1, net +1. Secondary 360 held 0.888889. Different mechanism — not a vivid photo-grain skip.
+
 ## Rules checklist
 
 - [x] No cloud inference
