@@ -75,13 +75,6 @@ export function analyzePixels(data, width, height) {
   const uniqueRatio = samples === 0 ? 1 : colors.size / samples;
   const edgeRatio = samples === 0 ? 0 : edge / samples;
   const fineRatio = samples === 0 ? 0 : fine / samples;
-  // Quantized palette size, not unique/samples — large photos always look
-  // "sparse" if you divide by pixel count.
-  const isGraphic = colors.size < 48 && edgeRatio > 0.12;
-  const grainy = !isGraphic && fineRatio >= 0.08;
-  // Stronger luma-delta density than ordinary photo-grain. Used for a
-  // high-band drop on leftover web-real FPs that sit above 0.78.
-  const strongGrain = !isGraphic && fineRatio >= 0.4;
   const n = samples || 1;
   const rgMean = rgSum / n;
   const ybMean = ybSum / n;
@@ -92,6 +85,18 @@ export function analyzePixels(data, width, height) {
     0.3 * Math.sqrt(rgMean * rgMean + ybMean * ybMean);
   const vivid = colorfulness >= TEXTURE.vividColorfulness;
   const muted = colorfulness <= TEXTURE.mutedColorfulness;
+  // Quantized palette size, not unique/samples — large photos always look
+  // "sparse" if you divide by pixel count. The 12-bin palette also
+  // collapses B&W/sepia film to a tiny color count; those scans have
+  // mid-delta grain, not hard UI edges. Exempt them so grain flags can
+  // fire. scanGrain stays on so muted-scan still applies.
+  const paletteGraphic = colors.size < 48 && edgeRatio > 0.12;
+  const filmScan = paletteGraphic && muted && fineRatio >= 0.4;
+  const isGraphic = paletteGraphic && !filmScan;
+  const grainy = !isGraphic && fineRatio >= 0.08;
+  // Stronger luma-delta density than ordinary photo-grain. Used for a
+  // high-band drop on leftover web-real FPs that sit above 0.78.
+  const strongGrain = !isGraphic && fineRatio >= 0.4;
   // Muted + denser-than-ordinary grain. Used for a high-band drop on
   // leftover web-real FPs that sit above the muted-high window.
   const mutedFine = !isGraphic && muted && fineRatio >= 0.32;
@@ -103,10 +108,7 @@ export function analyzePixels(data, width, height) {
   // Flat illumination plus denser mid-delta luma than typical flat photos.
   const flatFine = flatTone && !isGraphic && fineRatio >= 0.34;
   const mutedFlatFine = muted && flatTone && !isGraphic && fineRatio >= 0.3;
-  // Historic / film scan: the UI gate misfires on B&W/sepia film
-  // (tiny 12-bin palette) and then hides every grain flag. Require
-  // isGraphic so muted grainy AI that is not graphic-gated is spared.
-  const scanGrain = isGraphic && muted && fineRatio >= 0.4;
+  const scanGrain = filmScan;
   return {
     uniqueRatio,
     edgeRatio,

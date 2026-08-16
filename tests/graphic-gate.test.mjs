@@ -128,7 +128,7 @@ describe("graphic-gate", () => {
     assert.equal(analyzePixels(vivid, w, h).scanGrain, false);
   });
 
-  it("flags a muted grainy monochrome field as scan-grain even when the UI gate also fires", () => {
+  it("does not flag a muted grainy B&W film-like scan as graphic, and still sets scanGrain", () => {
     const w = 128;
     const h = 128;
     const data = new Uint8Array(w * h * 4);
@@ -147,9 +147,46 @@ describe("graphic-gate", () => {
     }
     const analysis = analyzePixels(data, w, h);
     assert.equal(analysis.muted, true);
+    assert.ok(analysis.uniqueColors < 48);
+    assert.ok(analysis.edgeRatio > 0.12);
     assert.ok(analysis.fineRatio >= 0.4);
-    assert.equal(analysis.isGraphic, true);
+    assert.equal(analysis.isGraphic, false);
+    assert.equal(analysis.grainy, true);
+    assert.equal(analysis.strongGrain, true);
+    assert.equal(analysis.mutedFine, true);
     assert.equal(analysis.scanGrain, true);
+  });
+
+  it("still flags a hard-edge color chart as graphic", () => {
+    const w = 128;
+    const h = 128;
+    const data = new Uint8Array(w * h * 4);
+    const palette = [
+      [20, 20, 20],
+      [240, 240, 240],
+      [30, 90, 200],
+      [220, 50, 40],
+      [40, 180, 80],
+      [250, 200, 40],
+    ];
+    for (let y = 0; y < h; y += 1) {
+      for (let x = 0; x < w; x += 1) {
+        const i = (y * w + x) * 4;
+        const [r, g, b] = palette[Math.floor(x / 16) % palette.length];
+        const on = y % 20 === 0 || x % 32 === 0 || y < 10;
+        data[i] = on ? 15 : r;
+        data[i + 1] = on ? 15 : g;
+        data[i + 2] = on ? 15 : b;
+        data[i + 3] = 255;
+      }
+    }
+    const analysis = analyzePixels(data, w, h);
+    assert.ok(analysis.uniqueColors < 48);
+    assert.ok(analysis.edgeRatio > 0.12);
+    assert.ok(analysis.fineRatio < 0.4);
+    assert.equal(analysis.isGraphic, true);
+    assert.equal(analysis.scanGrain, false);
+    assert.equal(analysis.grainy, false);
   });
 
   it("flags a uniform field as flat-tone", () => {
