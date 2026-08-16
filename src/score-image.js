@@ -11,6 +11,9 @@ import {
   imageDataToTensor,
   visualProbabilityFromLogit,
   applyCanvasResample,
+  isBelowShortEdge,
+  letterboxBox,
+  imagenetPadCss,
 } from "./preprocess.js";
 import { analyzePixels } from "./graphic-gate.js";
 import { fuseScores, FUSE_DEFAULTS } from "./fuse.js";
@@ -24,7 +27,22 @@ import {
 /** Badge / product cut. AI iff score >= 0.65. Not a remapped raw threshold. */
 export const PRODUCT_THRESHOLD = 0.65;
 
-export function cropForCommfor(bitmap, Canvas = globalThis.OffscreenCanvas) {
+export function cropForCommfor(
+  bitmap,
+  Canvas = globalThis.OffscreenCanvas,
+  mode = "recipe",
+) {
+  if (mode === "skipUpsample") {
+    const size = PREPROCESS.crop;
+    const canvas = new Canvas(size, size);
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    ctx.fillStyle = imagenetPadCss();
+    ctx.fillRect(0, 0, size, size);
+    applyCanvasResample(ctx, "commfor");
+    const box = letterboxBox(bitmap.width, bitmap.height, size);
+    ctx.drawImage(bitmap, 0, 0, bitmap.width, bitmap.height, box.x, box.y, box.width, box.height);
+    return ctx.getImageData(0, 0, size, size);
+  }
   const { width, height } = scaledSize(bitmap.width, bitmap.height);
   const canvas = new Canvas(width, height);
   const ctx = canvas.getContext("2d", { willReadFrequently: true });
@@ -37,6 +55,14 @@ export function cropForCommfor(bitmap, Canvas = globalThis.OffscreenCanvas) {
 export function squareForSiglip(bitmap, Canvas = globalThis.OffscreenCanvas) {
   const canvas = new Canvas(SIGLIP.size, SIGLIP.size);
   const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  if (isBelowShortEdge(bitmap.width, bitmap.height, SIGLIP.size)) {
+    ctx.fillStyle = "rgb(128, 128, 128)";
+    ctx.fillRect(0, 0, SIGLIP.size, SIGLIP.size);
+    applyCanvasResample(ctx, "siglip");
+    const box = letterboxBox(bitmap.width, bitmap.height, SIGLIP.size);
+    ctx.drawImage(bitmap, 0, 0, bitmap.width, bitmap.height, box.x, box.y, box.width, box.height);
+    return ctx.getImageData(0, 0, SIGLIP.size, SIGLIP.size);
+  }
   applyCanvasResample(ctx, "siglip");
   ctx.drawImage(bitmap, 0, 0, SIGLIP.size, SIGLIP.size);
   return ctx.getImageData(0, 0, SIGLIP.size, SIGLIP.size);
@@ -99,9 +125,16 @@ export async function scoreImage(bytes, {
   const blob = new Blob([u8], { type: mime || "application/octet-stream" });
   const bitmap = await createBitmap(blob);
   try {
-    const cfPixels = cropForCommfor(bitmap, Canvas);
+    const graphicPixels = cropForCommfor(bitmap, Canvas, "recipe");
+    const cfPixels = isBelowShortEdge(bitmap.width, bitmap.height, PREPROCESS.resizeShortEdge)
+      ? cropForCommfor(bitmap, Canvas, "skipUpsample")
+      : graphicPixels;
     const slPixels = squareForSiglip(bitmap, Canvas);
-    const graphic = analyzePixels(cfPixels.data, cfPixels.width, cfPixels.height);
+    const graphic = analyzePixels(
+      graphicPixels.data,
+      graphicPixels.width,
+      graphicPixels.height,
+    );
     let commfor;
     let siglip;
     if (runVisual) {

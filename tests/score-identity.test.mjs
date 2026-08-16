@@ -115,4 +115,90 @@ describe("score identity", () => {
     });
     assert.notEqual(overlay.score, drifted.score);
   });
+
+  it("letterboxes a short-edge-below-440 source for CF and keeps the 440 crop for graphic flags", async () => {
+    const draws = [];
+    class RecordCanvas {
+      constructor(width, height) {
+        this.width = width;
+        this.height = height;
+      }
+      getContext() {
+        const canvas = this;
+        const ctx = {
+          imageSmoothingEnabled: true,
+          imageSmoothingQuality: "medium",
+          fillStyle: "",
+          fillRect() {},
+          drawImage(_img, ...rest) {
+            draws.push({
+              w: canvas.width,
+              h: canvas.height,
+              destW: rest.length >= 7 ? rest[6] : rest[2],
+              destH: rest.length >= 7 ? rest[7] : rest[3],
+            });
+          },
+          getImageData(_x, _y, width, height) {
+            const data = new Uint8ClampedArray(width * height * 4);
+            return { data, width, height };
+          },
+        };
+        return ctx;
+      }
+    }
+    const bytes = new Uint8Array([0xff, 0xd8, 0xff, 0xd9, 2, 2, 2, 2]);
+    await scoreImage(bytes, {
+      ...overlayOpts(),
+      createBitmap: async () => fakeBitmap(250, 197),
+      Canvas: RecordCanvas,
+    });
+    const cf = draws.filter((row) => row.w !== 224);
+    assert.equal(cf.length, 2, "graphic recipe crop plus skip-upsample CF crop");
+    assert.equal(cf[0].w, 558, "graphic flags stay on the 440 short-edge recipe (250×197 → 558×440)");
+    assert.equal(cf[0].h, 440);
+    assert.equal(cf[1].w, 384, "CF model canvas is letterboxed 384, not a 440/640 stretch");
+    assert.equal(cf[1].destW, 250);
+    assert.equal(cf[1].destH, 197);
+    const sl = draws.filter((row) => row.w === 224);
+    assert.equal(sl.length, 1);
+    assert.equal(sl[0].destW, 224);
+    assert.ok(sl[0].destH < 224, "SigLIP letterboxes the 197-tall thumb instead of stretching height");
+  });
+
+  it("does not take skipUpsample on Charlesworth-orig sized sources", async () => {
+    const draws = [];
+    class RecordCanvas {
+      constructor(width, height) {
+        this.width = width;
+        this.height = height;
+      }
+      getContext() {
+        const canvas = this;
+        const ctx = {
+          imageSmoothingEnabled: true,
+          imageSmoothingQuality: "medium",
+          fillStyle: "",
+          fillRect() {},
+          drawImage() {
+            draws.push({ w: canvas.width, h: canvas.height });
+          },
+          getImageData(_x, _y, width, height) {
+            const data = new Uint8ClampedArray(width * height * 4);
+            return { data, width, height };
+          },
+        };
+        return ctx;
+      }
+    }
+    const bytes = new Uint8Array([0xff, 0xd8, 0xff, 0xd9, 3, 3, 3, 3]);
+    await scoreImage(bytes, {
+      ...overlayOpts(),
+      createBitmap: async () => fakeBitmap(470, 638),
+      Canvas: RecordCanvas,
+    });
+    const cf = draws.filter((row) => row.w !== 224);
+    assert.equal(cf.length, 1);
+    assert.equal(cf[0].w, 440, "470×638 short-edge recipe stays 440, not a 384 letterbox");
+    assert.equal(cf[0].h, 597);
+  });
 });
