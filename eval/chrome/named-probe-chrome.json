@@ -73,15 +73,36 @@
     "temperature": 0.9,
     "scorePower": 0.85
   },
-  "n": 9,
+  "n": 12,
   "rows": [
+    {
+      "name": "250px-Golden_Retriever_Dukedestiny01_drvd.jpg",
+      "label": 0,
+      "score": 0.9554732863888232,
+      "visual": 0.9314763423773399,
+      "siglip": 0.7382265843015203,
+      "commfor": 0.000024276336988770425,
+      "reasons": [
+        "visual"
+      ],
+      "graphic": {
+        "isGraphic": false,
+        "scanGrain": false,
+        "uiCapture": false,
+        "uniqueColors": 147,
+        "edgeRatio": 0.3566759002770083,
+        "fineRatio": 0.3904709141274238,
+        "colorfulness": 45.80720094099107,
+        "muted": false
+      }
+    },
     {
       "name": "250px-Mrs_Winifred_Charlesworth.jpg",
       "label": 0,
-      "score": 0.6342289827447717,
-      "visual": 0.9888761773228228,
+      "score": 0.6342171356350027,
+      "visual": 0.9888557276917209,
       "siglip": 0.8944255098130955,
-      "commfor": 0.001987291830949727,
+      "commfor": 0.00015258156009180128,
       "reasons": [
         "visual",
         "muted-scan"
@@ -98,12 +119,33 @@
       }
     },
     {
+      "name": "250px-Space_opera_1_Midjourney.jpg",
+      "label": 0,
+      "score": 0.9546036726146907,
+      "visual": 0.9302989772008251,
+      "siglip": 0.7352986936299487,
+      "commfor": 0.005220145502845592,
+      "reasons": [
+        "visual"
+      ],
+      "graphic": {
+        "isGraphic": false,
+        "scanGrain": false,
+        "uiCapture": false,
+        "uniqueColors": 224,
+        "edgeRatio": 0.2896398891966759,
+        "fineRatio": 0.3686426592797784,
+        "colorfulness": 29.345379492613407,
+        "muted": false
+      }
+    },
+    {
       "name": "Blender_2.92_UI.png",
       "label": 0,
-      "score": 0.9885950553177152,
-      "visual": 0.9795444663180501,
-      "siglip": 0.8569159665363001,
-      "commfor": 0.0008551221387109861,
+      "score": 0.0019630887322198303,
+      "visual": 0.0013594580059044237,
+      "siglip": 0.8732518793386221,
+      "commfor": 0.0006799601758725852,
       "reasons": [
         "visual",
         "graphic-gate"
@@ -113,9 +155,9 @@
         "scanGrain": false,
         "uiCapture": true,
         "uniqueColors": 82,
-        "edgeRatio": 0.10958448753462603,
-        "fineRatio": 0.11512465373961218,
-        "colorfulness": 9.840346424276175,
+        "edgeRatio": 0.10094182825484764,
+        "fineRatio": 0.10825484764542936,
+        "colorfulness": 9.411120097336847,
         "muted": true
       }
     },
@@ -125,7 +167,7 @@
       "score": 0.22779688639287343,
       "visual": 0.19897964687772163,
       "siglip": 0.10500259602483851,
-      "commfor": 0.000011020872724179678,
+      "commfor": 0.00003800269648075754,
       "reasons": [
         "visual",
         "graphic-gate"
@@ -144,8 +186,8 @@
     {
       "name": "DOE_org_chart.png",
       "label": 0,
-      "score": 0.5346976688022715,
-      "visual": 0.48089128504912115,
+      "score": 0.0028601568759321076,
+      "visual": 0.0020243405245742307,
       "siglip": 0.2791429126139914,
       "commfor": 0.001012683025742444,
       "reasons": [
@@ -164,16 +206,37 @@
       }
     },
     {
+      "name": "Golden_Retriever_Dukedestiny01_drvd.jpg",
+      "label": 0,
+      "score": 0.6477516366657887,
+      "visual": 0.712556672006358,
+      "siglip": 0.4635506225350488,
+      "commfor": 0.001162724964918203,
+      "reasons": [
+        "visual",
+        "photo-grain"
+      ],
+      "graphic": {
+        "isGraphic": false,
+        "scanGrain": false,
+        "uiCapture": false,
+        "uniqueColors": 170,
+        "edgeRatio": 0.3542382271468144,
+        "fineRatio": 0.37850415512465374,
+        "colorfulness": 46.89996244097319,
+        "muted": false
+      }
+    },
+    {
       "name": "Inkscape_UI.png",
       "label": 0,
-      "score": 0.6357061719406164,
-      "visual": 0.8678172854322634,
+      "score": 0.00006842112224251063,
+      "visual": 0.00003892148488515712,
       "siglip": 0.6364270540639843,
       "commfor": 0.00001946093180648978,
       "reasons": [
         "visual",
-        "graphic-gate",
-        "flat-mid"
+        "graphic-gate"
       ],
       "graphic": {
         "isGraphic": true,
@@ -189,10 +252,10 @@
     {
       "name": "LibreOffice_Writer_7.5.png",
       "label": 0,
-      "score": 0.9975500965200312,
-      "visual": 0.9948411349355744,
-      "siglip": 0.9281731874007483,
-      "commfor": 0.000043795261989734374,
+      "score": 0.00019765535661289265,
+      "visual": 0.00011967020471104206,
+      "siglip": 0.8730912676094944,
+      "commfor": 0.000059836892582322637,
       "reasons": [
         "visual",
         "graphic-gate"
@@ -201,10 +264,10 @@
         "isGraphic": true,
         "scanGrain": false,
         "uiCapture": true,
-        "uniqueColors": 169,
-        "edgeRatio": 0.24409972299168975,
-        "fineRatio": 0.06537396121883657,
-        "colorfulness": 49.63276198300485,
+        "uniqueColors": 181,
+        "edgeRatio": 0.2245983379501385,
+        "fineRatio": 0.07955678670360111,
+        "colorfulness": 49.066001493044276,
         "muted": false
       }
     },
@@ -233,10 +296,10 @@
     {
       "name": "simple_pie_chart.png",
       "label": 0,
-      "score": 0.9046968448822398,
-      "visual": 0.8665876200971488,
-      "siglip": 0.6347333123952716,
-      "commfor": 0.000055262963011325286,
+      "score": 0.00016692603076848929,
+      "visual": 0.00010006684290475576,
+      "siglip": 0.6141488049923591,
+      "commfor": 0.000050034673186657334,
       "reasons": [
         "visual",
         "graphic-gate"
@@ -246,17 +309,17 @@
         "scanGrain": false,
         "uiCapture": true,
         "uniqueColors": 67,
-        "edgeRatio": 0.07357340720221607,
-        "fineRatio": 0.021274238227146816,
-        "colorfulness": 170.6824758837707,
+        "edgeRatio": 0.0732409972299169,
+        "fineRatio": 0.011412742382271468,
+        "colorfulness": 168.9837543104384,
         "muted": false
       }
     },
     {
       "name": "VLC_UI.png",
       "label": 0,
-      "score": 0.8581101865981478,
-      "visual": 0.811679093069437,
+      "score": 0.00020098544631451775,
+      "visual": 0.00012180589118993002,
       "siglip": 0.5660272159727183,
       "commfor": 0.00006090480029233054,
       "reasons": [

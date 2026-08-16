@@ -11,6 +11,9 @@ import {
   NODE_SHARP_RESAMPLE,
   DECODE_PATHS,
   applyCanvasResample,
+  isBelowShortEdge,
+  letterboxBox,
+  imagenetPadCss,
 } from "../src/preprocess.js";
 
 describe("preprocess", () => {
@@ -78,6 +81,38 @@ describe("preprocess", () => {
     const sl = { imageSmoothingEnabled: true, imageSmoothingQuality: "high" };
     applyCanvasResample(sl, "siglip");
     assert.equal(sl.imageSmoothingEnabled, false);
+  });
+
+  it("names skipUpsample when the source short edge is below the CF / SigLIP canvas", () => {
+    assert.equal(isBelowShortEdge(250, 197, PREPROCESS.resizeShortEdge), true);
+    assert.equal(isBelowShortEdge(250, 167, 224), true);
+    assert.equal(isBelowShortEdge(250, 339, 224), false);
+    assert.equal(isBelowShortEdge(470, 638, PREPROCESS.resizeShortEdge), false);
+    assert.equal(isBelowShortEdge(652, 515, PREPROCESS.resizeShortEdge), false);
+    assert.equal(isBelowShortEdge(440, 600, PREPROCESS.resizeShortEdge), false);
+  });
+
+  it("letterboxes small sources without scaling up", () => {
+    const duke = letterboxBox(250, 197, 384);
+    assert.equal(duke.scale, 1);
+    assert.equal(duke.width, 250);
+    assert.equal(duke.height, 197);
+    assert.equal(duke.x, Math.floor((384 - 250) / 2));
+    assert.equal(duke.y, Math.floor((384 - 197) / 2));
+
+    const sl = letterboxBox(250, 197, 224);
+    assert.ok(sl.scale <= 1);
+    assert.equal(sl.width, 224);
+    assert.equal(sl.height, Math.round(197 * (224 / 250)));
+    assert.equal(sl.x, 0);
+
+    const charlesworthOrig = letterboxBox(470, 638, 384);
+    assert.ok(charlesworthOrig.scale < 1);
+    assert.equal(charlesworthOrig.height, 384);
+  });
+
+  it("fills CF pad with ImageNet mean, not black", () => {
+    assert.equal(imagenetPadCss(), "rgb(124, 116, 104)");
   });
 
   it("converts a logit to a probability with sigmoid", () => {

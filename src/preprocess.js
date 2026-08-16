@@ -21,6 +21,14 @@ export const PREPROCESS = {
  * Medium-smooth Community Forensics (try to recover TNR);
  * nearest-neighbor SigLIP (KEEP 404faa6 TPR came from the 224 stretch).
  *
+ * Named product rule `skipUpsample`: when the source short edge is
+ * below the CF 440 recipe (or below SigLIP 224), do not scale those
+ * pixels up. Letterbox / pad native (or already-smaller) pixels into
+ * the 384 / 224 canvas. Wikimedia 250×197 thumbs are the live case;
+ * any short-edge-below-recipe file takes the same branch. Not nearest
+ * CF stretch (PR 23). Graphic flags still read the default medium 440
+ * CF crop so Charlesworth 250px cannot flip off scanGrain.
+ *
  * This is the source-of-truth decode. Node sharp kernels below are a proxy.
  * node(B) − chrome(B) is decode-delta. Do not absorb it in FUSE_DEFAULTS.
  */
@@ -52,6 +60,45 @@ export function applyCanvasResample(ctx, which = "commfor") {
   const spec = CANVAS_RESAMPLE[which] || CANVAS_RESAMPLE.commfor;
   ctx.imageSmoothingEnabled = spec.imageSmoothingEnabled;
   ctx.imageSmoothingQuality = spec.imageSmoothingQuality;
+}
+
+/**
+ * Named product rule `skipUpsample`: the source short edge is below the
+ * model canvas, so the 440/224 recipe would scale pixels up. Not a URL
+ * or file-hash special-case. Not nearest stretch (PR 23).
+ */
+export function isBelowShortEdge(width, height, shortEdge) {
+  const short = Math.min(width, height);
+  return short > 0 && short < shortEdge;
+}
+
+/** ImageNet-mean CSS fill so CF pad is ~0 after mean-centering. */
+export function imagenetPadCss(mean = PREPROCESS.mean) {
+  const r = Math.round((mean[0] ?? 0.485) * 255);
+  const g = Math.round((mean[1] ?? 0.456) * 255);
+  const b = Math.round((mean[2] ?? 0.406) * 255);
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
+/**
+ * Fit source into dest without scaling up. Downscale only when a side
+ * already exceeds dest; otherwise center the native pixels and pad.
+ * This is letterbox / skip-upsample, not a stretch.
+ */
+export function letterboxBox(srcW, srcH, dest) {
+  if (srcW <= 0 || srcH <= 0 || dest <= 0) {
+    throw new Error("image has no area");
+  }
+  const scale = Math.min(1, dest / srcW, dest / srcH);
+  const width = Math.max(1, Math.round(srcW * scale));
+  const height = Math.max(1, Math.round(srcH * scale));
+  return {
+    x: Math.floor((dest - width) / 2),
+    y: Math.floor((dest - height) / 2),
+    width,
+    height,
+    scale,
+  };
 }
 
 export function scaledSize(width, height, shortEdge = PREPROCESS.resizeShortEdge) {
