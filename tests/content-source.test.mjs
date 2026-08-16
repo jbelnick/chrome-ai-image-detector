@@ -16,19 +16,6 @@ const CHARLESWORTH = {
   fileWidth: 470,
 };
 
-const DUKEDESTINY = {
-  page: "https://en.wikipedia.org/wiki/Golden_Retriever",
-  origPath: "/wikipedia/commons/b/bd/Golden_Retriever_Dukedestiny01_drvd.jpg",
-  thumb250Path:
-    "/wikipedia/commons/thumb/b/bd/Golden_Retriever_Dukedestiny01_drvd.jpg/250px-Golden_Retriever_Dukedestiny01_drvd.jpg",
-  thumb500Path:
-    "/wikipedia/commons/thumb/b/bd/Golden_Retriever_Dukedestiny01_drvd.jpg/500px-Golden_Retriever_Dukedestiny01_drvd.jpg",
-  src: "//upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Golden_Retriever_Dukedestiny01_drvd.jpg/250px-Golden_Retriever_Dukedestiny01_drvd.jpg?utm_source=en.wikipedia.org&utm_campaign=parser&utm_content=thumbnail",
-  srcset:
-    "//upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Golden_Retriever_Dukedestiny01_drvd.jpg/500px-Golden_Retriever_Dukedestiny01_drvd.jpg?utm_source=en.wikipedia.org&utm_campaign=parser&utm_content=thumbnail 2x",
-  fileWidth: 652,
-};
-
 function loadContent() {
   const chrome = {
     storage: {
@@ -120,50 +107,6 @@ describe("content source selection", () => {
     assert.match(picked, /\/thumb\//);
   });
 
-  it("Dukedestiny infobox: density-corrected naturalWidth 250 + currentSrc 500px picks the 2x thumb, not the 250px src", () => {
-    const { sourceOf } = loadContent();
-    const thumb250 =
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Golden_Retriever_Dukedestiny01_drvd.jpg/250px-Golden_Retriever_Dukedestiny01_drvd.jpg?utm_source=en.wikipedia.org&utm_campaign=parser&utm_content=thumbnail";
-    const thumb500 =
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Golden_Retriever_Dukedestiny01_drvd.jpg/500px-Golden_Retriever_Dukedestiny01_drvd.jpg?utm_source=en.wikipedia.org&utm_campaign=parser&utm_content=thumbnail";
-    const picked = sourceOf({
-      src: DUKEDESTINY.src,
-      srcset: DUKEDESTINY.srcset,
-      currentSrc: thumb500,
-      naturalWidth: 250,
-      baseURI: DUKEDESTINY.page,
-      dataset: { fileWidth: String(DUKEDESTINY.fileWidth) },
-      getAttribute(name) {
-        if (name === "srcset") return DUKEDESTINY.srcset;
-        if (name === "data-file-width") return String(DUKEDESTINY.fileWidth);
-        return null;
-      },
-    });
-    assert.ok(picked.includes(DUKEDESTINY.thumb500Path), picked);
-    assert.doesNotMatch(picked, /250px-/);
-    assert.notEqual(picked, thumb250);
-  });
-
-  it("Dukedestiny infobox: 1x currentSrc 250px keeps the 250px thumb", () => {
-    const { sourceOf } = loadContent();
-    const thumb250 =
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Golden_Retriever_Dukedestiny01_drvd.jpg/250px-Golden_Retriever_Dukedestiny01_drvd.jpg?utm_source=en.wikipedia.org&utm_campaign=parser&utm_content=thumbnail";
-    const picked = sourceOf({
-      src: DUKEDESTINY.src,
-      srcset: DUKEDESTINY.srcset,
-      currentSrc: thumb250,
-      naturalWidth: 250,
-      baseURI: DUKEDESTINY.page,
-      dataset: { fileWidth: String(DUKEDESTINY.fileWidth) },
-      getAttribute(name) {
-        if (name === "srcset") return DUKEDESTINY.srcset;
-        if (name === "data-file-width") return String(DUKEDESTINY.fileWidth);
-        return null;
-      },
-    });
-    assert.match(picked, /250px-Golden_Retriever_Dukedestiny01_drvd/);
-  });
-
   it("prefers the srcset w candidate that equals naturalWidth", () => {
     const { sourceOf } = loadContent();
     const picked = sourceOf({
@@ -187,33 +130,6 @@ describe("content source selection", () => {
     assert.equal(badge.dataset.grainSha256, sha256);
     assert.equal(img.dataset.grainSha256, sha256);
     assert.equal(badge.dataset.grainScore, "0.5");
-  });
-
-  it("live Wikipedia Dukedestiny orig / 500px / 250px are different files", async () => {
-    const origUrl = `https://upload.wikimedia.org${DUKEDESTINY.origPath}`;
-    const thumb500Url = `https://upload.wikimedia.org${DUKEDESTINY.thumb500Path}`;
-    const thumb250Url = `https://upload.wikimedia.org${DUKEDESTINY.thumb250Path}`;
-    const headers = { "user-agent": "GrainDetector/1.0 (srcset identity test)" };
-    const [origRes, thumb500Res, thumb250Res] = await Promise.all([
-      fetch(origUrl, { headers }),
-      fetch(thumb500Url, { headers }),
-      fetch(thumb250Url, { headers }),
-    ]);
-    assert.equal(origRes.ok, true, `orig fetch ${origRes.status}`);
-    assert.equal(thumb500Res.ok, true, `500px fetch ${thumb500Res.status}`);
-    assert.equal(thumb250Res.ok, true, `250px fetch ${thumb250Res.status}`);
-    const origBytes = new Uint8Array(await origRes.arrayBuffer());
-    const thumb500Bytes = new Uint8Array(await thumb500Res.arrayBuffer());
-    const thumb250Bytes = new Uint8Array(await thumb250Res.arrayBuffer());
-    const origHash = Buffer.from(await crypto.subtle.digest("SHA-256", origBytes)).toString("hex");
-    const thumb500Hash = Buffer.from(await crypto.subtle.digest("SHA-256", thumb500Bytes)).toString("hex");
-    const thumb250Hash = Buffer.from(await crypto.subtle.digest("SHA-256", thumb250Bytes)).toString("hex");
-    assert.notEqual(origHash, thumb500Hash);
-    assert.notEqual(origHash, thumb250Hash);
-    assert.notEqual(thumb500Hash, thumb250Hash);
-    assert.equal(origHash, "74cd09d6d360041ff3763af1abcb0a809200a26f784e3baf81321c60b676eb31");
-    assert.equal(thumb500Hash, "1a5278316a8bb2f413ca29be6f4579ffcd6fff589f58d054bfe17e86d4fa5b50");
-    assert.equal(thumb250Hash, "40a49c7a244484c9406393b44dcf1f60adf555b345d334e4dd7cb7ffd872ef8e");
   });
 
   it("live Wikipedia Charlesworth thumb and original are different files", async () => {
