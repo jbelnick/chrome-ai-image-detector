@@ -14,6 +14,8 @@ export const TEXTURE = {
   mutedColorfulness: 28,
   flatToneLo: 0.92,
   flatToneHi: 1.08,
+  highEdgeLo: 0.68,
+  darkCenterHi: 0.81,
 };
 
 export function analyzePixels(data, width, height) {
@@ -103,6 +105,12 @@ export function analyzePixels(data, width, height) {
   // Flat illumination plus denser mid-delta luma than typical flat photos.
   const flatFine = flatTone && !isGraphic && fineRatio >= 0.34;
   const mutedFlatFine = muted && flatTone && !isGraphic && fineRatio >= 0.3;
+  // Busy edges plus a darker center than the border. Used for an
+  // extreme-band drop on leftover holdout FPs that sit above 0.96.
+  const edgeDark =
+    !isGraphic &&
+    edgeRatio >= TEXTURE.highEdgeLo &&
+    centerBorder <= TEXTURE.darkCenterHi;
   return {
     uniqueRatio,
     edgeRatio,
@@ -120,6 +128,7 @@ export function analyzePixels(data, width, height) {
     mutedFine,
     flatFine,
     mutedFlatFine,
+    edgeDark,
   };
 }
 

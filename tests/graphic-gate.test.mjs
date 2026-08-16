@@ -123,6 +123,34 @@ describe("graphic-gate", () => {
     assert.equal(analyzePixels(vivid, w, h).mutedFine, false);
   });
 
+  it("flags a busy dark-center field as edge-dark and a flat field as not", () => {
+    const w = 128;
+    const h = 128;
+    const data = new Uint8Array(w * h * 4);
+    for (let y = 0; y < h; y += 1) {
+      for (let x = 0; x < w; x += 1) {
+        const i = (y * w + x) * 4;
+        const center = x >= w * 0.25 && x < w * 0.75 && y >= h * 0.25 && y < h * 0.75;
+        const checker = (x + y) % 2 === 0 ? 40 : -40;
+        const v = (center ? 50 : 180) + checker;
+        data[i] = Math.max(0, Math.min(255, v + (x % 11) * 12));
+        data[i + 1] = Math.max(0, Math.min(255, v + (y % 11) * 12));
+        data[i + 2] = Math.max(0, Math.min(255, v + ((x * 3 + y) % 9) * 14));
+        data[i + 3] = 255;
+      }
+    }
+    const analysis = analyzePixels(data, w, h);
+    assert.equal(analysis.isGraphic, false);
+    assert.equal(analysis.edgeDark, true);
+    assert.ok(analysis.edgeRatio >= 0.68);
+    assert.ok(analysis.centerBorder <= 0.81);
+
+    const flat = new Uint8Array(w * h * 4);
+    flat.fill(128);
+    for (let i = 3; i < flat.length; i += 4) flat[i] = 255;
+    assert.equal(analyzePixels(flat, w, h).edgeDark, false);
+  });
+
   it("flags a uniform field as flat-tone", () => {
     const w = 64;
     const h = 64;

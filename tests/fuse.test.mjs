@@ -319,6 +319,24 @@ describe("fuse", () => {
     assert.equal(comboOnly.reasons.includes("muted-strong-tail"), false);
   });
 
+  it("drops an edge-dark extreme-band visual without inventing a real verdict from that combo alone", () => {
+    const dropped = fuseScores({
+      visual: 0.943,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, edgeDark: true },
+    });
+    assert.ok(dropped.score < 0.65);
+    assert.ok(dropped.reasons.includes("edge-dark"));
+
+    const comboOnly = fuseScores({
+      visual: 0.2,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, edgeDark: true },
+    });
+    assert.ok(Math.abs(comboOnly.fusedBeforeCalibration - 0.2) < 1e-9);
+    assert.equal(comboOnly.reasons.includes("edge-dark"), false);
+  });
+
   it("lifts a muted mid-range visual without inventing a verdict from low colorfulness alone", () => {
     const lifted = fuseScores({
       visual: 0.56,
