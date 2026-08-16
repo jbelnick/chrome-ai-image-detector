@@ -7,6 +7,12 @@
 
 export const PREPROCESS = {
   resizeShortEdge: 440,
+  // Compressed-thumb CF model upsample target. Same short-edge < 440
+  // branch (Dukedestiny infobox 250 is 250×197 and takes it). One-shot
+  // nearest-to-440 parked Wikipedia Space opera in frozen flat-fine
+  // (0.874→0.657). Nearest-to-640 keeps that thumb clearly AI and
+  // keeps Dukedestiny 250 well under 0.99. Graphic flags still use 440.
+  thumbResizeShortEdge: 640,
   crop: 384,
   mean: [0.485, 0.456, 0.406],
   // Experiment: mean-only (skip ImageNet std). Keeps the trained
@@ -22,14 +28,16 @@ export const PREPROCESS = {
  * nearest-neighbor SigLIP (KEEP 404faa6 TPR came from the 224 stretch).
  *
  * Named product rule `compressedThumb`: a source whose short edge is
- * below the CF 440 recipe must be upscaled. Medium-smooth upsample
- * smears the leftover generator traces on Wikipedia/social JPEG thumbs
- * (holdout compressed-thumb AI TPR was 25% — grade only, not a fit).
- * Nearest on that upsample is the same 224-stretch TPR lesson, applied
- * only when the source is already smaller than the CF short-edge.
- * Charlesworth orig is 470×638 (no upsample) and does not take this
- * branch. Graphic flags still read the default medium CF crop so the
- * 250px Charlesworth scanGrain / muted-scan path cannot flip to 99%.
+ * below the CF 440 recipe takes a nearest CF upsample to
+ * `thumbResizeShortEdge` (640), then the 384 crop. Medium-smooth
+ * upsample to 440 smears leftover generator traces on Wikipedia/social
+ * JPEG thumbs. One-shot nearest-to-440 is the same 224-stretch lesson
+ * but lands Wikipedia Space opera in frozen flat-fine (not clearly AI).
+ * 640 is the decode that keeps Space opera clearly AI and keeps the
+ * live Dukedestiny 250×197 infobox well under 0.99. Charlesworth orig
+ * is 470×638 (no upsample) and does not take this branch. Graphic
+ * flags still read the default medium 440 CF crop so the 250px
+ * Charlesworth scanGrain / muted-scan path cannot flip to 99%.
  *
  * This is the source-of-truth decode. Node sharp kernels below are a proxy.
  * node(B) − chrome(B) is decode-delta. Do not absorb it in FUSE_DEFAULTS.

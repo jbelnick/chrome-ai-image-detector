@@ -10,7 +10,8 @@
 import { createServer } from "node:http";
 import { spawn } from "node:child_process";
 import { createReadStream } from "node:fs";
-import { mkdir, readdir, stat, writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
+import { mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
 import { extname, join, normalize, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
@@ -49,6 +50,59 @@ export const REQUIRED_GATE_NAMES = [
   "simple_pie_chart.png",
   "VLC_UI.png",
 ];
+
+export const REQUIRED_DUKE_NAMES = [
+  "250px-Golden_Retriever_Dukedestiny01_drvd.jpg",
+  "500px-Golden_Retriever_Dukedestiny01_drvd.jpg",
+  "Golden_Retriever_Dukedestiny01_drvd.jpg",
+];
+
+export const DUKE_SHA256 = {
+  "250px-Golden_Retriever_Dukedestiny01_drvd.jpg":
+    "40a49c7a244484c9406393b44dcf1f60adf555b345d334e4dd7cb7ffd872ef8e",
+  "500px-Golden_Retriever_Dukedestiny01_drvd.jpg":
+    "1a5278316a8bb2f413ca29be6f4579ffcd6fff589f58d054bfe17e86d4fa5b50",
+  "Golden_Retriever_Dukedestiny01_drvd.jpg":
+    "74cd09d6d360041ff3763af1abcb0a809200a26f784e3baf81321c60b676eb31",
+};
+
+/** Chrome-path scores on accepted main `dc4b68d` (no this-PR decode). */
+export const MAIN_BASELINE_SCORES = {
+  "250px-Astronaut_riding_an_elephant.png": 0.999998,
+  "250px-DALL-E_3_Wikipedia_Example.png": 0.999963,
+  "250px-DALL-E_Flow_horse_astronaut.png": 0.999998,
+  "250px-DALLE2_Shiba_beret.jpg": 0.999271,
+  "250px-Midjourney_armor_portrait.png": 0.999992,
+  "250px-Mrs_Winifred_Charlesworth.jpg": 0.634229,
+  "250px-Nous_sitting_with_keeper.jpg": 0.322159,
+  "250px-Pope_Francis_puffy_jacket.jpg": 0.484088,
+  "250px-Portrait_paint_drops.png": 0.999999,
+  "250px-Space_opera_1_Midjourney.jpg": 0.873897,
+  "250px-Theatre_Dopera_Spatial.jpg": 0.992677,
+  "Mrs_Winifred_Charlesworth.jpg": 0.632695,
+  "q60-250-DALLE2_Shiba_beret.jpg": 0.996443,
+  "q60-250-Pope_Francis_puffy_jacket.jpg": 0.192477,
+  "q60-250-Space_opera_1_Midjourney.jpg": 0.562776,
+  "q60-250-Theatre_Dopera_Spatial.jpg": 0.601919,
+  "250px-Golden_Retriever_Dukedestiny01_drvd.jpg": 0.817068,
+  "500px-Golden_Retriever_Dukedestiny01_drvd.jpg": 0.615567,
+  "Golden_Retriever_Dukedestiny01_drvd.jpg": 0.647752,
+};
+
+export function roleForName(name) {
+  if (REQUIRED_DUKE_NAMES.includes(name)) return "dukedestiny";
+  if (name.includes("Charlesworth")) return "charlesworth";
+  if (name.includes("Nous")) return "nous";
+  if (
+    name.startsWith("Blender") ||
+    name.startsWith("LibreOffice") ||
+    name.startsWith("VLC") ||
+    name.includes("pie_chart")
+  ) {
+    return "ui";
+  }
+  return "thumb-ai";
+}
 
 function chromeCandidates() {
   if (process.env.CHROME_PATH) return [process.env.CHROME_PATH];
@@ -230,7 +284,10 @@ async function main() {
   try {
     const payload = await server.done;
     if (!payload?.ok) throw new Error("no /done");
-    const rows = payload.rows || [];
+    const rows = (payload.rows || []).map((row) => ({
+      ...row,
+      role: roleForName(row.name),
+    }));
     console.log("");
     console.log("Grain chrome-path named-thumb-ai dump (same offscreen fusion as the extension)");
     console.log(`Backend: ${payload.provider}  webgpu: ${payload.webgpu}`);
@@ -249,6 +306,16 @@ async function main() {
     }
     await mkdir(join(root, "eval/chrome"), { recursive: true });
     const out = dumpPathFromRoot(root);
+    const ai = rows.filter((row) => row.role === "thumb-ai");
+    const afterTp = ai.filter((row) => row.score >= EVAL_THRESHOLD).length;
+    const baseTp = ai.filter((row) => (MAIN_BASELINE_SCORES[row.name] ?? 0) >= EVAL_THRESHOLD).length;
+    const dukeBytes = {};
+    for (const name of REQUIRED_DUKE_NAMES) {
+      const row = scored.find((item) => item.name === name);
+      if (!row) continue;
+      const buf = await readFile(row.path);
+      dukeBytes[name] = createHash("sha256").update(buf).digest("hex");
+    }
     await writeFile(
       out,
       JSON.stringify(
@@ -259,11 +326,28 @@ async function main() {
           webgpu: payload.webgpu,
           gpu: payload.gpu,
           hashes: payload.hashes,
+          dukeSha256: dukeBytes,
           threshold: EVAL_THRESHOLD,
           fuse: FUSE_DEFAULTS,
           n: rows.length,
           rows,
-          note: "Chrome-path dump of named compressed-thumb AI fixtures plus Charlesworth/UI gate. createImageBitmap + OffscreenCanvas + shipped fuse. Sharp does not count. Not PR 12 holdout.",
+          note: "Chrome-path dump of named compressed-thumb AI fixtures plus Dukedestiny 250/500/orig, Charlesworth, and UI gate. Same scoreImage path as the overlay. createImageBitmap + OffscreenCanvas + shipped fuse. Sharp does not count. Not PR 12 holdout. Do not train on PR 12.",
+          baseline: {
+            detector: "dc4b68d",
+            path: "chrome-ort-web-named-thumb-ai",
+            sharp: false,
+            note: "Chrome-path wasm on the same named files at accepted main, before this PR's thumb resample. Dukedestiny scores are the live main/no-this-PR numbers. Not PR 12.",
+            scores: MAIN_BASELINE_SCORES,
+            thumbAiTp: baseTp,
+            thumbAiN: ai.length,
+            thumbAiTpr: ai.length ? baseTp / ai.length : 0,
+          },
+          after: {
+            detector: "nearest-thumb-640",
+            thumbAiTp: afterTp,
+            thumbAiN: ai.length,
+            thumbAiTpr: ai.length ? afterTp / ai.length : 0,
+          },
         },
         null,
         2,

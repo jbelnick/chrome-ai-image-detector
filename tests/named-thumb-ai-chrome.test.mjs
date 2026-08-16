@@ -4,6 +4,8 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
+  DUKE_SHA256,
+  REQUIRED_DUKE_NAMES,
   REQUIRED_GATE_NAMES,
   REQUIRED_THUMB_AI_NAMES,
 } from "../eval/chrome/run-named-thumbs.mjs";
@@ -24,12 +26,43 @@ describe("chrome-path named compressed-thumb AI dump", () => {
     assert.ok(dump.webgpu);
     assert.match(dump.note, /Not PR 12 holdout/);
     assert.match(dump.note, /Do not train on PR 12/);
+    assert.match(dump.note, /Dukedestiny/);
   });
 
-  it("covers named thumb-AI fixtures and the Charlesworth / UI gate", () => {
-    for (const name of [...REQUIRED_THUMB_AI_NAMES, ...REQUIRED_GATE_NAMES]) {
+  it("covers named thumb-AI fixtures, Dukedestiny bytes, and the Charlesworth / UI gate", () => {
+    for (const name of [
+      ...REQUIRED_THUMB_AI_NAMES,
+      ...REQUIRED_GATE_NAMES,
+      ...REQUIRED_DUKE_NAMES,
+    ]) {
       assert.ok(byName.has(name), `missing ${name}`);
     }
+  });
+
+  it("hashes the live Dukedestiny overlay / 2x / orig bytes", () => {
+    for (const name of REQUIRED_DUKE_NAMES) {
+      assert.equal(dump.dukeSha256[name], DUKE_SHA256[name], name);
+    }
+  });
+
+  it("keeps Wikipedia 250 Space opera clearly AI", () => {
+    const row = byName.get("250px-Space_opera_1_Midjourney.jpg");
+    const main = dump.baseline.scores[row.name];
+    assert.ok(main >= 0.85, `main Space opera ${main} should have been clearly AI`);
+    assert.ok(row.score >= 0.8, `Space opera ${row.score} must stay clearly AI (0.657 is not)`);
+    assert.ok(row.score >= 0.65);
+  });
+
+  it("keeps Dukedestiny 250 well under 0.99 on the same short-edge < 440 branch", () => {
+    const row = byName.get("250px-Golden_Retriever_Dukedestiny01_drvd.jpg");
+    assert.equal(row.role, "dukedestiny");
+    assert.ok(Math.abs(dump.baseline.scores[row.name] - 0.817068) < 1e-5);
+    assert.ok(row.score < 0.9, `Dukedestiny 250 ${row.score} must stay well under 0.99`);
+    assert.ok(row.score < 0.99);
+    const unused = byName.get("500px-Golden_Retriever_Dukedestiny01_drvd.jpg");
+    const orig = byName.get("Golden_Retriever_Dukedestiny01_drvd.jpg");
+    assert.ok(unused.score < 0.65, `Dukedestiny 500 ${unused.score}`);
+    assert.ok(orig.score < 0.65, `Dukedestiny orig ${orig.score}`);
   });
 
   it("raises named thumb-AI TPR versus the recorded main baseline", () => {

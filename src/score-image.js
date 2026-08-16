@@ -31,7 +31,9 @@ export function cropForCommfor(
   Canvas = globalThis.OffscreenCanvas,
   which = "commfor",
 ) {
-  const { width, height } = scaledSize(bitmap.width, bitmap.height);
+  const shortEdge =
+    which === "compressedThumb" ? PREPROCESS.thumbResizeShortEdge : PREPROCESS.resizeShortEdge;
+  const { width, height } = scaledSize(bitmap.width, bitmap.height, shortEdge);
   const canvas = new Canvas(width, height);
   const ctx = canvas.getContext("2d", { willReadFrequently: true });
   applyCanvasResample(ctx, which);

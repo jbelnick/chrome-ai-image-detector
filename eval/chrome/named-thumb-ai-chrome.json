@@ -16,6 +16,11 @@
     "commfor": "67a3770d39d07403a65628544eb99d0c4c444285d3ca2fcdec80972a1237436f",
     "siglip2": "c0573e3f4140c3a7c4e9cc5912bd6b26a033b46a6a8e8af26cbea262b163bcad"
   },
+  "dukeSha256": {
+    "250px-Golden_Retriever_Dukedestiny01_drvd.jpg": "40a49c7a244484c9406393b44dcf1f60adf555b345d334e4dd7cb7ffd872ef8e",
+    "500px-Golden_Retriever_Dukedestiny01_drvd.jpg": "1a5278316a8bb2f413ca29be6f4579ffcd6fff589f58d054bfe17e86d4fa5b50",
+    "Golden_Retriever_Dukedestiny01_drvd.jpg": "74cd09d6d360041ff3763af1abcb0a809200a26f784e3baf81321c60b676eb31"
+  },
   "threshold": 0.65,
   "fuse": {
     "provenanceAiScore": 0.93,
@@ -73,15 +78,15 @@
     "temperature": 0.9,
     "scorePower": 0.85
   },
-  "n": 20,
+  "n": 23,
   "rows": [
     {
       "name": "250px-Astronaut_riding_an_elephant.png",
-      "label": 1,
-      "score": 0.9999979117815313,
-      "visual": 0.9999910603953683,
+      "label": 0,
+      "score": 0.9999783574417752,
+      "visual": 0.9999266706120583,
       "siglip": 0.9856699890977845,
-      "commfor": 0.9564663310629108,
+      "commfor": 0.6429039728757004,
       "reasons": [
         "visual"
       ],
@@ -99,11 +104,11 @@
     },
     {
       "name": "250px-DALL-E_3_Wikipedia_Example.png",
-      "label": 1,
-      "score": 0.9999934019442756,
-      "visual": 0.9999748238556164,
+      "label": 0,
+      "score": 0.9999909765676732,
+      "visual": 0.9999666307149585,
       "siglip": 0.9809205096600874,
-      "commfor": 0.930839888995135,
+      "commfor": 0.9083329272957245,
       "reasons": [
         "visual"
       ],
@@ -121,11 +126,11 @@
     },
     {
       "name": "250px-DALL-E_Flow_horse_astronaut.png",
-      "label": 1,
-      "score": 0.999990155413794,
-      "visual": 0.9999639098073839,
+      "label": 0,
+      "score": 0.9996862015863334,
+      "visual": 0.9991866288826377,
       "siglip": 0.8270203380488773,
-      "commfor": 0.998793856135879,
+      "commfor": 0.9728169202948134,
       "reasons": [
         "visual"
       ],
@@ -143,11 +148,11 @@
     },
     {
       "name": "250px-DALLE2_Shiba_beret.jpg",
-      "label": 1,
-      "score": 0.9990135989283732,
-      "visual": 0.9977217552783391,
+      "label": 0,
+      "score": 0.9997699269964013,
+      "visual": 0.9993847768535665,
       "siglip": 0.9377424767631355,
-      "commfor": 0.41221744269125327,
+      "commfor": 0.8412736652528789,
       "reasons": [
         "visual"
       ],
@@ -164,12 +169,34 @@
       "role": "thumb-ai"
     },
     {
+      "name": "250px-Golden_Retriever_Dukedestiny01_drvd.jpg",
+      "label": 0,
+      "score": 0.8205609828524497,
+      "visual": 0.7695199508082421,
+      "siglip": 0.5159146606658603,
+      "commfor": 0.01646577348767768,
+      "reasons": [
+        "visual"
+      ],
+      "graphic": {
+        "isGraphic": false,
+        "scanGrain": false,
+        "uiCapture": false,
+        "uniqueColors": 147,
+        "edgeRatio": 0.3566759002770083,
+        "fineRatio": 0.3904709141274238,
+        "colorfulness": 45.80720094099107,
+        "muted": false
+      },
+      "role": "dukedestiny"
+    },
+    {
       "name": "250px-Midjourney_armor_portrait.png",
-      "label": 1,
-      "score": 0.999995966008894,
-      "visual": 0.9999838311510683,
+      "label": 0,
+      "score": 0.9999913310779721,
+      "visual": 0.9999678129434966,
       "siglip": 0.88605498243932,
-      "commfor": 0.9987546586055728,
+      "commfor": 0.9975209197638243,
       "reasons": [
         "visual"
       ],
@@ -188,10 +215,10 @@
     {
       "name": "250px-Mrs_Winifred_Charlesworth.jpg",
       "label": 0,
-      "score": 0.6361901908426302,
-      "visual": 0.9923331482579008,
+      "score": 0.6398020634274447,
+      "visual": 0.999462662458246,
       "siglip": 0.8944255098130955,
-      "commfor": 0.3121415459128158,
+      "commfor": 0.9517908806343087,
       "reasons": [
         "visual",
         "muted-scan"
@@ -214,7 +241,7 @@
       "score": 0.3221587320361304,
       "visual": 0.28419955367195504,
       "siglip": 0.1539500922947601,
-      "commfor": 0.01176690317591044,
+      "commfor": 0.001973858781998173,
       "reasons": [
         "visual"
       ],
@@ -232,11 +259,11 @@
     },
     {
       "name": "250px-Pope_Francis_puffy_jacket.jpg",
-      "label": 1,
+      "label": 0,
       "score": 0.48408796376699764,
       "visual": 0.4332300031751939,
       "siglip": 0.24715871737476694,
-      "commfor": 0.6836123502897543,
+      "commfor": 0.18924862906204978,
       "reasons": [
         "visual"
       ],
@@ -254,11 +281,11 @@
     },
     {
       "name": "250px-Portrait_paint_drops.png",
-      "label": 1,
-      "score": 0.9999998959628595,
-      "visual": 0.9999993988368986,
+      "label": 0,
+      "score": 0.9999967919442557,
+      "visual": 0.9999868436222936,
       "siglip": 0.9949357221342199,
-      "commfor": 0.9765600185620956,
+      "commfor": 0.48701899949848054,
       "reasons": [
         "visual"
       ],
@@ -276,14 +303,13 @@
     },
     {
       "name": "250px-Space_opera_1_Midjourney.jpg",
-      "label": 1,
-      "score": 0.6570137026006344,
-      "visual": 0.9070645391623608,
+      "label": 0,
+      "score": 0.9998059922288448,
+      "visual": 0.9994722679638103,
       "siglip": 0.5870937902200871,
-      "commfor": 0.45489692985901653,
+      "commfor": 0.9969046438189902,
       "reasons": [
-        "visual",
-        "flat-fine"
+        "visual"
       ],
       "graphic": {
         "isGraphic": false,
@@ -299,11 +325,11 @@
     },
     {
       "name": "250px-Theatre_Dopera_Spatial.jpg",
-      "label": 1,
-      "score": 0.999238150524232,
-      "visual": 0.9981938895235659,
+      "label": 0,
+      "score": 0.9999665464731188,
+      "visual": 0.9998914854968237,
       "siglip": 0.8809199521394253,
-      "commfor": 0.8726302457929284,
+      "commfor": 0.9923473863986668,
       "reasons": [
         "visual"
       ],
@@ -318,6 +344,28 @@
         "muted": false
       },
       "role": "thumb-ai"
+    },
+    {
+      "name": "500px-Golden_Retriever_Dukedestiny01_drvd.jpg",
+      "label": 0,
+      "score": 0.6155921703780662,
+      "visual": 0.558634646565412,
+      "siglip": 0.33540570615712445,
+      "commfor": 0.0007249998454807996,
+      "reasons": [
+        "visual"
+      ],
+      "graphic": {
+        "isGraphic": false,
+        "scanGrain": false,
+        "uiCapture": false,
+        "uniqueColors": 172,
+        "edgeRatio": 0.4232686980609418,
+        "fineRatio": 0.34493074792243766,
+        "colorfulness": 46.12207566615998,
+        "muted": false
+      },
+      "role": "dukedestiny"
     },
     {
       "name": "Blender_2.92_UI.png",
@@ -341,6 +389,29 @@
         "muted": true
       },
       "role": "ui"
+    },
+    {
+      "name": "Golden_Retriever_Dukedestiny01_drvd.jpg",
+      "label": 0,
+      "score": 0.6477516366657887,
+      "visual": 0.712556672006358,
+      "siglip": 0.4635506225350488,
+      "commfor": 0.001162724964918203,
+      "reasons": [
+        "visual",
+        "photo-grain"
+      ],
+      "graphic": {
+        "isGraphic": false,
+        "scanGrain": false,
+        "uiCapture": false,
+        "uniqueColors": 170,
+        "edgeRatio": 0.3542382271468144,
+        "fineRatio": 0.37850415512465374,
+        "colorfulness": 46.89996244097319,
+        "muted": false
+      },
+      "role": "dukedestiny"
     },
     {
       "name": "LibreOffice_Writer_7.5.png",
@@ -390,11 +461,11 @@
     },
     {
       "name": "q60-250-DALLE2_Shiba_beret.jpg",
-      "label": 1,
-      "score": 0.9965548606311609,
-      "visual": 0.9929947435659146,
+      "label": 0,
+      "score": 0.9967935309562986,
+      "visual": 0.9934317227749888,
       "siglip": 0.9148791867689328,
-      "commfor": 0.03316467579070697,
+      "commfor": 0.09347466433336638,
       "reasons": [
         "visual"
       ],
@@ -412,11 +483,11 @@
     },
     {
       "name": "q60-250-Pope_Francis_puffy_jacket.jpg",
-      "label": 1,
+      "label": 0,
       "score": 0.19247724380304385,
       "visual": 0.16730307001768874,
       "siglip": 0.08747770987098001,
-      "commfor": 0.8324093450184439,
+      "commfor": 0.6118065699882917,
       "reasons": [
         "visual"
       ],
@@ -434,14 +505,13 @@
     },
     {
       "name": "q60-250-Space_opera_1_Midjourney.jpg",
-      "label": 1,
-      "score": 0.6054794342075829,
-      "visual": 0.8435257214734392,
+      "label": 0,
+      "score": 0.9898799767441603,
+      "visual": 0.9816153723967439,
       "siglip": 0.54616020259163,
-      "commfor": 0.24030756033183664,
+      "commfor": 0.910741479508164,
       "reasons": [
-        "visual",
-        "muted-fine"
+        "visual"
       ],
       "graphic": {
         "isGraphic": false,
@@ -457,11 +527,11 @@
     },
     {
       "name": "q60-250-Theatre_Dopera_Spatial.jpg",
-      "label": 1,
-      "score": 0.9902381991084817,
-      "visual": 0.9821978639097476,
+      "label": 0,
+      "score": 0.9956309463805344,
+      "visual": 0.9913313191669104,
       "siglip": 0.5566318953396321,
-      "commfor": 0.9094385803156051,
+      "commfor": 0.9559014694048235,
       "reasons": [
         "visual"
       ],
@@ -524,12 +594,12 @@
       "role": "ui"
     }
   ],
-  "note": "Chrome-path dump of named compressed-thumb AI fixtures plus Charlesworth/UI gate. createImageBitmap + OffscreenCanvas + shipped fuse. Sharp does not count. Not PR 12 holdout. Do not train on PR 12.",
+  "note": "Chrome-path dump of named compressed-thumb AI fixtures plus Dukedestiny 250/500/orig, Charlesworth, and UI gate. Same scoreImage path as the overlay. createImageBitmap + OffscreenCanvas + shipped fuse. Sharp does not count. Not PR 12 holdout. Do not train on PR 12.",
   "baseline": {
     "detector": "dc4b68d",
     "path": "chrome-ort-web-named-thumb-ai",
     "sharp": false,
-    "note": "Chrome-path wasm on the same named files at accepted main, before compressedThumb. Copied from this lane's harness — not invented. Not PR 12.",
+    "note": "Chrome-path wasm on the same named files at accepted main, before this PR's thumb resample. Dukedestiny scores are the live main/no-this-PR numbers. Not PR 12.",
     "scores": {
       "250px-Astronaut_riding_an_elephant.png": 0.999998,
       "250px-DALL-E_3_Wikipedia_Example.png": 0.999963,
@@ -546,16 +616,19 @@
       "q60-250-DALLE2_Shiba_beret.jpg": 0.996443,
       "q60-250-Pope_Francis_puffy_jacket.jpg": 0.192477,
       "q60-250-Space_opera_1_Midjourney.jpg": 0.562776,
-      "q60-250-Theatre_Dopera_Spatial.jpg": 0.601919
+      "q60-250-Theatre_Dopera_Spatial.jpg": 0.601919,
+      "250px-Golden_Retriever_Dukedestiny01_drvd.jpg": 0.817068,
+      "500px-Golden_Retriever_Dukedestiny01_drvd.jpg": 0.615567,
+      "Golden_Retriever_Dukedestiny01_drvd.jpg": 0.647752
     },
     "thumbAiTp": 9,
     "thumbAiN": 13,
     "thumbAiTpr": 0.6923076923076923
   },
   "after": {
-    "detector": "6780dbc+",
-    "thumbAiTp": 10,
+    "detector": "nearest-thumb-640",
+    "thumbAiTp": 11,
     "thumbAiN": 13,
-    "thumbAiTpr": 0.7692307692307693
+    "thumbAiTpr": 0.8461538461538461
   }
 }

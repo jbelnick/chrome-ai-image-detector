@@ -37,7 +37,7 @@ Chrome (`src/preprocess.js` `CANVAS_RESAMPLE`):
 
 - Community Forensics: smoothing on, quality `medium`
 - SigLIP: smoothing off (nearest-neighbor 224 stretch)
-- Named product rule `compressedThumb`: when the source short-edge is below the CF 440 recipe, CF upsample is nearest. Graphic flags still read the default medium CF crop so Charlesworth 250px cannot flip off `scanGrain`.
+- Named product rule `compressedThumb`: when the source short-edge is below the CF 440 recipe, CF upsample is nearest to short-edge 640 (not 440). One-shot nearest-to-440 parked Wikipedia Space opera in frozen `flat-fine`. Graphic flags still read the default medium 440 CF crop so Charlesworth 250px cannot flip off `scanGrain`.
 
 Node (`NODE_SHARP_RESAMPLE`):
 

@@ -150,7 +150,9 @@ describe("score identity", () => {
     const cfCrops = which.filter((row) => row.w !== 224);
     assert.equal(cfCrops.length, 2, "thumb path should draw a medium graphic crop and a nearest CF crop");
     assert.equal(cfCrops[0].enabled, true, "graphic flags stay on the medium CF crop");
+    assert.equal(cfCrops[0].w, 440, "graphic flags stay on the 440 short-edge crop");
     assert.equal(cfCrops[1].enabled, false, "CF model upsample is nearest on a thumb");
+    assert.equal(cfCrops[1].w, 640, "CF model uses nearest-to-640, not nearest-to-440");
   });
 
   it("does not take the compressed-thumb branch on Charlesworth-orig sized sources", async () => {

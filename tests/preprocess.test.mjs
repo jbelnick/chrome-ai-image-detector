@@ -84,11 +84,15 @@ describe("preprocess", () => {
 
   it("names compressed-thumb as nearest CF upsample when the source is below 440", () => {
     assert.equal(isCompressedThumbSize(250, 339), true);
+    assert.equal(isCompressedThumbSize(250, 197), true);
     assert.equal(isCompressedThumbSize(320, 320), true);
     assert.equal(isCompressedThumbSize(470, 638), false);
     assert.equal(isCompressedThumbSize(440, 600), false);
     assert.equal(commforResampleWhich(250, 339), "compressedThumb");
+    assert.equal(commforResampleWhich(250, 197), "compressedThumb");
     assert.equal(commforResampleWhich(470, 638), "commfor");
+    assert.equal(PREPROCESS.thumbResizeShortEdge, 640);
+    assert.equal(PREPROCESS.resizeShortEdge, 440);
 
     const thumb = { imageSmoothingEnabled: true, imageSmoothingQuality: "high" };
     applyCanvasResample(thumb, "compressedThumb");
