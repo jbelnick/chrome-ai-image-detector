@@ -53,7 +53,7 @@ export function scoreFromModels({
   graphic,
   config = FUSE_DEFAULTS,
 } = {}) {
-  const visual = blendVisual(siglip, commfor);
+  const visual = blendVisual(siglip, commfor, graphic);
   const fused = fuseScores({ visual, provenance, graphic, config });
   return {
     score: fused.score,
