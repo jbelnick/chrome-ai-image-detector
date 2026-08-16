@@ -27,6 +27,32 @@ describe("siglip probe", () => {
     assert.ok(mid > 0.40);
   });
 
+  it("restores CF only on social-recompress when sl is mid-crushed and CF is 0.99+", () => {
+    const hit = blendVisual(0.115, 0.999, {
+      socialRecompress: true,
+      commforRestore: 0.99,
+      siglipMin: 0.1,
+      siglipMax: 0.25,
+    });
+    assert.ok(hit > 0.9);
+
+    const lowSl = blendVisual(0.059, 0.983, {
+      socialRecompress: true,
+      commforRestore: 0.99,
+      siglipMin: 0.1,
+      siglipMax: 0.25,
+    });
+    assert.ok(lowSl < 0.25);
+
+    const midCf = blendVisual(0.114, 0.925, {
+      socialRecompress: true,
+      commforRestore: 0.99,
+      siglipMin: 0.1,
+      siglipMax: 0.25,
+    });
+    assert.ok(midCf < 0.25);
+  });
+
   it("builds a 1x3x224x224 SigLIP tensor", () => {
     const n = 224 * 224;
     const rgba = new Uint8Array(n * 4);

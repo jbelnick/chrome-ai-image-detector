@@ -1,5 +1,6 @@
 import { MODELS } from "./lib/model-config.js";
 import { scanProvenance } from "./lib/provenance.js";
+import { scanJpegSocial, SOCIAL_JPEG } from "./lib/jpeg-social.js";
 import {
   PREPROCESS,
   scaledSize,
@@ -122,12 +123,14 @@ function squareForSiglip(bitmap) {
 async function inferBytes(bytes, mime) {
   await initModel();
   const provenance = scanProvenance(bytes);
+  const jpeg = scanJpegSocial(bytes);
   const blob = new Blob([bytes], { type: mime || "application/octet-stream" });
   const bitmap = await createImageBitmap(blob);
   try {
     const cfPixels = cropForCommfor(bitmap);
     const slPixels = squareForSiglip(bitmap);
     const graphic = analyzePixels(cfPixels.data, cfPixels.width, cfPixels.height);
+    if (jpeg.socialRecompress) graphic.socialRecompress = true;
     const cfTensor = imageDataToTensor(cfPixels.data, cfPixels.width, cfPixels.height);
     const slTensor = imageDataToSiglipTensor(slPixels.data, slPixels.width, slPixels.height);
     const cfOut = await cfSession.run({
@@ -138,7 +141,12 @@ async function inferBytes(bytes, mime) {
     });
     const commfor = visualProbabilityFromLogit(Number(cfOut[MODELS.commfor.outputName].data[0]));
     const siglip = siglipProbability(slOut[MODELS.siglip2.outputName].data);
-    const visual = blendVisual(siglip, commfor);
+    const visual = blendVisual(siglip, commfor, {
+      socialRecompress: jpeg.socialRecompress,
+      commforRestore: SOCIAL_JPEG.commforRestore,
+      siglipMin: SOCIAL_JPEG.siglipMin,
+      siglipMax: SOCIAL_JPEG.siglipMax,
+    });
     const fused = fuseScores({ visual, provenance, graphic, config: fuseConfig });
     return {
       score: fused.score,

@@ -56,12 +56,21 @@ export function siglipProbability(pooler) {
  * Broader-proxy family 1: when SigLIP is sure-real, ignore CF.
  * Web-JPEG reals often get a high CF score and a low SigLIP score;
  * letting CF dominate those disagreements is the 49-FP pattern.
+ *
+ * Family 22: q≈65 / max-side-720 social recompress can crush SigLIP
+ * into (0.10, 0.25) while CF stays ≥ 0.99 on generators. Restore CF
+ * only in that sliver — not the discarded 0.90 / any-sl<0.25 restore.
  */
-export function blendVisual(siglip, commfor) {
+export function blendVisual(siglip, commfor, extra = {}) {
   const a = Number.isFinite(siglip) ? siglip : 0;
   const b = Number.isFinite(commfor) ? commfor : 0;
   const missS = 1 - a;
-  if (a < 0.25) {
+  const slMin = extra.siglipMin ?? 0.1;
+  const slMax = extra.siglipMax ?? 0.25;
+  const cfMin = extra.commforRestore ?? 0.99;
+  const restore =
+    extra.socialRecompress && a >= slMin && a < slMax && b >= cfMin;
+  if (a < 0.25 && !restore) {
     return 1 - missS * missS;
   }
   return 1 - missS * missS * (1 - b);

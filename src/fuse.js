@@ -82,6 +82,10 @@ export function fuseScores({
     reasons.push("graphic-gate");
   }
 
+  if (graphic?.socialRecompress) {
+    reasons.push("social-recompress");
+  }
+
   const lift = config.vividLift ?? 0;
   if (
     lift > 0 &&

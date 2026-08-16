@@ -339,6 +339,21 @@ describe("fuse", () => {
     assert.equal(comboOnly.reasons.includes("muted-strong-tail"), false);
   });
 
+  it("records social-recompress without changing the visual score", () => {
+    const plain = fuseScores({
+      visual: 0.4,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false },
+    });
+    const marked = fuseScores({
+      visual: 0.4,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, socialRecompress: true },
+    });
+    assert.ok(Math.abs(marked.fusedBeforeCalibration - plain.fusedBeforeCalibration) < 1e-9);
+    assert.ok(marked.reasons.includes("social-recompress"));
+  });
+
   it("lifts a muted mid-range visual without inventing a verdict from low colorfulness alone", () => {
     const lifted = fuseScores({
       visual: 0.56,

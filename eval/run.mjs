@@ -19,6 +19,7 @@ import {
 } from "../src/preprocess.js";
 import { imageDataToSiglipTensor, siglipProbability, blendVisual, SIGLIP } from "../src/siglip.js";
 import { scanProvenance } from "../src/provenance.js";
+import { scanJpegSocial, SOCIAL_JPEG } from "../src/jpeg-social.js";
 import { analyzePixels } from "../src/graphic-gate.js";
 import { fuseScores, FUSE_DEFAULTS } from "../src/fuse.js";
 import { bestRawThreshold } from "../src/calibrate.js";
@@ -148,7 +149,9 @@ async function main() {
   for (const [index, row] of files.entries()) {
     const { bytes, rgbaCf, tensorCf, tensorSig } = await decodeBoth(row.path);
     const provenance = scanProvenance(bytes);
+    const jpeg = scanJpegSocial(bytes);
     const graphic = analyzePixels(rgbaCf, PREPROCESS.crop, PREPROCESS.crop);
+    if (jpeg.socialRecompress) graphic.socialRecompress = true;
     const cfOut = await cfSess.run({
       [MODELS.commfor.inputName]: new ort.Tensor("float32", tensorCf, [1, 3, PREPROCESS.crop, PREPROCESS.crop]),
     });
@@ -157,7 +160,12 @@ async function main() {
     });
     const commfor = visualProbabilityFromLogit(Number(cfOut[MODELS.commfor.outputName].data[0]));
     const siglip = siglipProbability(slOut[MODELS.siglip2.outputName].data);
-    const visual = blendVisual(siglip, commfor);
+    const visual = blendVisual(siglip, commfor, {
+      socialRecompress: jpeg.socialRecompress,
+      commforRestore: SOCIAL_JPEG.commforRestore,
+      siglipMin: SOCIAL_JPEG.siglipMin,
+      siglipMax: SOCIAL_JPEG.siglipMax,
+    });
     const fused = fuseScores({
       visual,
       provenance,
