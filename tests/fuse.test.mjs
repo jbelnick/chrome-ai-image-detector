@@ -36,10 +36,20 @@ describe("fuse", () => {
     const result = fuseScores({
       visual: 0.8,
       provenance: { ai: false, camera: false },
-      graphic: { isGraphic: true },
+      graphic: { isGraphic: true, uiCapture: true },
     });
     assert.ok(result.fusedBeforeCalibration < 0.8 * FUSE_DEFAULTS.graphicScaleWhenFlagged + 1e-6);
     assert.ok(result.reasons.includes("graphic-gate"));
+  });
+
+  it("does not scale every isGraphic — uniqueColors < 200 is a wide net", () => {
+    const filmLike = fuseScores({
+      visual: 0.8,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: true, uiCapture: false },
+    });
+    assert.ok(Math.abs(filmLike.fusedBeforeCalibration - 0.8) < 1e-9);
+    assert.equal(filmLike.reasons.includes("graphic-gate"), false);
   });
 
   it("lifts a vivid mid-range visual without inventing a verdict from colorfulness alone", () => {

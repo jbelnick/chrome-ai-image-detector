@@ -9,7 +9,7 @@ import { graphicScale } from "./graphic-gate.js";
 export const FUSE_DEFAULTS = {
   provenanceAiScore: 0.93,
   cameraRealScale: 1,
-  graphicScaleWhenFlagged: 1,
+  graphicScaleWhenFlagged: 0.72,
   vividLift: 0.05,
   vividBandMin: 0.5,
   vividBandMax: 0.68,
@@ -80,7 +80,7 @@ export function fuseScores({
     reasons.push("camera-exif");
   }
 
-  if (graphic?.isGraphic) {
+  if (graphic?.uiCapture) {
     score *= config.graphicScaleWhenFlagged ?? graphicScale(graphic);
     reasons.push("graphic-gate");
   }
