@@ -4,6 +4,15 @@ const OFFSCREEN_URL = "offscreen.html";
 const MAX_CACHE = 256;
 const MAX_INFLIGHT = 2;
 
+async function sha256Hex(buffer) {
+  const subtle = globalThis.crypto?.subtle;
+  if (!subtle) {
+    throw new Error("Web Crypto subtle.digest is required for SHA-256");
+  }
+  const digest = await subtle.digest("SHA-256", buffer);
+  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
 let offscreenReady = null;
 const pageStats = new Map();
 const resultCache = new Map();
@@ -109,20 +118,28 @@ function bumpStats(tabId, field) {
   chrome.storage.session?.set({ pageStats: Object.fromEntries(pageStats) }).catch(() => {});
 }
 
-async function analyzeImage(message, tabId) {
-  if (resultCache.has(message.src)) {
-    return resultCache.get(message.src);
+function rememberResult(sha256, result) {
+  if (resultCache.size >= MAX_CACHE && !resultCache.has(sha256)) {
+    const first = resultCache.keys().next().value;
+    resultCache.delete(first);
   }
-  await ensureOffscreen();
+  resultCache.set(sha256, result);
+}
+
+async function analyzeImage(message, tabId) {
   let bytesB64 = message.bytesB64;
   let mime = message.mime || "application/octet-stream";
   if (!bytesB64) {
     const fetched = await fetchImageBytes(message.src);
     bytesB64 = fetched.bytesB64;
     mime = fetched.mime;
-  } else {
-    base64ToBytes(bytesB64);
   }
+  const bytes = base64ToBytes(bytesB64);
+  const sha256 = await sha256Hex(bytes);
+  if (resultCache.has(sha256)) {
+    return { ...resultCache.get(sha256), sha256 };
+  }
+  await ensureOffscreen();
   let result;
   try {
     result = await sendToOffscreen({
@@ -141,17 +158,16 @@ async function analyzeImage(message, tabId) {
       bytesB64,
     });
   }
-  if (resultCache.size >= MAX_CACHE) {
-    const first = resultCache.keys().next().value;
-    resultCache.delete(first);
-  }
-  resultCache.set(message.src, result);
+  result = { ...result, sha256 };
+  rememberResult(sha256, result);
   const stored = await chrome.storage.local.get(["threshold"]);
   const threshold = typeof stored.threshold === "number" ? stored.threshold : 0.65;
   bumpStats(tabId, "analyzed");
   if (result.score >= threshold) bumpStats(tabId, "ai");
   return result;
 }
+
+export { analyzeImage, resultCache, sha256Hex };
 
 chrome.tabs?.onRemoved?.addListener((tabId) => {
   pageStats.delete(tabId);
