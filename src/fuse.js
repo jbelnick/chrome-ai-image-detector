@@ -40,6 +40,9 @@ export const FUSE_DEFAULTS = {
   flatMidDrop: 0.27,
   flatMidBandMin: 0.9,
   flatMidBandMax: 0.918,
+  flatFineDrop: 0.28,
+  flatFineBandMin: 0.92,
+  flatFineBandMax: 0.94,
   bias: 0,
   temperature: 0.9,
   scorePower: 0.85,
@@ -184,6 +187,17 @@ export function fuseScores({
   ) {
     calibrated -= flatMidDrop;
     reasons.push("flat-mid");
+  }
+
+  const flatFineDrop = config.flatFineDrop ?? 0;
+  if (
+    flatFineDrop > 0 &&
+    graphic?.flatFine &&
+    calibrated >= (config.flatFineBandMin ?? 0.92) &&
+    calibrated < (config.flatFineBandMax ?? 0.94)
+  ) {
+    calibrated -= flatFineDrop;
+    reasons.push("flat-fine");
   }
 
   return {
