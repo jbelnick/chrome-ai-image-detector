@@ -691,27 +691,23 @@ webgpu:      UNVERIFIED
 
 Versus KEEP `92afcb1` on the same mix: TPR +1, TNR held, net +1, BA 0.910615 → 0.913408. Secondary 360 0.891667 → 0.888889 (TNR −1; official FP `openfake_real_0020` after the vivid grain skip). Broader TNR held.
 
-## Historic-scan live miss (Charlesworth 1910s)
+## Historic-scan live miss (Charlesworth 1910s) — FROZEN
 
-Jason loaded Grain on https://en.wikipedia.org/wiki/Golden_Retriever. The 1910s Wikimedia scan `Mrs_Winifred_Charlesworth.jpg` badged **AI 99%**. It is a real photograph, not AI. The 358-mix is **not** a KEEP veto for this fix.
+Lane 0 only. `FUSE_DEFAULTS` is frozen except the landed `mutedScan*` constants. No further fuse bands. Live overlay 99% is lanes 2/3 (score-identity / live-fetch). Mix KEEP `6e78751` is not edited. No createClaim.
 
-Chrome-path dump (same offscreen fusion as the extension):
+Jason loaded Grain on https://en.wikipedia.org/wiki/Golden_Retriever. The 1910s Wikimedia scan `Mrs_Winifred_Charlesworth.jpg` is a real photograph. Chrome-path (same offscreen fusion as the extension) on HEAD `b6edc41`, measured 2026-08-16:
 
-| head | orig 470×638 | 250px thumb |
-| --- | --- | --- |
-| SigLIP | 0.867 | 0.894 |
-| Community Forensics | 0.225 | 0.002 |
-| blended visual | 0.986 | 0.989 |
-| calibrated (no scan drop) | 0.993 | 0.994 |
-| KEEP `6e78751` badge | **99%** | **99%** |
+| image | score | badge | reasons |
+| --- | --- | --- | --- |
+| Charlesworth orig 470×638 | **0.632695** | 63% | visual, graphic-gate, muted-scan |
+| Charlesworth 250px thumb | **0.634229** | 63% | visual, graphic-gate, muted-scan |
+| Nous 1870s 250px | **0.322159** | 32% | visual |
 
-`analyzePixels`: colorfulness 9.3 (muted), fineRatio 0.517, uniqueColors 28, edgeRatio 0.196, flatTone, **isGraphic=true**. Provenance none. Grain flags are all false because they require `!isGraphic`. `graphicScaleWhenFlagged` is 1, so graphic-gate is a no-op. 0.993 sits above every older drop band (max 0.955). Reasons: `visual`, `graphic-gate`.
+Both Charlesworth prints are **< 0.65**. Nous stays real. Freeze.
 
-Rule: `scanGrain = isGraphic && muted && fineRatio >= 0.40`. Drop 0.36 when calibrated is in `[0.955, 1.0)`. Not a URL or file-hash special-case. Fuse bias stays 0.
+Raw heads (Charlesworth orig / 250px): SigLIP 0.867 / 0.894, CF 0.225 / 0.002, visual 0.986 / 0.989. Graphic orig: muted (colorfulness 9.34), fineRatio 0.517, uniqueColors 28, isGraphic=true. Provenance none. Without muted-scan the calibrated score is 0.993 — above every older drop band (max 0.955) because `isGraphic` hides grain flags and `graphicScaleWhenFlagged` is 1.
 
-After the drop, chrome-path Charlesworth is **63%** (orig and 250px). Nous 1870s 250px stays **32%**.
-
-Wide first cut (`muted && fineRatio >= 0.40` without `isGraphic`, commit `31dda7b`) also put Charlesworth at 63%, but dumped mix TPR −3 (153/26/171/8, BA 0.905028). That mix number is a **regression note**, not a revert. The `isGraphic` gate is meant to spare those leftover TPs (`ofhold_ai_0023`, `ofreddit_ai_0076`, `webai_ai_0018` had no graphic-gate).
+Rule (already landed): `scanGrain = isGraphic && muted && fineRatio >= 0.40`. Drop 0.36 in `[0.955, 1.0)`. Not a URL or file-hash special-case. Fuse bias stays 0.
 
 ## Rules checklist
 
