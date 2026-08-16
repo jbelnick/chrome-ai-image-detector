@@ -14,6 +14,10 @@ export const TEXTURE = {
   mutedColorfulness: 28,
   flatToneLo: 0.92,
   flatToneHi: 1.08,
+  // Bright center vs dark border, mid colorfulness. Used for a
+  // post-calibration lift on leftover FNs that sit just under 0.65.
+  centerBrightLo: 1.8,
+  centerBrightColor: 50,
 };
 
 export function analyzePixels(data, width, height) {
@@ -103,6 +107,13 @@ export function analyzePixels(data, width, height) {
   // Flat illumination plus denser mid-delta luma than typical flat photos.
   const flatFine = flatTone && !isGraphic && fineRatio >= 0.34;
   const mutedFlatFine = muted && flatTone && !isGraphic && fineRatio >= 0.3;
+  // Spotlight / bright-center, not a saturated vivid field and not a
+  // UI graphic. Distinct from flat-tone (centerBorder in [0.92, 1.08]).
+  const centerBright =
+    !isGraphic &&
+    !vivid &&
+    centerBorder >= TEXTURE.centerBrightLo &&
+    colorfulness >= TEXTURE.centerBrightColor;
   return {
     uniqueRatio,
     edgeRatio,
@@ -120,6 +131,7 @@ export function analyzePixels(data, width, height) {
     mutedFine,
     flatFine,
     mutedFlatFine,
+    centerBright,
   };
 }
 

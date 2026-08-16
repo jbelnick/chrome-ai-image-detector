@@ -319,6 +319,34 @@ describe("fuse", () => {
     assert.equal(comboOnly.reasons.includes("muted-strong-tail"), false);
   });
 
+  it("lifts a center-bright just-under-cut score without inventing a verdict from the flag alone", () => {
+    const lifted = fuseScores({
+      visual: 0.568,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, centerBright: true, grainy: true },
+    });
+    assert.ok(lifted.score >= 0.65);
+    assert.ok(lifted.reasons.includes("center-bright"));
+    assert.equal(lifted.reasons.includes("photo-grain"), false);
+
+    const noFlag = fuseScores({
+      visual: 0.568,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, centerBright: false, grainy: true },
+    });
+    assert.ok(noFlag.score < 0.65);
+    assert.equal(noFlag.reasons.includes("center-bright"), false);
+
+    const flagOnly = fuseScores({
+      visual: 0.2,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, centerBright: true },
+    });
+    assert.ok(Math.abs(flagOnly.fusedBeforeCalibration - 0.2) < 1e-9);
+    assert.equal(flagOnly.reasons.includes("center-bright"), false);
+    assert.ok(flagOnly.score < 0.65);
+  });
+
   it("lifts a muted mid-range visual without inventing a verdict from low colorfulness alone", () => {
     const lifted = fuseScores({
       visual: 0.56,

@@ -123,6 +123,43 @@ describe("graphic-gate", () => {
     assert.equal(analyzePixels(vivid, w, h).mutedFine, false);
   });
 
+  it("flags a colorful bright-center field as center-bright and a flat field as not", () => {
+    const w = 128;
+    const h = 128;
+    const data = new Uint8Array(w * h * 4);
+    const x0 = w * 0.25;
+    const x1 = w * 0.75;
+    const y0 = h * 0.25;
+    const y1 = h * 0.75;
+    for (let y = 0; y < h; y += 1) {
+      for (let x = 0; x < w; x += 1) {
+        const i = (y * w + x) * 4;
+        const center = x >= x0 && x < x1 && y >= y0 && y < y1;
+        if (center) {
+          data[i] = 190 + ((x + y) % 8);
+          data[i + 1] = 110 + ((x * 2 + y) % 6);
+          data[i + 2] = 70 + (y % 5);
+        } else {
+          data[i] = 40 + ((x + y) % 4);
+          data[i + 1] = 36;
+          data[i + 2] = 34;
+        }
+        data[i + 3] = 255;
+      }
+    }
+    const analysis = analyzePixels(data, w, h);
+    assert.equal(analysis.centerBright, true);
+    assert.equal(analysis.vivid, false);
+    assert.equal(analysis.isGraphic, false);
+    assert.ok(analysis.centerBorder >= 1.8);
+    assert.ok(analysis.colorfulness >= 50);
+
+    const flat = new Uint8Array(w * h * 4);
+    flat.fill(128);
+    for (let i = 3; i < flat.length; i += 4) flat[i] = 255;
+    assert.equal(analyzePixels(flat, w, h).centerBright, false);
+  });
+
   it("flags a uniform field as flat-tone", () => {
     const w = 64;
     const h = 64;
