@@ -667,6 +667,8 @@ webgpu:      UNVERIFIED
 
 Versus official-builder family 19 KEEP `92afcb1` on the same mix (0.910615, TPR 0.865922 / TNR 0.955307, 155/24/171/8): TPR +1, TNR held, net +1, BA 0.910615 → 0.913408. Secondary 360 0.888889 vs family 19's 0.891667 — called out, not hidden, not a crater (same 147/33/173/7 as KEEP `5316788`).
 
+Live bar then moved: official-builder family 20 KEEP `6e78751` printed the **same** broader `bal_acc_065` **0.913408** (TPR 0.871508 / TNR 0.955307, 156/23/171/8) via skip photo-grain after vivid lift (`ofhold_ai_0056`). This lane's printed score is **equal, not strictly greater**, so it does **not** KEEP against family 20. Family 20 was not retried.
+
 ## Rules checklist
 
 - [x] No cloud inference
