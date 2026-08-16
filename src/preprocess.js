@@ -20,10 +20,32 @@ export const PREPROCESS = {
  * Family 1 run 6: opposite of discarded 47bdfd0.
  * Medium-smooth Community Forensics (try to recover TNR);
  * nearest-neighbor SigLIP (KEEP 404faa6 TPR came from the 224 stretch).
+ *
+ * This is the source-of-truth decode. Node sharp kernels below are a proxy.
+ * node(B) − chrome(B) is decode-delta. Do not absorb it in FUSE_DEFAULTS.
  */
 export const CANVAS_RESAMPLE = {
   commfor: { imageSmoothingEnabled: true, imageSmoothingQuality: "medium" },
   siglip: { imageSmoothingEnabled: false, imageSmoothingQuality: "medium" },
+};
+
+/**
+ * Node-proxy resample (sharp + onnxruntime-node). Not chrome-path.
+ * Chrome uses CANVAS_RESAMPLE via createImageBitmap + OffscreenCanvas.
+ * These kernels are the documented Node stand-in, not a fuse target.
+ * Changing them changes decode-delta; it does not change the badge.
+ */
+export const NODE_SHARP_RESAMPLE = {
+  commfor: { kernel: "cubic", fit: "fill" },
+  siglip: { kernel: "lanczos3", fit: "fill" },
+};
+
+/** Chrome-path is truth. Node is a proxy. See eval/DECODE.md. */
+export const DECODE_PATHS = {
+  chrome: "createImageBitmap + OffscreenCanvas + ort-web",
+  node: "sharp + onnxruntime-node",
+  sourceOfTruth: "chrome-path",
+  deltaName: "decode-delta",
 };
 
 export function applyCanvasResample(ctx, which = "commfor") {

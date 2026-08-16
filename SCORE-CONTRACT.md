@@ -9,3 +9,5 @@ Chrome-path is the source of truth.
 5. 358 mix is a regression note only.
 
 Identity: `overlay-path(B) === chrome-eval(B)` for the same file bytes B. Enforced by `tests/score-identity.test.mjs` (`npm test`).
+
+Node (`sharp` + `onnxruntime-node`) is a proxy, not that identity. `node(B) − chrome(B)` is **decode-delta**. Report it (`eval/DECODE.md`). Do not absorb it in `FUSE_DEFAULTS`.

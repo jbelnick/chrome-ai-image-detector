@@ -8,6 +8,8 @@ import {
   visualProbabilityFromLogit,
   PREPROCESS,
   CANVAS_RESAMPLE,
+  NODE_SHARP_RESAMPLE,
+  DECODE_PATHS,
   applyCanvasResample,
 } from "../src/preprocess.js";
 
@@ -55,6 +57,16 @@ describe("preprocess", () => {
     assert.equal(ctx.imageSmoothingQuality, CANVAS_RESAMPLE.commfor.imageSmoothingQuality);
     applyCanvasResample(ctx, "siglip");
     assert.equal(ctx.imageSmoothingEnabled, CANVAS_RESAMPLE.siglip.imageSmoothingEnabled);
+  });
+
+  it("names chrome-path as truth and node sharp as the proxy decode", () => {
+    assert.equal(DECODE_PATHS.sourceOfTruth, "chrome-path");
+    assert.equal(DECODE_PATHS.deltaName, "decode-delta");
+    assert.match(DECODE_PATHS.chrome, /createImageBitmap/);
+    assert.match(DECODE_PATHS.node, /sharp/);
+    assert.equal(NODE_SHARP_RESAMPLE.commfor.kernel, "cubic");
+    assert.equal(NODE_SHARP_RESAMPLE.siglip.kernel, "lanczos3");
+    assert.notEqual(CANVAS_RESAMPLE.siglip.imageSmoothingEnabled, true);
   });
 
   it("medium-smooths Community Forensics and nearest-neighbors SigLIP", () => {
