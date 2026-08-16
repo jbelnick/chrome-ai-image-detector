@@ -43,6 +43,8 @@ npm test
 npm run eval:download   # needs: pip install datasets pillow
 npm run eval            # Node + onnxruntime-node + sharp
 npm run eval:chrome     # headless Chrome, ORT-web, createImageBitmap + OffscreenCanvas
+npm run eval:download:scenarios
+npm run eval:chrome:scenarios   # diagnostic holdout; not the KEEP scalar
 ```
 
 Same fusion object as the extension (`FUSE_DEFAULTS.bias = 0`). Node uses `onnxruntime-node` + `sharp`; Chrome uses `createImageBitmap` + `OffscreenCanvas` + ORT-web. Those decode paths are not identical.
