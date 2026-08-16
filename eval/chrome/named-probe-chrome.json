@@ -1,0 +1,279 @@
+{
+  "path": "chrome-ort-web-named-probe",
+  "sharp": false,
+  "backend": "wasm",
+  "webgpu": "UNVERIFIED",
+  "gpu": {
+    "hasNavigatorGpu": true,
+    "adapter": true,
+    "adapterInfo": {
+      "vendor": "google",
+      "architecture": "swiftshader",
+      "device": ""
+    }
+  },
+  "hashes": {
+    "commfor": "67a3770d39d07403a65628544eb99d0c4c444285d3ca2fcdec80972a1237436f",
+    "siglip2": "c0573e3f4140c3a7c4e9cc5912bd6b26a033b46a6a8e8af26cbea262b163bcad"
+  },
+  "threshold": 0.65,
+  "fuse": {
+    "provenanceAiScore": 0.93,
+    "cameraRealScale": 1,
+    "graphicScaleWhenFlagged": 1,
+    "vividLift": 0.05,
+    "vividBandMin": 0.5,
+    "vividBandMax": 0.68,
+    "mutedLift": 0.05,
+    "mutedBandMin": 0.5,
+    "mutedBandMax": 0.68,
+    "flatToneLift": 0.05,
+    "flatToneBandMin": 0.5,
+    "flatToneBandMax": 0.68,
+    "grainDrop": 0.12,
+    "grainBandMin": 0.65,
+    "grainBandMax": 0.78,
+    "strongGrainDrop": 0.25,
+    "strongGrainBandMin": 0.8,
+    "strongGrainBandMax": 0.95,
+    "mutedHighDrop": 0.28,
+    "mutedHighBandMin": 0.8,
+    "mutedHighBandMax": 0.88,
+    "flatHighDrop": 0.2,
+    "flatHighBandMin": 0.8,
+    "flatHighBandMax": 0.83,
+    "vividHighDrop": 0.24,
+    "vividHighBandMin": 0.87,
+    "vividHighBandMax": 0.89,
+    "mutedFineDrop": 0.28,
+    "mutedFineBandMin": 0.88,
+    "mutedFineBandMax": 0.93,
+    "flatMidDrop": 0.27,
+    "flatMidBandMin": 0.9,
+    "flatMidBandMax": 0.918,
+    "flatFineDrop": 0.28,
+    "flatFineBandMin": 0.92,
+    "flatFineBandMax": 0.94,
+    "flatUpperDrop": 0.29,
+    "flatUpperBandMin": 0.934,
+    "flatUpperBandMax": 0.946,
+    "mutedFlatFineDrop": 0.31,
+    "mutedFlatFineBandMin": 0.946,
+    "mutedFlatFineBandMax": 0.955,
+    "mutedUpperDrop": 0.31,
+    "mutedUpperBandMin": 0.949,
+    "mutedUpperBandMax": 0.954,
+    "mutedStrongTailDrop": 0.04,
+    "mutedStrongTailBandMin": 0.68,
+    "mutedStrongTailBandMax": 0.694,
+    "mutedScanDrop": 0.36,
+    "mutedScanBandMin": 0.955,
+    "mutedScanBandMax": 1,
+    "bias": 0,
+    "temperature": 0.9,
+    "scorePower": 0.85
+  },
+  "n": 9,
+  "rows": [
+    {
+      "name": "250px-Mrs_Winifred_Charlesworth.jpg",
+      "label": 0,
+      "score": 0.6342289827447717,
+      "visual": 0.9888761773228228,
+      "siglip": 0.8944255098130955,
+      "commfor": 0.001987291830949727,
+      "reasons": [
+        "visual",
+        "muted-scan"
+      ],
+      "graphic": {
+        "isGraphic": false,
+        "scanGrain": true,
+        "uiCapture": false,
+        "uniqueColors": 30,
+        "edgeRatio": 0.25850415512465375,
+        "fineRatio": 0.5089196675900277,
+        "colorfulness": 9.184123321997246,
+        "muted": true
+      }
+    },
+    {
+      "name": "Blender_2.92_UI.png",
+      "label": 0,
+      "score": 0.9885950553177152,
+      "visual": 0.9795444663180501,
+      "siglip": 0.8569159665363001,
+      "commfor": 0.0008551221387109861,
+      "reasons": [
+        "visual",
+        "graphic-gate"
+      ],
+      "graphic": {
+        "isGraphic": true,
+        "scanGrain": false,
+        "uiCapture": true,
+        "uniqueColors": 82,
+        "edgeRatio": 0.10958448753462603,
+        "fineRatio": 0.11512465373961218,
+        "colorfulness": 9.840346424276175,
+        "muted": true
+      }
+    },
+    {
+      "name": "CO2_line_chart.png",
+      "label": 0,
+      "score": 0.22779688639287343,
+      "visual": 0.19897964687772163,
+      "siglip": 0.10500259602483851,
+      "commfor": 0.000011020872724179678,
+      "reasons": [
+        "visual",
+        "graphic-gate"
+      ],
+      "graphic": {
+        "isGraphic": true,
+        "scanGrain": false,
+        "uiCapture": true,
+        "uniqueColors": 56,
+        "edgeRatio": 0.06470914127423823,
+        "fineRatio": 0.004321329639889197,
+        "colorfulness": 11.606104684591505,
+        "muted": true
+      }
+    },
+    {
+      "name": "DOE_org_chart.png",
+      "label": 0,
+      "score": 0.5346976688022715,
+      "visual": 0.48089128504912115,
+      "siglip": 0.2791429126139914,
+      "commfor": 0.001012683025742444,
+      "reasons": [
+        "visual",
+        "graphic-gate"
+      ],
+      "graphic": {
+        "isGraphic": true,
+        "scanGrain": false,
+        "uiCapture": true,
+        "uniqueColors": 131,
+        "edgeRatio": 0.4454293628808864,
+        "fineRatio": 0.07191135734072023,
+        "colorfulness": 10.541501917772777,
+        "muted": true
+      }
+    },
+    {
+      "name": "Inkscape_UI.png",
+      "label": 0,
+      "score": 0.6357061719406164,
+      "visual": 0.8678172854322634,
+      "siglip": 0.6364270540639843,
+      "commfor": 0.00001946093180648978,
+      "reasons": [
+        "visual",
+        "graphic-gate",
+        "flat-mid"
+      ],
+      "graphic": {
+        "isGraphic": true,
+        "scanGrain": false,
+        "uiCapture": true,
+        "uniqueColors": 85,
+        "edgeRatio": 0.32,
+        "fineRatio": 0.01961218836565097,
+        "colorfulness": 45.176653710146596,
+        "muted": false
+      }
+    },
+    {
+      "name": "LibreOffice_Writer_7.5.png",
+      "label": 0,
+      "score": 0.9975500965200312,
+      "visual": 0.9948411349355744,
+      "siglip": 0.9281731874007483,
+      "commfor": 0.000043795261989734374,
+      "reasons": [
+        "visual",
+        "graphic-gate"
+      ],
+      "graphic": {
+        "isGraphic": true,
+        "scanGrain": false,
+        "uiCapture": true,
+        "uniqueColors": 169,
+        "edgeRatio": 0.24409972299168975,
+        "fineRatio": 0.06537396121883657,
+        "colorfulness": 49.63276198300485,
+        "muted": false
+      }
+    },
+    {
+      "name": "Mrs_Winifred_Charlesworth.jpg",
+      "label": 0,
+      "score": 0.632694839834306,
+      "visual": 0.9862627007794768,
+      "siglip": 0.8668807114713026,
+      "commfor": 0.22478997145559196,
+      "reasons": [
+        "visual",
+        "muted-scan"
+      ],
+      "graphic": {
+        "isGraphic": false,
+        "scanGrain": true,
+        "uiCapture": false,
+        "uniqueColors": 28,
+        "edgeRatio": 0.19634349030470913,
+        "fineRatio": 0.5170083102493075,
+        "colorfulness": 9.342769867775639,
+        "muted": true
+      }
+    },
+    {
+      "name": "simple_pie_chart.png",
+      "label": 0,
+      "score": 0.9046968448822398,
+      "visual": 0.8665876200971488,
+      "siglip": 0.6347333123952716,
+      "commfor": 0.000055262963011325286,
+      "reasons": [
+        "visual",
+        "graphic-gate"
+      ],
+      "graphic": {
+        "isGraphic": true,
+        "scanGrain": false,
+        "uiCapture": true,
+        "uniqueColors": 67,
+        "edgeRatio": 0.07357340720221607,
+        "fineRatio": 0.021274238227146816,
+        "colorfulness": 170.6824758837707,
+        "muted": false
+      }
+    },
+    {
+      "name": "VLC_UI.png",
+      "label": 0,
+      "score": 0.8581101865981478,
+      "visual": 0.811679093069437,
+      "siglip": 0.5660272159727183,
+      "commfor": 0.00006090480029233054,
+      "reasons": [
+        "visual",
+        "graphic-gate"
+      ],
+      "graphic": {
+        "isGraphic": true,
+        "scanGrain": false,
+        "uiCapture": true,
+        "uniqueColors": 108,
+        "edgeRatio": 0.06160664819944598,
+        "fineRatio": 0.04941828254847645,
+        "colorfulness": 39.75999881768772,
+        "muted": false
+      }
+    }
+  ],
+  "note": "Chrome-path dump. createImageBitmap + OffscreenCanvas + shipped fuse. Sharp does not count."
+}

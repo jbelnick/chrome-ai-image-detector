@@ -128,7 +128,7 @@ describe("graphic-gate", () => {
     assert.equal(analyzePixels(vivid, w, h).scanGrain, false);
   });
 
-  it("flags a muted grainy monochrome field as scan-grain even when the UI gate also fires", () => {
+  it("does not flag a muted grainy B&W film-like scan as graphic, and still sets scanGrain", () => {
     const w = 128;
     const h = 128;
     const data = new Uint8Array(w * h * 4);
@@ -147,9 +147,93 @@ describe("graphic-gate", () => {
     }
     const analysis = analyzePixels(data, w, h);
     assert.equal(analysis.muted, true);
+    assert.ok(analysis.uniqueColors < 48);
+    assert.ok(analysis.edgeRatio > 0.12);
     assert.ok(analysis.fineRatio >= 0.4);
-    assert.equal(analysis.isGraphic, true);
+    assert.equal(analysis.isGraphic, false);
+    assert.equal(analysis.grainy, true);
+    assert.equal(analysis.strongGrain, true);
+    assert.equal(analysis.mutedFine, true);
     assert.equal(analysis.scanGrain, true);
+    assert.equal(analysis.uiCapture, false);
+  });
+
+  it("still flags a hard-edge color chart as graphic", () => {
+    const w = 128;
+    const h = 128;
+    const data = new Uint8Array(w * h * 4);
+    const palette = [
+      [20, 20, 20],
+      [240, 240, 240],
+      [30, 90, 200],
+      [220, 50, 40],
+      [40, 180, 80],
+      [250, 200, 40],
+    ];
+    for (let y = 0; y < h; y += 1) {
+      for (let x = 0; x < w; x += 1) {
+        const i = (y * w + x) * 4;
+        const [r, g, b] = palette[Math.floor(x / 16) % palette.length];
+        const on = y % 20 === 0 || x % 32 === 0 || y < 10;
+        data[i] = on ? 15 : r;
+        data[i + 1] = on ? 15 : g;
+        data[i + 2] = on ? 15 : b;
+        data[i + 3] = 255;
+      }
+    }
+    const analysis = analyzePixels(data, w, h);
+    assert.ok(analysis.uniqueColors < 48);
+    assert.ok(analysis.edgeRatio > 0.12);
+    assert.ok(analysis.fineRatio < 0.4);
+    assert.equal(analysis.isGraphic, true);
+    assert.equal(analysis.scanGrain, false);
+    assert.equal(analysis.grainy, false);
+    assert.equal(analysis.uiCapture, true);
+  });
+
+  it("flags a flat anti-aliased UI / chart field as graphic even when the 12-bin palette exceeds 48", () => {
+    const w = 128;
+    const h = 128;
+    const data = new Uint8Array(w * h * 4);
+    for (let y = 0; y < h; y += 1) {
+      for (let x = 0; x < w; x += 1) {
+        const i = (y * w + x) * 4;
+        const cellX = Math.floor(x / 16);
+        const cellY = Math.floor(y / 16);
+        const grid = x % 16 === 0 || y % 16 === 0 || y < 12;
+        data[i] = grid ? 18 : 40 + cellX * 28;
+        data[i + 1] = grid ? 22 : 50 + cellY * 24;
+        data[i + 2] = grid ? 30 : 90 + ((cellX + cellY) % 7) * 18;
+        data[i + 3] = 255;
+      }
+    }
+    const analysis = analyzePixels(data, w, h);
+    assert.ok(analysis.uniqueColors >= 48);
+    assert.ok(analysis.uniqueColors < 200);
+    assert.ok(analysis.fineRatio < 0.2);
+    assert.equal(analysis.scanGrain, false);
+    assert.equal(analysis.uiCapture, true);
+    assert.equal(analysis.isGraphic, true);
+  });
+
+  it("does not flag a painterly many-color field as graphic", () => {
+    const w = 128;
+    const h = 128;
+    const data = new Uint8Array(w * h * 4);
+    let seed = 7;
+    for (let i = 0; i < w * h; i += 1) {
+      seed = (seed * 1664525 + 1013904223) >>> 0;
+      const v = 90 + ((seed >>> 3) & 63);
+      data[i * 4] = v;
+      data[i * 4 + 1] = 70 + ((seed >>> 9) & 63);
+      data[i * 4 + 2] = 80 + ((seed >>> 15) & 63);
+      data[i * 4 + 3] = 255;
+    }
+    const analysis = analyzePixels(data, w, h);
+    assert.ok(analysis.fineRatio >= 0.2);
+    assert.equal(analysis.isGraphic, false);
+    assert.equal(analysis.uiCapture, false);
+    assert.equal(analysis.scanGrain, false);
   });
 
   it("flags a uniform field as flat-tone", () => {
