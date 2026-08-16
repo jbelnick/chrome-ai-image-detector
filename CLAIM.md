@@ -643,6 +643,46 @@ webgpu:      UNVERIFIED
 
 Versus KEEP `cafa158` on the same mix: TPR +1, TNR held, net +1, BA 0.905028 → 0.907821. Secondary 360 held 0.888889.
 
+## Prior broader-proxy KEEP (`92afcb1`, original builder family 19)
+
+Skip photo-grain after a muted-color lift (even without flat-tone), targeting `ofhold_ai_0050`. Recorded here as the live bar this lane compared against — not re-run on this branch. Fuse bias stays 0.
+
+```
+SCALAR broader-proxy (keep/revert)
+bal_acc_065: 0.910615
+tpr_065:     0.865922
+tnr_065:     0.955307
+tp/fn/tn/fp: 155 / 24 / 171 / 8
+n:           358
+
+SECONDARY official-360 (not the ratchet)
+bal_acc_065: 0.891667
+```
+
+## Current broader-proxy best (`2e5756b`)
+
+Restore Community Forensics when SigLIP is sure-real (`sl < 0.25`) except when CF is extremely sure-AI (`cf >= 0.99`). Ensemble/blend exception for leftover ignore-CF FNs — not a photo-grain / color-tone skip. Fuse bias stays 0. Command: `npm run eval:chrome`. Date: 2026-08-16. Finished 718/718 with no stall, EXIT:0.
+
+```
+SCALAR broader-proxy (keep/revert)
+bal_acc_065: 0.916201
+tpr_065:     0.882682
+tnr_065:     0.949721
+tp/fn/tn/fp: 158 / 21 / 170 / 9
+n:           358
+
+SECONDARY official-360 (not the ratchet)
+bal_acc_065: 0.888889
+tpr_065:     0.822222
+tnr_065:     0.955556
+tp/fn/tn/fp: 148 / 32 / 172 / 8
+n:           360
+backend:     wasm
+webgpu:      UNVERIFIED
+```
+
+Versus KEEP `92afcb1` on the same mix: TPR +3, TNR −1, net +2, BA 0.910615 → 0.916201. Secondary 360 slipped 0.891667 → 0.888889 — called out, not hidden, not a crater.
+
 ## Rules checklist
 
 - [x] No cloud inference
