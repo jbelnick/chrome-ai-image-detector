@@ -110,7 +110,10 @@ describe("graphic-gate", () => {
     const mutedAnalysis = analyzePixels(muted, w, h);
     assert.equal(mutedAnalysis.muted, true);
     assert.equal(mutedAnalysis.mutedFine, true);
-    assert.equal(mutedAnalysis.scanGrain, true);
+    assert.equal(
+      mutedAnalysis.scanGrain,
+      mutedAnalysis.isGraphic && mutedAnalysis.fineRatio >= 0.4,
+    );
 
     const vivid = new Uint8Array(w * h * 4);
     seed = 1;
@@ -134,7 +137,8 @@ describe("graphic-gate", () => {
       for (let x = 0; x < w; x += 1) {
         const i = (y * w + x) * 4;
         seed = (seed * 1664525 + 1013904223) >>> 0;
-        const v = 110 + ((seed & 31) - 15);
+        const frame = x < 2 || y < 2 || x > w - 3 || y > h - 3 || x % 26 === 0;
+        const v = frame ? 18 : 118 + ((seed & 31) - 15);
         data[i] = v;
         data[i + 1] = v;
         data[i + 2] = v;
@@ -144,6 +148,7 @@ describe("graphic-gate", () => {
     const analysis = analyzePixels(data, w, h);
     assert.equal(analysis.muted, true);
     assert.ok(analysis.fineRatio >= 0.4);
+    assert.equal(analysis.isGraphic, true);
     assert.equal(analysis.scanGrain, true);
   });
 

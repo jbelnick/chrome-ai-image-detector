@@ -363,6 +363,14 @@ describe("fuse", () => {
     });
     assert.equal(colorfulTail.reasons.includes("muted-scan"), false);
     assert.ok(colorfulTail.score >= 0.65);
+
+    const mutedNotGraphic = fuseScores({
+      visual: 0.97,
+      provenance: { ai: false, camera: false },
+      graphic: { isGraphic: false, muted: true, scanGrain: false, strongGrain: true },
+    });
+    assert.equal(mutedNotGraphic.reasons.includes("muted-scan"), false);
+    assert.ok(mutedNotGraphic.score >= 0.65);
   });
 
   it("lifts a muted mid-range visual without inventing a verdict from low colorfulness alone", () => {

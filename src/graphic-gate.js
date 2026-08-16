@@ -103,11 +103,10 @@ export function analyzePixels(data, width, height) {
   // Flat illumination plus denser mid-delta luma than typical flat photos.
   const flatFine = flatTone && !isGraphic && fineRatio >= 0.34;
   const mutedFlatFine = muted && flatTone && !isGraphic && fineRatio >= 0.3;
-  // Historic / film scan: muted dense mid-delta luma, including
-  // near-monochrome scans the UI graphic gate also flags (tiny 12-bin
-  // palette). Existing grain flags require !isGraphic, which hides
-  // B&W and sepia film photographs.
-  const scanGrain = muted && fineRatio >= 0.4;
+  // Historic / film scan: the UI gate misfires on B&W/sepia film
+  // (tiny 12-bin palette) and then hides every grain flag. Require
+  // isGraphic so muted grainy AI that is not graphic-gated is spared.
+  const scanGrain = isGraphic && muted && fineRatio >= 0.4;
   return {
     uniqueRatio,
     edgeRatio,
